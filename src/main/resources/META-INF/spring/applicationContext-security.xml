@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http pattern="/resources/**" security="none" />
+
+	<http auto-config="true" use-expressions="true">
+		<form-login login-page="/signin" />
+		<logout invalidate-session="true"
+			delete-cookies="JSESSIONID, SPRING_SECURITY_REMEMBER_ME_COOKIE"
+			logout-success-url="/"
+			logout-url="/logout" />
+		<remember-me key="netNewsPortal-g58R92y31" token-validity-seconds="1209600" />
+		<intercept-url pattern="/**" access="permitAll" />
+		<intercept-url pattern="/signin" access="isAnonymous()" />
+		<intercept-url pattern="/register" access="isAnonymous()" />
+		<intercept-url pattern="/news/add" access="hasAnyRole('ROLE_AUTHOR', 'ROLE_ADMIN')" />
+		<intercept-url pattern="/user/**" access="hasRole('ROLE_USER') and fullyAuthenticated" />
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+	</http>
+
+	<beans:bean id="bCryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+	</beans:bean>
+
+	<authentication-manager>
+		<authentication-provider user-service-ref="UserDetailsService">
+			<password-encoder ref="bCryptPasswordEncoder" />
+		</authentication-provider>
+	</authentication-manager>
+</beans:beans>
