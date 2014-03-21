@@ -11,27 +11,27 @@
 	<jsp:param name="pageTitle" value="${title}" />
 </jsp:include>
 
-<c:url value="/news/${news.id}/edit" var="editNewsUrl" />
-<c:url value="/news/${news.id}/delete" var="deleteNewsUrl" />
+<c:url value="/user" var="profileUrl" />
 <c:url value="/signin" var="signinUrl" />
+<c:url value="/news/${news.id}/edit" var="editNewsUrl" />
+<c:url value="${contextPath}/news/${news.id}/delete" var="deleteNewsUrl" />
 <c:url value="/news/${news.id}/addcomment" var="addCommentUrl" />
-<c:url value="/profile" var="profileUrl" />
 
 <div class="container">
 <h2><c:out value="${news.title}" /></h2>
 <hr>
 <sec:authorize access="isAuthenticated()">
-	<sec:authentication property="principal.username" var="username" />
-	<c:if test="${username == news.author.login}">
+	<c:if test="${loggedUser.id == news.author.id}">
 		<a href="${editNewsUrl}"><spring:message code="news.editNewsUrl" /></a> | 
-		<a href="${deleteNewsUrl}"><spring:message code="news.deleteNewsUrl" /></a><br>
+		<a class="btn-link" onclick="deleteConfirm()"><spring:message code="news.deleteNewsUrl" /></a><br>
 	</c:if>
 </sec:authorize>
 
 <small>
 <i class="icon-user"></i>
 <spring:message code="news.author" />: 
-<c:out value="${news.author.login}" />
+<a href="${profileUrl}/${news.author.id}"><strong>${news.author.login}</strong></a>
+<%-- <c:out value="${news.author.login}" /> --%>
 <br>
 <i class="icon-time"></i>
 <spring:message code="news.created" />: 
@@ -52,14 +52,14 @@
 
 </small>
 <br><br>
-<c:out value="${news.content}" />
+<c:out value="${news.content}" escapeXml="false" />
 
 <hr>
 <sec:authorize access="isAnonymous()">
 	<a href="${signinUrl}"><spring:message code="viewnews.loginComments" /></a>
 </sec:authorize>
 
-<sec:authorize access="hasAnyRole('ROLE_USER', 'ROLE_AUTHOR', 'ROLE_ADMIN')">
+<sec:authorize access="hasRole('ROLE_USER')">
 	<form:form action="${addCommentUrl}" method="post" commandName="comment" >
 		<table>
 			<tr>
@@ -85,8 +85,7 @@
 		<c:forEach var="comment" items="${comments}">
 			<div class="well well-small">
 				<small>
-					<i class="icon-user"></i>
-					<a href="${profileUrl}"><c:out value="${comment.author.login}" /></a> -
+					<a href="${profileUrl}/${comment.author.id}"><strong>${comment.author.login}</strong></a> -
 					<i class="icon-time"></i>
 					<fmt:formatDate value="${comment.created}" type="both"
 						pattern="dd.MM.y H:mm:ss" />
@@ -105,6 +104,11 @@
 <script>
 	$('textarea[maxlength]').maxlength({threshold:20});
 	$(function(){$('textarea').val('');});
+	function deleteConfirm(url){
+        if (confirm("Are you sure?")){
+        	location.href="${deleteNewsUrl}";
+        };
+    };
 </script>
 
 <jsp:include page="common/footer.jsp" />

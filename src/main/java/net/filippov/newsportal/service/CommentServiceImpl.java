@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
 			newsService.increaseCommentsCountById(news.getId());
 			return storage.insert(comment);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error add " + comment, e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
 		try {
 			return storage.select(id);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error selecting Comment[id=" + id + "]" , e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
 		try {
 			return storage.getAllByNewsId(id);
 		} catch (HibernateException e) {
-			throw new PersistentException("Error getting comments of News[id=" + id +"]", e);
+			throw new PersistentException(e.getMessage(), e);
 		}
 	}
 }

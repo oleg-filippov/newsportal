@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 			user.setRoles(userRoles);
 			return storage.insert(user);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error inserting " + user, e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			return storage.select(id);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting User[id=" + id + "]", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			return storage.getByLogin(login);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting User[login=" + login +"]", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			return storage.getAll();
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting list of users", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 }

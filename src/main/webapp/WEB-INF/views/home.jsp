@@ -13,7 +13,7 @@
 <c:url value="/news/add" var="addNewsUrl" />
 
 <div class="container">
-<sec:authorize access="hasAnyRole('ROLE_AUTHOR', 'ROLE_ADMIN')">
+<sec:authorize access="hasRole('ROLE_AUTHOR')">
 	<h4><a href="${addNewsUrl}"><spring:message code="home.addNewsUrl" /></a></h4><hr>
 </sec:authorize>
 

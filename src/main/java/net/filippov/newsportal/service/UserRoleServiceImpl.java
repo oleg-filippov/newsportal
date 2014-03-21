@@ -22,7 +22,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 		try {
 			return storage.getByAuthority(authority);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting Role[authority=" + authority +"]", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -32,7 +32,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 		try {
 			return storage.getAll();
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting list of roles", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 }

@@ -18,8 +18,7 @@ public class UserRoleDaoHibernateImpl extends GenericDaoHibernateImpl<UserRole, 
 	@Override
 	public UserRole getByAuthority(String authority) {
 		try {
-    		Query query = getCurrentSession().createQuery(
-    			"from UserRole where authority = :authority")
+    		Query query = getCurrentSession().getNamedQuery("UserRole.GET_BY_AUTHORITY")
     			.setParameter("authority", authority);
     		
     		if (query.list().size() > 0) {
@@ -36,9 +35,10 @@ public class UserRoleDaoHibernateImpl extends GenericDaoHibernateImpl<UserRole, 
 	@SuppressWarnings("unchecked")
 	public List<UserRole> getAll() {
 		try {
-    		return getCurrentSession().createQuery("from User").list();
+    		return getCurrentSession().getNamedQuery("UserRole.GET_ALL")
+    				.list();
 		} catch (HibernateException e) {
-			throw new PersistentException("Error getting list of users", e);
+			throw new PersistentException("Error getting all userRoles", e);
 		}
 	}
 }

@@ -20,7 +20,7 @@
 		<tr>
 			<td>
 				<spring:bind path="title">
-					<input name="title" type="text" class="field span10" maxlength="100"
+					<input name="title" type="text" class="span12" maxlength="100"
 						placeholder="<spring:message code="news.title" />" value="${news.title}" >
 				</spring:bind>
 			</td>
@@ -31,19 +31,23 @@
 		<tr>
 			<td>
 				<spring:bind path="preview">
-					<textarea class="field span10" name="preview" rows="3" maxlength="250"
+					<textarea class="span12" name="preview" rows="3" maxlength="250"
 						placeholder="<spring:message code="news.preview" />">${news.preview}</textarea>
 				</spring:bind>
 			</td>
 		</tr>
 		<tr>
-			<td><form:errors path="content" class="label label-important" /></td>
+			<td><form:errors path="content" class="label label-important" />
+			<span id="resp" class="label label-important"></span>
+			</td>
 		</tr>
 		<tr>
 			<td>
 				<spring:bind path="content">
-					<textarea id="content" name="content" class="field span10" rows="18"
+					<div class="summernote container">
+						<textarea id="summernote" class="span12" name="content"
 						placeholder="<spring:message code="news.content" />">${news.content}</textarea>
+  					</div>
 				</spring:bind>
 			</td>
 		</tr>
@@ -56,6 +60,44 @@
 
 </div> <!-- end of container -->
 
-<script>$('input[maxlength], textarea[maxlength]').maxlength({threshold:20});</script>
+<script>
+$(document).ready(function() {
+	$('input[maxlength], textarea[maxlength]').maxlength({threshold:20});
+	$('#summernote').summernote({
+		height: 500,
+		onImageUpload: function(files, editor, welEditable) {
+            sendFile(files[0],editor,welEditable);
+        }
+	});
+});
+
+function sendFile(file,editor,welEditable) {
+    data = new FormData();
+    data.append("file", file);
+    $.ajax({
+        data: data,
+        type: "POST",
+        url: "./uploadimage",
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+        	switch (response) {
+        		case 'typeError':
+        			alert('Allowed types: JPG, PNG, GIF');
+        			break;
+				case 'sizeError':
+					alert('Image size must be less than 500KB');
+					break;
+				case 'ioError':
+					alert('Internal server error while uploading image');
+					break;
+				default:
+					editor.insertImage(welEditable, response);
+        	}
+        }
+    });
+}
+</script>
 
 <jsp:include page="common/footer.jsp" />

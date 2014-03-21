@@ -51,7 +51,7 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<User, Long>
     		return getCurrentSession().getNamedQuery("User.GET_ALL")
     			.list();
 		} catch (HibernateException e) {
-			throw new PersistentException("Error getting list of users", e);
+			throw new PersistentException("Error getting all users", e);
 		}
 	}
 	
@@ -67,8 +67,8 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<User, Long>
 			} else if (e.getConstraintName().startsWith("\"EMAIL_UNIQUE")) {
 				throw new NotUniqueUserEmailException(e);
 			} else {
-				throw new ConstraintViolationException(
-					"Error inserting " + user, e.getSQLException(), e.getConstraintName());
+				throw new PersistentException(
+					"Error inserting " + user, e);
 			}
 		} catch (HibernateException e) {
 			throw new PersistentException("Error inserting " + user, e);

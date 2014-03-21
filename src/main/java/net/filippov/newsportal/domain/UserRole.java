@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -13,6 +15,14 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 @Table(name = "role", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "authority") })
+@NamedQueries({
+	@NamedQuery(
+			name = "UserRole.GET_ALL",
+			query = "from UserRole"),
+	@NamedQuery(
+			name = "UserRole.GET_BY_AUTHORITY",
+			query = "from UserRole where authority = :authority")
+})
 public class UserRole extends AbstractEntity implements GrantedAuthority {
 
 	private static final long serialVersionUID = -3981661393211469078L;

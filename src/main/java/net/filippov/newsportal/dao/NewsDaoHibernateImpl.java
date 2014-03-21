@@ -21,14 +21,14 @@ public class NewsDaoHibernateImpl extends GenericDaoHibernateImpl<News, Long>
     		return getCurrentSession().getNamedQuery("News.GET_ALL")
     			.list();
 		} catch (HibernateException e) {
-			throw new PersistentException("Error getting list of news", e);
+			throw new PersistentException("Error getting all news", e);
 		}
 	}
 
 	@Override
 	public void increaseViewsCountById(Long id) {
     	try {
-    		getCurrentSession().getNamedQuery("News.INCREASE_VIEWSCOUNT_BY_ID")
+    		getCurrentSession().getNamedQuery("News.INCREASE_VIEWS_COUNT_BY_ID")
     			.setParameter("id", id)
     			.executeUpdate();
 		} catch (HibernateException e) {
@@ -39,8 +39,7 @@ public class NewsDaoHibernateImpl extends GenericDaoHibernateImpl<News, Long>
 	@Override
 	public void increaseCommentsCountById(Long id) {
     	try {
-    		getCurrentSession().createQuery(
-    			"update News set comments_count = comments_count + 1 where id = :id")
+    		getCurrentSession().getNamedQuery("News.INCREASE_COMMENTS_COUNT_BY_ID")
     			.setParameter("id", id)
     			.executeUpdate();
 		} catch (HibernateException e) {

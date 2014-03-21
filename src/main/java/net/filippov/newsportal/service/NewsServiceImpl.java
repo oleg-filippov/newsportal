@@ -25,7 +25,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			return storage.getAll();
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting list of news ", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -35,7 +35,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			return storage.insert(news);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error add " + news, e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -45,7 +45,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			return storage.select(id);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error getting News[id= " + id + "]", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			storage.update(news);
 		} catch (PersistentException e) {
-			throw new ServiceException("Error updating " + news, e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class NewsServiceImpl implements NewsService {
 				storage.delete(news);
 			}
 		} catch (PersistentException e) {
-			throw new ServiceException("Error deleting News[id=" + id + "]", e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			storage.increaseViewsCountById(id);
 		} catch (PersistentException e) {
-			throw new ServiceException(e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 	
@@ -86,7 +86,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			storage.increaseCommentsCountById(id);
 		} catch (PersistentException e) {
-			throw new ServiceException(e);
+			throw new ServiceException(e.getMessage(), e);
 		}
 	}
 }

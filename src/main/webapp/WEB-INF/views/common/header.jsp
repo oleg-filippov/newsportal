@@ -9,6 +9,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css"/>" />
 <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap-responsive.min.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/font-awesome.min.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/summernote.css"/>" />
 
 <title><spring:message code="header.title" /> ${param.pageTitle}</title>
 </head>
@@ -20,7 +22,7 @@
 <c:url value="/signin" var="signinUrl" />
 <c:url value="/register" var="registerUrl" />
 <c:url value="/logout" var="logoutUrl" />
-<c:url value="/profile" var="profileUrl" />
+<c:url value="/user" var="profileUrl" />
 
 <div class="navbar navbar-default">
 	<div class="navbar-inner">
@@ -34,8 +36,8 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<spring:message code="header.loggedIn" />
-					<a href="${profileUrl}">
-						<strong><sec:authentication property="principal.username" /></strong>
+					<a href="${profileUrl}/${loggedUser.id}">
+						<strong>${loggedUser.login}</strong>
 					</a><br>
 					<a href="${logoutUrl}"><spring:message code="header.logout" /></a>
 				</sec:authorize>
@@ -53,8 +55,8 @@
 					<li><a href="${aboutUrl}"><spring:message code="header.aboutUrl" /></a></li>
 					<li><a href="${contactsUrl}"><spring:message code="header.contactsUrl" /></a></li>
 				</ul>
-			</div><!--/.nav-collapse -->
-		</div>
+			</div><!-- nav-collapse -->
+		</div> <!-- container -->
 	</div>
 </div>
 
@@ -62,3 +64,4 @@
 <script type="text/javascript" src="<c:url value="/resources/js/jquery-1.10.2.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap-maxlength.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/summernote.min.js"/>"></script>

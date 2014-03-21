@@ -10,18 +10,20 @@
 	<http pattern="/resources/**" security="none" />
 
 	<http auto-config="true" use-expressions="true">
-		<form-login login-page="/signin" />
+		<access-denied-handler error-page="/signin"/>
+		<form-login login-page="/signin" authentication-failure-url="/signin/failure"
+			authentication-success-handler-ref="AuthenticationSuccessHandler"/>
 		<logout invalidate-session="true"
 			delete-cookies="JSESSIONID, SPRING_SECURITY_REMEMBER_ME_COOKIE"
 			logout-success-url="/"
 			logout-url="/logout" />
-		<remember-me key="netNewsPortal-g58R92y31" token-validity-seconds="1209600" />
+		<remember-me key="netNewsPortal-g58R92y31" token-validity-seconds="1209600"
+			authentication-success-handler-ref="AuthenticationSuccessHandler" />
 		<intercept-url pattern="/**" access="permitAll" />
 		<intercept-url pattern="/signin" access="isAnonymous()" />
 		<intercept-url pattern="/register" access="isAnonymous()" />
-		<intercept-url pattern="/news/add" access="hasAnyRole('ROLE_AUTHOR', 'ROLE_ADMIN')" />
 		<intercept-url pattern="/user/**" access="hasRole('ROLE_USER') and fullyAuthenticated" />
-		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN') and fullyAuthenticated" />
 	</http>
 
 	<beans:bean id="bCryptPasswordEncoder"

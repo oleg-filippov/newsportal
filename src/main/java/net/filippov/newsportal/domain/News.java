@@ -28,8 +28,11 @@ import org.hibernate.validator.constraints.NotBlank;
 			name = "News.GET_ALL",
 			query = "from News order by created desc"),
 	@NamedQuery(
-			name = "News.INCREASE_VIEWSCOUNT_BY_ID",
-			query = "update News set views_count = views_count + 1 where id = :id")
+			name = "News.INCREASE_VIEWS_COUNT_BY_ID",
+			query = "update News set views_count = views_count + 1 where id = :id"),
+	@NamedQuery(
+			name = "News.INCREASE_COMMENTS_COUNT_BY_ID",
+			query = "update News set comments_count = comments_count + 1 where id = :id")
 })
 public class News extends AbstractEntity {
 
