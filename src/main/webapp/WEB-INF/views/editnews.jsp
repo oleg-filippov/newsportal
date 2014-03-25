@@ -44,27 +44,29 @@
 		<tr>
 			<td>
 				<spring:bind path="content">
-					<div class="summernote container">
-						<textarea id="summernote" class="span12" name="content"
-						placeholder="<spring:message code="news.content" />">${news.content}</textarea>
+					<div class="summernote container" id="ddd">
+						<textarea id="summernote" class="span12" name="content">${news.content}</textarea>
   					</div>
 				</spring:bind>
 			</td>
 		</tr>
 	</table>
   	<button class="btn btn-primary" type="submit"><spring:message code="editnews.saveButton" /></button>
-  	<button class="btn btn-danger" type="reset"><spring:message code="editnews.resetButton" /></button>
   	<a class="btn btn-default" href="${pageContext.request.contextPath}/news/cancel">
   		<spring:message code="editnews.cancelButton" /></a>
 </form:form>
 
-</div> <!-- end of container -->
+</div> <!-- container -->
 
 <script>
+$('input[maxlength], textarea[maxlength]').maxlength({threshold:20});
 $(document).ready(function() {
-	$('input[maxlength], textarea[maxlength]').maxlength({threshold:20});
+	var lang = ("${pageContext.response.locale.language}" === "ru")
+		? "ru-RU"
+		: "en-US";
 	$('#summernote').summernote({
 		height: 500,
+		lang: lang,
 		onImageUpload: function(files, editor, welEditable) {
             sendFile(files[0],editor,welEditable);
         }
@@ -72,31 +74,24 @@ $(document).ready(function() {
 });
 
 function sendFile(file,editor,welEditable) {
-    data = new FormData();
-    data.append("file", file);
-    $.ajax({
-        data: data,
-        type: "POST",
-        url: "./uploadimage",
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-        	switch (response) {
-        		case 'typeError':
-        			alert('Allowed types: JPG, PNG, GIF');
-        			break;
-				case 'sizeError':
-					alert('Image size must be less than 500KB');
-					break;
-				case 'ioError':
-					alert('Internal server error while uploading image');
-					break;
-				default:
-					editor.insertImage(welEditable, response);
-        	}
-        }
-    });
+	data = new FormData();
+	data.append("file", file);
+	$.ajax({
+		data: data,
+		type: "POST",
+		url: "${pageContext.request.contextPath}/news/uploadimage",
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(response) {
+			if (/^images/.test(response)) {
+				editor.insertImage(welEditable, response);
+				$("#resp").hide();
+			} else {
+				$("#resp").text(response).show();
+			}
+		}
+	});
 }
 </script>
 

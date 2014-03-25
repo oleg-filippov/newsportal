@@ -26,26 +26,27 @@ public abstract class AbstractEntity implements Serializable {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || getClass() != obj.getClass()) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
+		if (getClass() != obj.getClass())
+			return false;
 
-		AbstractEntity entity = (AbstractEntity) obj;
-		Long entityId = entity.getId();
+		AbstractEntity other = (AbstractEntity) obj;
+		Long entityId = other.getId();
 		if (entityId == null || getId() == null) {
 			return entityEquals(obj);
 		}
-
-		return getId().equals(entity.getId());
+		return getId().equals(other.getId());
 	}
 
 	@Override
 	public int hashCode() {
-		if (getId() != null) {
-			return getId().hashCode();
-		} else {
-			return entityHashCode();
-		}
+		final int prime = 31;
+		int result = 17;
+		return prime * result
+				+ ((getId() == null) ? entityHashCode() : getId().hashCode());
 	}
 
 	public abstract boolean entityEquals(Object obj);

@@ -85,7 +85,7 @@ public class Comment extends AbstractEntity {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Comment))
+		if (getClass() != obj.getClass())
 			return false;
 
 		Comment other = (Comment) obj;

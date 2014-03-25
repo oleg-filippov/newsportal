@@ -177,7 +177,7 @@ public class User extends AbstractEntity {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof User))
+		if (getClass() != obj.getClass())
 			return false;
 		
 		User other = (User) obj;
@@ -188,7 +188,6 @@ public class User extends AbstractEntity {
 
 	@Override
 	public String toString() {
-		return String.format("User[id=%d, login=%s, email=%s]",
-				getId(), getLogin(), getEmail());
+		return String.format("User[id=%d, login=%s]", getId(), getLogin());
 	}
 }

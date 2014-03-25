@@ -17,8 +17,8 @@ import org.springframework.web.bind.support.SessionStatus;
 @SessionAttributes("news")
 public class MainController {
 	
-	private final String ABOUT_URL = "/about";
-	private final String CONTACTS_URL = "/contacts";
+	private static final String ABOUT_URL = "/about";
+	private static final String CONTACTS_URL = "/contacts";
 
 	@Autowired
 	private NewsService newsService;
@@ -28,7 +28,6 @@ public class MainController {
 	public String home(Model model, SessionStatus status) {
 
 		status.setComplete();
-
 		Collection<News> allNews = newsService.getAll();
 		model.addAttribute("allNews", allNews);
 

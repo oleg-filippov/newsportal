@@ -176,7 +176,7 @@ public class News extends AbstractEntity {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof News))
+		if (getClass() != obj.getClass())
 			return false;
 
 		News other = (News) obj;

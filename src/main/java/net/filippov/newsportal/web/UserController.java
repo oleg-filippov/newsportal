@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import net.filippov.newsportal.domain.User;
 import net.filippov.newsportal.exception.NotUniqueUserEmailException;
 import net.filippov.newsportal.exception.NotUniqueUserLoginException;
-import net.filippov.newsportal.exception.ServiceException;
 import net.filippov.newsportal.service.UserService;
 
 import org.slf4j.Logger;
@@ -28,10 +27,10 @@ public class UserController {
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 	
 	// URL's
-	private final String SIGNIN_URL = "/signin";
-	private final String SIGNIN_FAILURE_URL = "/signin/failure";
-	private final String REGISTER_URL = "/register";
-	private final String USER_PROFILE_URL = "/user/{id}";
+	private static final String SIGNIN_URL = "/signin";
+	private static final String SIGNIN_FAILURE_URL = "/signin/failure";
+	private static final String REGISTER_URL = "/register";
+	private static final String USER_PROFILE_URL = "/user/{id}";
 	
 	@Autowired
 	private UserService userService;
@@ -79,11 +78,6 @@ public class UserController {
 		} catch (NotUniqueUserEmailException e) {
 			result.rejectValue("email", "validation.user.emailUnique");
 			return "register";
-		} catch (ServiceException e) {
-			LOG.error(e.getMessage(), e);
-			model.addAttribute("message", e.getMessage());
-			
-			return "/errors/exception";
 		}
 		
 		model.addAttribute("messageProperty", "success.registration");
@@ -96,15 +90,8 @@ public class UserController {
 	@RequestMapping(method=RequestMethod.GET, value = USER_PROFILE_URL)
 	public String profilePage(Model model, @PathVariable("id") Long userId) {
 		
-		try {
-			User user = userService.getById(userId);
-			model.addAttribute("user", user);
-		} catch (ServiceException e) {
-			LOG.error(e.getMessage(), e);
-			model.addAttribute("message", e.getMessage());
-			
-			return "/errors/exception";
-		}
+		User user = userService.getById(userId);
+		model.addAttribute("user", user);
 		
 		return "profile";
 	}

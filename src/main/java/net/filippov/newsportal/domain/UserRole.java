@@ -65,7 +65,7 @@ public class UserRole extends AbstractEntity implements GrantedAuthority {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Tag))
+		if (getClass() != obj.getClass())
 			return false;
 
 		UserRole other = (UserRole) obj;

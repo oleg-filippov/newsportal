@@ -29,20 +29,16 @@
 
 <small>
 <i class="icon-user"></i>
-<spring:message code="news.author" />: 
 <a href="${profileUrl}/${news.author.id}"><strong>${news.author.login}</strong></a>
-<%-- <c:out value="${news.author.login}" /> --%>
 <br>
 <i class="icon-time"></i>
 <spring:message code="news.created" />: 
-<fmt:formatDate value="${news.created}" type="both"
-	pattern="dd.MM.y H:mm" />
+<fmt:formatDate value="${news.created}" type="both" />
 <br>
 <c:if test="${news.lastModified != null}">
 	<i class="icon-time"></i>
 	<spring:message code="news.lastModified" />: 
-	<fmt:formatDate value="${news.lastModified}" type="both"
-		pattern="dd.MM.y H:mm" />
+	<fmt:formatDate value="${news.lastModified}" type="both" />
 	<br>
 </c:if>
 <i class="icon-comment"></i>
@@ -68,7 +64,7 @@
 			<tr>
 				<td>
 				<spring:bind path="content">
-					<textarea id="redex" name="content" class="field span6" rows="4" maxlength="500"
+					<textarea name="content" class="field span6" rows="4" maxlength="500"
 						placeholder="<spring:message code="viewnews.leaveComment" />" ></textarea>
 				</spring:bind>
 				</td>
@@ -87,10 +83,9 @@
 				<small>
 					<a href="${profileUrl}/${comment.author.id}"><strong>${comment.author.login}</strong></a> -
 					<i class="icon-time"></i>
-					<fmt:formatDate value="${comment.created}" type="both"
-						pattern="dd.MM.y H:mm:ss" />
+					<fmt:formatDate value="${comment.created}" type="both" />
 				</small><br>
-				<c:out value="${comment.content}" />
+				<c:out value="${comment.content}" escapeXml="false" />
 			</div>
 		</c:forEach>
 	</c:when>
@@ -102,13 +97,19 @@
 </div> <!-- end of container -->
 
 <script>
-	$('textarea[maxlength]').maxlength({threshold:20});
-	$(function(){$('textarea').val('');});
-	function deleteConfirm(url){
-        if (confirm("Are you sure?")){
-        	location.href="${deleteNewsUrl}";
-        };
-    };
+$('textarea[maxlength]').maxlength({threshold:20});
+$(function(){$('textarea').val('');});
+
+function deleteConfirm(url){
+	var message;
+	if ("${pageContext.response.locale.language}" === "ru")
+		message = "Вы уверены?";
+	else
+		message = "Are you sure?";
+	if (confirm(message)){
+		location.href="${deleteNewsUrl}";
+	};
+};
 </script>
 
 <jsp:include page="common/footer.jsp" />

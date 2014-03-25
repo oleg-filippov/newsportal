@@ -54,7 +54,7 @@ public class Tag extends AbstractEntity {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Tag))
+		if (getClass() != obj.getClass())
 			return false;
 
 		Tag other = (Tag) obj;

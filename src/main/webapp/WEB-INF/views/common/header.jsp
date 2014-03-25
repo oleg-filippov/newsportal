@@ -55,7 +55,7 @@
 					<li><a href="${aboutUrl}"><spring:message code="header.aboutUrl" /></a></li>
 					<li><a href="${contactsUrl}"><spring:message code="header.contactsUrl" /></a></li>
 				</ul>
-			</div><!-- nav-collapse -->
+			</div> <!-- nav-collapse -->
 		</div> <!-- container -->
 	</div>
 </div>
@@ -65,3 +65,5 @@
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap-maxlength.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/summernote.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/summernote-ru-RU.js"/>"></script>
+
