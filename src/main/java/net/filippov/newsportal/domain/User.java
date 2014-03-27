@@ -47,23 +47,24 @@ public class User extends AbstractEntity {
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	@NotBlank(message = "{validation.user.nameNotBlank}")
-	@Column(name = "name")
+	@Size(min = 1, max = 50, message = "{validation.user.nameNotBlank}")
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	@NotBlank(message = "{validation.user.emailNotBlank}")
 	@Email(message = "{validation.user.emailValid}")
-	@Column(name = "email", unique = true, nullable = false)
+	@Column(name = "email", unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
 	private String email;
 
-	@Column(name = "registered", insertable = false, updatable = false)
+	@Column(name = "registered", insertable = false, updatable = false,
+			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date registered;
 
-	@Column(name = "locked", insertable = false, updatable = false)
+	@Column(name = "locked", columnDefinition = "BOOLEAN DEFAULT FALSE")
 	private boolean locked;
 	
-	@Column(name = "enabled", insertable = false, updatable = false)
+	@Column(name = "enabled", columnDefinition = "BOOLEAN DEFAULT TRUE")
 	private boolean enabled;
 
 	@ManyToMany(cascade = CascadeType.ALL)

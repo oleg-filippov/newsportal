@@ -26,6 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
 		
+		if ("".equals(login)) {
+			throw new UsernameNotFoundException("User not found");
+		}
+		
 		net.filippov.newsportal.domain.User user = storage.getByLogin(login);
 
 		if (user == null) {

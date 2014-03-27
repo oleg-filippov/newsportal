@@ -28,7 +28,7 @@ public class UserController {
 	
 	// URL's
 	private static final String SIGNIN_URL = "/signin";
-	private static final String SIGNIN_FAILURE_URL = "/signin/failure";
+	private static final String SIGNIN_FAILURE_URL = "/signinfailure";
 	private static final String REGISTER_URL = "/register";
 	private static final String USER_PROFILE_URL = "/user/{id}";
 	
@@ -44,9 +44,10 @@ public class UserController {
 	// SignIn failure
 	@RequestMapping(method = RequestMethod.GET, value = SIGNIN_FAILURE_URL)
 	public String signinFailure(Model model) {
-		
-		model.addAttribute("messageProperty", "error.signIn");
-		return "/errors/error";
+
+		model.addAttribute("error", "true");
+
+		return "signin";
 	}
 	
 	// Register-page
@@ -73,7 +74,7 @@ public class UserController {
 			LOG.info(user + " has been added successfully");
 		} catch (NotUniqueUserLoginException e) {
 			result.rejectValue("login", "validation.user.loginUnique");
-			user.setPassword(null);
+			user.setPassword("");
 			return "register";
 		} catch (NotUniqueUserEmailException e) {
 			result.rejectValue("email", "validation.user.emailUnique");

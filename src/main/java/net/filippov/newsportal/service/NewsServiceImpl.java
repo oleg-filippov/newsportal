@@ -80,13 +80,4 @@ public class NewsServiceImpl implements NewsService {
 			throw new ServiceException(e.getMessage(), e);
 		}
 	}
-	
-	@Override
-	public void increaseCommentsCountById(Long id) {
-		try {
-			storage.increaseCommentsCountById(id);
-		} catch (PersistentException e) {
-			throw new ServiceException(e.getMessage(), e);
-		}
-	}
 }

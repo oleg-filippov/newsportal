@@ -17,7 +17,4 @@ public interface NewsService {
 	void deleteById(Long id);
 	
 	void increaseViewsCountById(Long id);
-	
-	void increaseCommentsCountById(Long id);
-
 }

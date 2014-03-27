@@ -34,14 +34,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/news")
-@SessionAttributes("news")
 public class NewsController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(NewsController.class);
@@ -52,10 +49,9 @@ public class NewsController {
 	private static final String ADD_NEWS_URL = "/add";
 	private static final String EDIT_NEWS_URL = "/{id}/edit";
 	private static final String DELETE_NEWS_URL = "/{id}/delete";
-	private static final String CANCEL_URL = "/cancel";
+	private static final String CANCEL_URL = "/{id}/cancel";
 	private static final String UPLOAD_IMAGE_URL = "/uploadimage";
-	private static final String SHOW_IMAGE_ADD_NEWS_URL = "/images/{name}.{type}";
-	private static final String SHOW_IMAGE_EDIT_NEWS_URL = "{id}/images/{name}.{type}";
+	private static final String SHOW_IMAGE_URL = "**/images/{name}.{type}";
 	
 	// Constants operating with images
 	private static final String NEWS_IMAGES_PATH = "c:/Newsportal/news_images/";
@@ -96,7 +92,7 @@ public class NewsController {
 	}
 
 	// Get image
-	@RequestMapping(method=RequestMethod.GET, value = {SHOW_IMAGE_ADD_NEWS_URL, SHOW_IMAGE_EDIT_NEWS_URL})
+	@RequestMapping(method=RequestMethod.GET, value = SHOW_IMAGE_URL)
 	public void showImg(@PathVariable("name") String imageName, @PathVariable("type") String type,
 			HttpServletResponse response) throws IOException {
 
@@ -108,11 +104,15 @@ public class NewsController {
 	// Current news view-page
 	@RequestMapping(method = RequestMethod.GET, value = SHOW_NEWS_URL)
 	public String viewNewsPage(Model model, @PathVariable("id") Long newsId,
-			SessionStatus status, HttpSession session) {
-		
+			HttpSession session) {
+
 		User loggedUser = (User) session.getAttribute("loggedUser");
 		
 		News currentNews = newsService.getById(newsId);
+		if (currentNews == null) {
+			model.addAttribute("message", "NO NEWS");
+			return "/error";
+		}
 		model.addAttribute("news", currentNews);
 		List<Comment> comments = commentService.getAllByNewsId(newsId);
 		model.addAttribute("comments", comments);
@@ -121,7 +121,6 @@ public class NewsController {
 				|| loggedUser.getId() != currentNews.getAuthor().getId()) {
 			newsService.increaseViewsCountById(newsId);
 		}
-		status.setComplete();
 
 		return "viewnews";
 	}
@@ -131,7 +130,7 @@ public class NewsController {
 	@RequestMapping(method = RequestMethod.POST, value = ADD_COMMENT_URL)
 	public String addCommentSubmit(Model model, @ModelAttribute("news") News news,
 			@Valid @ModelAttribute("comment") Comment comment, BindingResult result,
-			RedirectAttributes attr, SessionStatus status, HttpSession session) {
+			RedirectAttributes attr, HttpSession session) {
 		
 		if (result.hasErrors()) {
 			attr.addFlashAttribute(
@@ -147,7 +146,6 @@ public class NewsController {
 		comment.setNews(news);
 		commentService.add(comment);
 		LOG.info(comment + " has been added successfully");
-		status.setComplete();
 		
 		return "redirect:/news/" + news.getId();
 	}
@@ -164,8 +162,7 @@ public class NewsController {
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = ADD_NEWS_URL)
 	public String addNewsSubmit(Model model, @Valid @ModelAttribute("news") News news,
-			BindingResult result, RedirectAttributes attr,
-			SessionStatus status, HttpSession session) {
+			BindingResult result, RedirectAttributes attr, HttpSession session) {
 
 		if (result.hasErrors()) {
 			attr.addFlashAttribute(
@@ -180,7 +177,6 @@ public class NewsController {
 		news.setAuthor(loggedUser);
 		newsService.add(news);
 		LOG.info(news + " has been added successfully");
-		status.setComplete();
 
 		return "redirect:/news/" + news.getId();
 	}
@@ -190,7 +186,7 @@ public class NewsController {
 	@RequestMapping(method = RequestMethod.GET, value = EDIT_NEWS_URL)
 	public String editNewsPage(Model model, @PathVariable("id") Long newsId,
 			HttpSession session) {
-		
+
 		User loggedUser = (User) session.getAttribute("loggedUser");
 		
 		News newsToEdit = newsService.getById(newsId);
@@ -198,7 +194,7 @@ public class NewsController {
 			return "redirect:/news/" + newsId;
 		}
 		model.addAttribute("news", newsToEdit);
-		
+
 		return "editnews";
 	}
 	
@@ -206,8 +202,7 @@ public class NewsController {
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = EDIT_NEWS_URL)
 	public String editNewsSubmit(Model model, @Valid @ModelAttribute("news") News news,
-			BindingResult result, RedirectAttributes attr,
-			SessionStatus status, HttpSession session) {
+			BindingResult result, RedirectAttributes attr, HttpSession session) {
 		
 		if (result.hasErrors()) {
 			attr.addFlashAttribute(
@@ -223,7 +218,6 @@ public class NewsController {
 		news.setLastModified(new Date());
 		newsService.update(news);
 		LOG.info(news + " has been updated successfully");
-		status.setComplete();
 
 		return "redirect:/news/" + news.getId();
 	}
@@ -231,27 +225,22 @@ public class NewsController {
 	// Delete news
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = DELETE_NEWS_URL)
-	public String deleteNews(Model model, @PathVariable("id") Long id,
-			SessionStatus status) {
+	public String deleteNews(Model model, @PathVariable("id") Long id) {
 
 		newsService.deleteById(id);
-		status.setComplete();
 		
 		return "redirect:/";
 	}
 	
 	// Cancel news edit
     @RequestMapping(method=RequestMethod.GET, value = CANCEL_URL)
-    public String cancelNewsEdit(@ModelAttribute("news") News news,
-    		SessionStatus status) {
+    public String cancelNewsEdit(@PathVariable("id") Long id) {
 
-    	status.setComplete();
-    	
-    	if (news.getId() == null) {
+    	if (id == 0) {
     		return "redirect:/";
-    	} else {
-    		return "redirect:/news/" + news.getId();
     	}
+    	
+    	return "redirect:/news/" + id;
     }
 
 	@ModelAttribute("news")

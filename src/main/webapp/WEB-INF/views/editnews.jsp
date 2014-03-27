@@ -11,6 +11,7 @@
 	<jsp:param name="pageTitle" value="${title}" />
 </jsp:include>
 
+
 <div class="container">
 <form:form method="post" commandName="news">
 	<table>
@@ -52,8 +53,12 @@
 		</tr>
 	</table>
   	<button class="btn btn-primary" type="submit"><spring:message code="editnews.saveButton" /></button>
-  	<a class="btn btn-default" href="${pageContext.request.contextPath}/news/cancel">
-  		<spring:message code="editnews.cancelButton" /></a>
+  	
+  	<c:set var="newsId" value="${news.id}"></c:set>
+  	<c:if test="${empty newsId}"><c:set var="newsId" value="0"></c:set></c:if>
+  	<a class="btn btn-default" href="${pageContext.request.contextPath}/news/${newsId}/cancel">
+  		<spring:message code="editnews.cancelButton" />
+  	</a>
 </form:form>
 
 </div> <!-- container -->

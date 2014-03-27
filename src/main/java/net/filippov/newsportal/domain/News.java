@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -29,17 +30,14 @@ import org.hibernate.validator.constraints.NotBlank;
 			query = "from News order by created desc"),
 	@NamedQuery(
 			name = "News.INCREASE_VIEWS_COUNT_BY_ID",
-			query = "update News set views_count = views_count + 1 where id = :id"),
-	@NamedQuery(
-			name = "News.INCREASE_COMMENTS_COUNT_BY_ID",
-			query = "update News set comments_count = comments_count + 1 where id = :id")
+			query = "update News set views_count = views_count + 1 where id = :id")
 })
 public class News extends AbstractEntity {
 
 	private static final long serialVersionUID = 3513552163842451989L;
 
 	@NotBlank(message = "{validation.news.title}")
-	@Column(name = "title", nullable = false)
+	@Column(name = "title", nullable = false, columnDefinition = "VARCHAR(100)")
 	private String title;
 
 	@NotBlank(message = "{validation.news.preview}")
@@ -47,10 +45,11 @@ public class News extends AbstractEntity {
 	private String preview;
 
 	@NotBlank(message = "{validation.news.content}")
-	@Column(name = "content", nullable = false)
+	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
 	private String content;
 
-	@Column(name = "created", insertable = false, updatable = false)
+	@Column(name = "created", insertable = false, updatable = false,
+			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 
@@ -58,10 +57,11 @@ public class News extends AbstractEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastModified;
 
-	@Column(name = "views_count")
+	@Column(name = "views_count", columnDefinition = "INT DEFAULT 0")
 	private int viewsCount;
 	
-	@Column(name = "comments_count")
+
+	@Formula("select count(*) from comment where comment.news_id = id")
 	private int commentsCount;
 
 	@ManyToOne

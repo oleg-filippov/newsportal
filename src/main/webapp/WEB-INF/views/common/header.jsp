@@ -14,8 +14,8 @@
 
 <title><spring:message code="header.title" /> ${param.pageTitle}</title>
 </head>
-
 <body>
+
 <c:url value="/" var="homeUrl" />
 <c:url value="/about" var="aboutUrl" />
 <c:url value="/contacts" var="contactsUrl" />
@@ -24,46 +24,42 @@
 <c:url value="/logout" var="logoutUrl" />
 <c:url value="/user" var="profileUrl" />
 
-<div class="navbar navbar-default">
+<div class="navbar navbar-static-top">
 	<div class="navbar-inner">
-		<div class="container">
-			<div style="float: right;">
-				<a class="btn btn-small btn-info" href="?lang=en"><spring:message code="header.en" /></a>
-				<a class="btn btn-small btn-info" href="?lang=ru"><spring:message code="header.ru" /></a><br>
-				<sec:authorize access="isAnonymous()">
-					<a href="${signinUrl}"><spring:message code="header.signin" /></a><br>
-					<a href="${registerUrl}"><spring:message code="header.register" /></a>
-				</sec:authorize>
-				<sec:authorize access="isAuthenticated()">
-					<spring:message code="header.loggedIn" />
-					<a href="${profileUrl}/${loggedUser.id}">
-						<strong>${loggedUser.login}</strong>
-					</a><br>
-					<a href="${logoutUrl}"><spring:message code="header.logout" /></a>
-				</sec:authorize>
-			</div>
-
-			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</a>
-			<a class="brand" href="${homeUrl}"><spring:message code="project.title" /></a>
-			<div class="nav-collapse collapse">
-				<ul class="nav">
-					<li><a href="${homeUrl}"><spring:message code="header.homeUrl" /></a></li>
-					<li><a href="${aboutUrl}"><spring:message code="header.aboutUrl" /></a></li>
-					<li><a href="${contactsUrl}"><spring:message code="header.contactsUrl" /></a></li>
-				</ul>
-			</div> <!-- nav-collapse -->
-		</div> <!-- container -->
+		<a class="brand" href="${homeUrl}"><spring:message code="project.title" /></a>
+		<ul class="nav">
+			<li><a href="${homeUrl}"><spring:message code="header.homeUrl" /></a></li>
+			<li class="divider-vertical"></li>
+			<li><a href="${aboutUrl}"><spring:message code="header.aboutUrl" /></a></li>
+			<li class="divider-vertical"></li>
+			<li><a href="${contactsUrl}"><spring:message code="header.contactsUrl" /></a></li>
+		</ul>
+		<div class="nav pull-right">
+			<a class="btn btn-small btn-info" href="?lang=en">English</a>
+			<a class="btn btn-small btn-info" href="?lang=ru">Русский</a><br>
+			<sec:authorize access="isAnonymous()">
+				<a href="${signinUrl}"><spring:message code="header.signin" /></a><br>
+				<a href="${registerUrl}"><spring:message code="header.register" /></a>
+			</sec:authorize>
+			<sec:authorize access="isAuthenticated()">
+				<spring:message code="header.loggedIn" />
+				<a href="${profileUrl}/${loggedUser.id}"><strong>${loggedUser.login}</strong></a><br>
+				<a href="${logoutUrl}"><spring:message code="header.logout" /></a>
+			</sec:authorize>
+		</div>
 	</div>
 </div>
 
-<!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript" src="<c:url value="/resources/js/jquery-1.10.2.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap-maxlength.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/summernote.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/summernote-ru-RU.js"/>"></script>
 
+<script>
+var url = window.location;
+$('ul.nav a').filter(function() {
+	var regexp = new RegExp(this.href + "\\?lang=.+$");
+	return this.href == url | regexp.test(url);
+}).parent().addClass('active');
+</script>

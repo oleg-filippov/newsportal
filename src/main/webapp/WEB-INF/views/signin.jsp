@@ -10,10 +10,13 @@
 </jsp:include>
 
 <div class="container">
-	<form class="form-signin" action="j_spring_security_check" method="post">
+	<form name="form-s" class="form-signin" action="signin/check" method="post">
 		<h2 class="form-signin-heading"><spring:message code="signin.heading" /></h2>
+		<c:if test="${not empty error}">
+			<div class="label label-important"><spring:message code="error.signIn" /></div>
+		</c:if>
 		<input size="30" type="text" name="j_username" class="input-block-level"
-			placeholder="<spring:message code="signin.username" />">
+			placeholder="<spring:message code="signin.username" />" autofocus="autofocus">
 		<input size="30" type="password" name="j_password" class="input-block-level"
 			placeholder="<spring:message code="signin.password" />">
 		<label class="checkbox">

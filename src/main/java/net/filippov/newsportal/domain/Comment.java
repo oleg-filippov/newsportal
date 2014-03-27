@@ -22,7 +22,8 @@ public class Comment extends AbstractEntity {
 	@Column(name = "content")
 	private String content;
 	
-	@Column(name = "created", insertable = false, updatable = false)
+	@Column(name = "created", insertable = false, updatable = false,
+			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 	

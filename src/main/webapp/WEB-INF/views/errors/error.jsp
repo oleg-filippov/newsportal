@@ -10,6 +10,7 @@
 
 <div class="container">
 	<h2><spring:message code="${messageProperty}" /></h2>
+	<p><c:out value="${errorMessage}"></c:out></p>
 </div>
 
 <jsp:include page="../common/footer.jsp" />

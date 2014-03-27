@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.filippov.newsportal.dao.CommentDao;
 import net.filippov.newsportal.domain.Comment;
-import net.filippov.newsportal.domain.News;
 import net.filippov.newsportal.exception.PersistentException;
 import net.filippov.newsportal.exception.ServiceException;
 
@@ -22,14 +21,9 @@ public class CommentServiceImpl implements CommentService {
 	
 	public CommentServiceImpl() {}
 	
-	@Autowired
-	private NewsService newsService;
-	
 	@Override
 	public Long add(Comment comment) {
 		try {
-			News news = comment.getNews();
-			newsService.increaseCommentsCountById(news.getId());
 			return storage.insert(comment);
 		} catch (PersistentException e) {
 			throw new ServiceException(e.getMessage(), e);
