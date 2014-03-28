@@ -24,6 +24,30 @@ public class NewsDaoHibernateImpl extends GenericDaoHibernateImpl<News, Long>
 			throw new PersistentException("Error getting all news", e);
 		}
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<News> getByPage(int page, int newsPerPage) {
+		try {
+    		return getCurrentSession().getNamedQuery("News.GET_ALL")
+    			.setMaxResults(newsPerPage)
+    			.setFirstResult(newsPerPage * (page - 1))
+    			.list();
+		} catch (HibernateException e) {
+			throw new PersistentException("Error getting news by page=" + page, e);
+		}
+	}
+	
+	@Override
+	public int getNewsCount() {
+		try {
+			Long newsCount = (Long) getCurrentSession().getNamedQuery("News.GET_COUNT")
+				.uniqueResult();
+			return (newsCount == null) ? 0 : newsCount.intValue();
+		} catch (HibernateException e) {
+			throw new PersistentException("Error getting newsCount", e);
+		}
+	}
 
 	@Override
 	public void increaseViewsCountById(Long id) {

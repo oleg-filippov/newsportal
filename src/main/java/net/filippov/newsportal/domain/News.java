@@ -29,6 +29,9 @@ import org.hibernate.validator.constraints.NotBlank;
 			name = "News.GET_ALL",
 			query = "from News order by created desc"),
 	@NamedQuery(
+			name = "News.GET_COUNT",
+			query = "select count(*) from News"),
+	@NamedQuery(
 			name = "News.INCREASE_VIEWS_COUNT_BY_ID",
 			query = "update News set views_count = views_count + 1 where id = :id")
 })
@@ -59,7 +62,6 @@ public class News extends AbstractEntity {
 
 	@Column(name = "views_count", columnDefinition = "INT DEFAULT 0")
 	private int viewsCount;
-	
 
 	@Formula("select count(*) from comment where comment.news_id = id")
 	private int commentsCount;

@@ -17,11 +17,28 @@
 <c:url value="${contextPath}/news/${news.id}/delete" var="deleteNewsUrl" />
 <c:url value="/news/${news.id}/addcomment" var="addCommentUrl" />
 
+<!-- Logged user is admin -->
+<c:set var="isAdmin" value="false" />
+<sec:authorize access="hasRole('ROLE_ADMIN')">
+    <c:set var="isAdmin" value="true" />
+</sec:authorize>
+
+<!-- Logged user is author of this news -->
+<c:set var="isThisNewsAuthor" value="false" />
+<sec:authorize access="hasRole('ROLE_AUTHOR')">
+	<c:if test="${loggedUser.id == news.author.id}">
+		<c:set var="isThisNewsAuthor" value="true" />
+	</c:if>
+</sec:authorize>
+
+<!-- Container begin -->
 <div class="container">
 <h2><c:out value="${news.title}" /></h2>
 <hr>
-<sec:authorize access="isAuthenticated()">
-	<c:if test="${loggedUser.id == news.author.id}">
+
+<!-- Show Edit/Delete links -->
+<sec:authorize access="hasRole('ROLE_AUTHOR')">
+	<c:if test="${isThisNewsAuthor || isAdmin}">
 		<a href="${editNewsUrl}"><spring:message code="news.editNewsUrl" /></a> | 
 		<a class="btn-link" onclick="deleteConfirm()"><spring:message code="news.deleteNewsUrl" /></a><br>
 	</c:if>
@@ -45,12 +62,11 @@
 <spring:message code="news.comments" />: 
 <c:out value="${news.commentsCount}" />
 <br>
-
 </small>
 <br><br>
 <c:out value="${news.content}" escapeXml="false" />
-
 <hr>
+
 <sec:authorize access="isAnonymous()">
 	<a href="${signinUrl}"><spring:message code="viewnews.loginComments" /></a>
 </sec:authorize>
@@ -94,7 +110,7 @@
 	</c:otherwise>
 </c:choose>
 			
-</div> <!-- end of container -->
+</div> <!-- Container end -->
 
 <script>
 $('textarea[maxlength]').maxlength({threshold:20});

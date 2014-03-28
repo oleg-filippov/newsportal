@@ -57,7 +57,7 @@ public class NewsController {
 	private static final String NEWS_IMAGES_PATH = "c:/Newsportal/news_images/";
 	private static final String JPG_CONTENT_TYPE = "image/jpeg";
 	private static final String PNG_CONTENT_TYPE = "image/png";
-
+	
 	@Autowired
 	private NewsService newsService;
 

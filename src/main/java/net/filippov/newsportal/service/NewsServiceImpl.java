@@ -1,6 +1,8 @@
 package net.filippov.newsportal.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.filippov.newsportal.dao.NewsDao;
 import net.filippov.newsportal.domain.News;
@@ -24,6 +26,30 @@ public class NewsServiceImpl implements NewsService {
 	public List<News> getAll() {
 		try {
 			return storage.getAll();
+		} catch (PersistentException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public Map<String, Object> getByPage(int page, int newsPerPage) {
+		try {
+			Map<String, Object> newsData = new HashMap<String, Object>();
+			int newsCount = storage.getNewsCount();
+			int pagesCount = newsCount / newsPerPage
+					+ (newsCount % newsPerPage == 0 ? 0 : 1);
+			
+			if (newsCount == 0) {
+				newsData.put("pagesCount", 0);
+			} else if (page > pagesCount) {
+				newsData.put("pagesCount", -1);
+			} else {
+				newsData.put("pagesCount", pagesCount);
+				newsData.put("newsByPage", storage.getByPage(page, newsPerPage));
+			}
+			
+			return newsData;
 		} catch (PersistentException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}

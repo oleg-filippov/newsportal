@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<link rel="stylesheet" href="<c:url value="/resources/css/style.css"/>" />
 
 <c:set var="title"> <spring:message code="register.pageTitle" /></c:set>
 <jsp:include page="common/header.jsp">
@@ -10,16 +11,16 @@
 </jsp:include>
 
 <div class="container">
-	<h2><spring:message code="register.pageTitle" /></h2>
-	<form:form method="post" commandName="user">
+	<form:form name="form-s" class="form-signin" method="post" commandName="user">
+		<h2 class="form-signin-heading"><spring:message code="register.pageTitle" /></h2>
 		<table>
 			<tr>
 				<td><form:errors path="login" class="label label-important"></form:errors></td>
 			</tr>
 			<tr>
-				<td><font color='red'>*</font>
+				<td>
 					<spring:bind path="login">
-						<input type="text" name="login" class="field span3" maxlength="20"
+						<input size="40" type="text" name="login" class="input-block-level" maxlength="20"
 							placeholder="<spring:message code="user.login" />" value="${user.login}">
 					</spring:bind>
 				</td>
@@ -28,9 +29,9 @@
 				<td><form:errors path="password" class="label label-important"></form:errors></td>
 			</tr>
 			<tr>
-				<td><font color='red'>*</font>
+				<td>
 					<spring:bind path="password">
-						<input type="password" name="password" class="field span3" maxlength="60"
+						<input size="40" type="password" name="password" class="input-block-level" maxlength="60"
 							placeholder="<spring:message code="user.password" />" value="${user.password}">
 					</spring:bind>
 				</td>
@@ -39,9 +40,9 @@
 				<td><form:errors path="email" class="label label-important"></form:errors></td>
 			</tr>
 			<tr>
-				<td><font color='red'>*</font>
+				<td>
 					<spring:bind path="email">
-						<input type="text" name="email" class="field span3" maxlength="30"
+						<input size="40" type="text" name="email" class="input-block-level" maxlength="30"
 							placeholder="<spring:message code="user.email" />" value="${user.email}">
 					</spring:bind>
 				</td>
@@ -50,19 +51,20 @@
 				<td><form:errors path="name" class="label label-important"></form:errors></td>
 			</tr>
 			<tr>
-				<td><font color='red'>*</font>
+				<td>
 					<spring:bind path="name">
-						<input type="text" name="name" class="field span3" maxlength="50"
+						<input size="40" type="text" name="name" class="input-block-level" maxlength="50"
 							placeholder="<spring:message code="user.name" />" value="${user.name}">
 					</spring:bind>
 				</td>
 			</tr>
 		</table>
-		<button class="btn" type="submit"><spring:message code="register.submitButton" /></button>
-  		<button class="btn" type="reset"><spring:message code="viewnews.resetButton" /></button>
+		<button class="btn btn-lg btn-primary btn-block" type="submit"><spring:message code="register.submitButton" /></button>
 	</form:form>
 </div>
 
-<script>$('input[maxlength]').maxlength();</script>
+<script>
+$('input[maxlength]').maxlength();
+</script>
 
 <jsp:include page="common/footer.jsp" />

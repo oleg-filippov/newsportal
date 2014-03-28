@@ -11,7 +11,7 @@
 	<jsp:param name="pageTitle" value="${title}" />
 </jsp:include>
 
-
+<!-- Container begin -->
 <div class="container">
 <form:form method="post" commandName="news">
 	<table>
@@ -61,7 +61,7 @@
   	</a>
 </form:form>
 
-</div> <!-- container -->
+</div> <!-- Container end -->
 
 <script>
 $('input[maxlength], textarea[maxlength]').maxlength({threshold:20});

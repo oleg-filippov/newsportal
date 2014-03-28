@@ -72,12 +72,12 @@ public class GlobalExceptionHandler {
 		return "errors/error";
 	}
 
-	@ExceptionHandler(Exception.class)
-	public String handleCustomException(Model model, Exception e) throws IOException {
-
-		LOG.error(e.getMessage(), e);
-
-		return "errors/error";
-	}
+//	@ExceptionHandler(Exception.class)
+//	public String handleCustomException(Model model, Exception e) throws IOException {
+//
+//		LOG.error(e.getMessage(), e);
+//
+//		return "errors/error";
+//	}
 
 }

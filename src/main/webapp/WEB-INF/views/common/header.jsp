@@ -34,19 +34,27 @@
 			<li class="divider-vertical"></li>
 			<li><a href="${contactsUrl}"><spring:message code="header.contactsUrl" /></a></li>
 		</ul>
-		<div class="nav pull-right">
-			<a class="btn btn-small btn-info" href="?lang=en">English</a>
-			<a class="btn btn-small btn-info" href="?lang=ru">Русский</a><br>
+		<ul class="nav pull-right">
 			<sec:authorize access="isAnonymous()">
-				<a href="${signinUrl}"><spring:message code="header.signin" /></a><br>
-				<a href="${registerUrl}"><spring:message code="header.register" /></a>
+				<li><a href="${registerUrl}"><spring:message code="header.register" /></a></li>
+				<li><a href="${signinUrl}"><spring:message code="header.signin" /></a></li>
 			</sec:authorize>
 			<sec:authorize access="isAuthenticated()">
-				<spring:message code="header.loggedIn" />
-				<a href="${profileUrl}/${loggedUser.id}"><strong>${loggedUser.login}</strong></a><br>
-				<a href="${logoutUrl}"><spring:message code="header.logout" /></a>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<strong>${loggedUser.login}</strong>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="${profileUrl}/${loggedUser.id}"><spring:message code="header.profile" /></a></li>
+						<li><a href="${logoutUrl}"><spring:message code="header.logout" /></a></li>
+					</ul>
+				</li>
 			</sec:authorize>
-		</div>
+			<li class="divider-vertical"></li>
+			<li><a href="?lang=en"><img alt="English" src="<c:url value="/resources/img/en.png"/>"></a></li>
+			<li><a href="?lang=ru"><img alt="Русский" src="<c:url value="/resources/img/ru.png"/>"></a></li>
+		</ul>
 	</div>
 </div>
 
@@ -59,7 +67,7 @@
 <script>
 var url = window.location;
 $('ul.nav a').filter(function() {
-	var regexp = new RegExp(this.href + "\\?lang=.+$");
-	return this.href == url | regexp.test(url);
+	var regexp = new RegExp(this.href + "\\?.+$");
+	return (this.href == url & this.href.indexOf("?lang") == -1) | regexp.test(url);
 }).parent().addClass('active');
 </script>
