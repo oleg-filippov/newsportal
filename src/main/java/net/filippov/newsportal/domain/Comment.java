@@ -6,14 +6,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "comment")
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@NamedQueries({
+	@NamedQuery(
+			name = "Comment.GET_ALL_BY_NEWS_ID",
+			query = "from Comment where news_id = :id order by created desc")
+})
 public class Comment extends AbstractEntity {
 
 	private static final long serialVersionUID = 8668190795666429761L;

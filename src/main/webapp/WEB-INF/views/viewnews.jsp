@@ -13,6 +13,7 @@
 
 <c:url value="/user" var="profileUrl" />
 <c:url value="/signin" var="signinUrl" />
+<c:url value="/signup" var="signupUrl" />
 <c:url value="/news/${news.id}/edit" var="editNewsUrl" />
 <c:url value="${contextPath}/news/${news.id}/delete" var="deleteNewsUrl" />
 <c:url value="/news/${news.id}/addcomment" var="addCommentUrl" />
@@ -67,10 +68,18 @@
 <c:out value="${news.content}" escapeXml="false" />
 <hr>
 
+<!-- Message for not registered users -->
 <sec:authorize access="isAnonymous()">
-	<a href="${signinUrl}"><spring:message code="viewnews.loginComments" /></a>
+	<c:set var="signin">
+		<a href="${signinUrl}"><spring:message code="viewnews.loginComments.signin" /></a>
+	</c:set>
+	<c:set var="signup">
+		<a href="${signupUrl}"><spring:message code="viewnews.loginComments.signup" /></a>
+	</c:set>
+	<spring:message code="viewnews.loginComments" arguments="${signin},${signup}"/>
 </sec:authorize>
 
+<!-- Add comments form -->
 <sec:authorize access="hasRole('ROLE_USER')">
 	<form:form action="${addCommentUrl}" method="post" commandName="comment" >
 		<table>
@@ -79,10 +88,10 @@
 			</tr>
 			<tr>
 				<td>
-				<spring:bind path="content">
-					<textarea name="content" class="field span6" rows="4" maxlength="500"
-						placeholder="<spring:message code="viewnews.leaveComment" />" ></textarea>
-				</spring:bind>
+					<spring:bind path="content">
+						<textarea name="content" class="field span6" rows="4" maxlength="500"
+							placeholder="<spring:message code="viewnews.leaveComment" />" ></textarea>
+					</spring:bind>
 				</td>
 			</tr>
 		</table>
@@ -91,13 +100,14 @@
 	</form:form>
 </sec:authorize>
 
+<!-- List of comments -->
 <c:choose>
 	<c:when test="${news.commentsCount > 0}">
 		<h2><spring:message code="viewnews.commentsToNews" /></h2>
 		<c:forEach var="comment" items="${comments}">
 			<div class="well well-small">
 				<small>
-					<a href="${profileUrl}/${comment.author.id}"><strong>${comment.author.login}</strong></a> -
+					<a href="${profileUrl}/${comment.author.id}"><strong>${comment.author.login}</strong></a> - 
 					<i class="icon-time"></i>
 					<fmt:formatDate value="${comment.created}" type="both" />
 				</small><br>

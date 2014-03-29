@@ -18,8 +18,8 @@ public class CommentDaoHibernateImpl extends GenericDaoHibernateImpl<Comment, Lo
 	@SuppressWarnings("unchecked")
 	public List<Comment> getAllByNewsId(Long id) {
     	try {
-    		return getCurrentSession().createQuery(
-    			"from Comment where news_id = :id order by created desc")
+    		return getCurrentSession().getNamedQuery("Comment.GET_ALL_BY_NEWS_ID")
+    			.setCacheable(true)
     			.setParameter("id", id)
     			.list();
 		} catch (HibernateException e) {

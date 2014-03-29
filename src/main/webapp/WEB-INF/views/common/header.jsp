@@ -20,7 +20,7 @@
 <c:url value="/about" var="aboutUrl" />
 <c:url value="/contacts" var="contactsUrl" />
 <c:url value="/signin" var="signinUrl" />
-<c:url value="/register" var="registerUrl" />
+<c:url value="/signup" var="signupUrl" />
 <c:url value="/logout" var="logoutUrl" />
 <c:url value="/user" var="profileUrl" />
 
@@ -36,7 +36,7 @@
 		</ul>
 		<ul class="nav pull-right">
 			<sec:authorize access="isAnonymous()">
-				<li><a href="${registerUrl}"><spring:message code="header.register" /></a></li>
+				<li><a href="${signupUrl}"><spring:message code="header.signup" /></a></li>
 				<li><a href="${signinUrl}"><spring:message code="header.signin" /></a></li>
 			</sec:authorize>
 			<sec:authorize access="isAuthenticated()">

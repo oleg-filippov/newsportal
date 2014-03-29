@@ -29,7 +29,7 @@ public class UserController {
 	// URL's
 	private static final String SIGNIN_URL = "/signin";
 	private static final String SIGNIN_FAILURE_URL = "/signinfailure";
-	private static final String REGISTER_URL = "/register";
+	private static final String SIGNUP_URL = "/signup";
 	private static final String USER_PROFILE_URL = "/user/{id}";
 	
 	@Autowired
@@ -39,7 +39,7 @@ public class UserController {
 
 	// SignIn-page
 	@RequestMapping(method = RequestMethod.GET, value = SIGNIN_URL)
-	public void signin() {}
+	public void signinPage() {}
 	
 	// SignIn failure
 	@RequestMapping(method = RequestMethod.GET, value = SIGNIN_FAILURE_URL)
@@ -51,14 +51,14 @@ public class UserController {
 	}
 	
 	// Register-page
-	@RequestMapping(method=RequestMethod.GET, value = REGISTER_URL)
-	public String registerPage() {
+	@RequestMapping(method=RequestMethod.GET, value = SIGNUP_URL)
+	public String signupPage() {
 		
-		return "register";
+		return "signup";
 	}
 	
 	// Register submit
-	@RequestMapping(method=RequestMethod.POST, value = REGISTER_URL)
+	@RequestMapping(method=RequestMethod.POST, value = SIGNUP_URL)
 	public String registerSubmit(Model model, @Valid @ModelAttribute User user,
 			BindingResult result, RedirectAttributes attr, HttpServletRequest request) {
 		
@@ -66,7 +66,7 @@ public class UserController {
 			attr.addFlashAttribute(
 					"org.springframework.validation.BindingResult.user", result);
 			attr.addFlashAttribute("user", user);
-			return "redirect:/register";
+			return "redirect:/signup";
 		}
 		
 		try {
@@ -75,10 +75,10 @@ public class UserController {
 		} catch (NotUniqueUserLoginException e) {
 			result.rejectValue("login", "validation.user.loginUnique");
 			user.setPassword("");
-			return "register";
+			return "signup";
 		} catch (NotUniqueUserEmailException e) {
 			result.rejectValue("email", "validation.user.emailUnique");
-			return "register";
+			return "signup";
 		}
 		
 		model.addAttribute("messageProperty", "success.registration");

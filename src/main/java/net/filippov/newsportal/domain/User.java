@@ -20,6 +20,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -27,6 +29,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "user", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "login"),
 		@UniqueConstraint(columnNames = "email") })
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries({
 	@NamedQuery(
 			name = "User.GET_BY_LOGIN",
@@ -67,7 +70,7 @@ public class User extends AbstractEntity {
 	@Column(name = "enabled", columnDefinition = "BOOLEAN DEFAULT TRUE")
 	private boolean enabled;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_role",
 			joinColumns = {@JoinColumn(name = "user_id") },
 			inverseJoinColumns = {@JoinColumn(name = "role_id") })

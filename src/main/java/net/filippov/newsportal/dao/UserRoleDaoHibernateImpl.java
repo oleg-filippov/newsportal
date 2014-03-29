@@ -19,7 +19,8 @@ public class UserRoleDaoHibernateImpl extends GenericDaoHibernateImpl<UserRole, 
 	public UserRole getByAuthority(String authority) {
 		try {
     		Query query = getCurrentSession().getNamedQuery("UserRole.GET_BY_AUTHORITY")
-    			.setParameter("authority", authority);
+    				.setCacheable(true)
+    				.setParameter("authority", authority);
     		
     		if (query.list().size() > 0) {
     			return (UserRole) query.list().get(0);
@@ -36,6 +37,7 @@ public class UserRoleDaoHibernateImpl extends GenericDaoHibernateImpl<UserRole, 
 	public List<UserRole> getAll() {
 		try {
     		return getCurrentSession().getNamedQuery("UserRole.GET_ALL")
+    				.setCacheable(true)
     				.list();
 		} catch (HibernateException e) {
 			throw new PersistentException("Error getting all userRoles", e);

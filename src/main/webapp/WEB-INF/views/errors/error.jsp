@@ -10,7 +10,16 @@
 
 <div class="container">
 	<h2><spring:message code="${messageProperty}" /></h2>
-	<p><c:out value="${errorMessage}"></c:out></p>
+	
+	<p><spring:message code="error.status" /><c:out value=": ${statusCode}" /></p>
+	<p><spring:message code="error.url" /><c:out value=": ${requestUrl}" /></p>
+	
+	<!--
+		<c:out value="Message: ${exception.message}"></c:out>
+		<c:forEach var="st" items="${exception.stackTrace}">
+			<c:out value="${st}" />
+		</c:forEach>
+	-->
 </div>
 
 <jsp:include page="../common/footer.jsp" />

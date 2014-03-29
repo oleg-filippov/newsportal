@@ -80,6 +80,7 @@
 		<tracking-mode>COOKIE</tracking-mode>
 	</session-config>
 
+	<!-- All errors are handled by this mapping -->
 	<error-page>
 		<location>/error</location>
 	</error-page>

@@ -5,14 +5,14 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <link rel="stylesheet" href="<c:url value="/resources/css/style.css"/>" />
 
-<c:set var="title"> <spring:message code="register.pageTitle" /></c:set>
+<c:set var="title"> <spring:message code="signup.pageTitle" /></c:set>
 <jsp:include page="common/header.jsp">
 	<jsp:param name="pageTitle" value="${title}" />
 </jsp:include>
 
 <div class="container">
 	<form:form name="form-s" class="form-signin" method="post" commandName="user">
-		<h2 class="form-signin-heading"><spring:message code="register.pageTitle" /></h2>
+		<h2 class="form-signin-heading"><spring:message code="signup.pageTitle" /></h2>
 		<table>
 			<tr>
 				<td><form:errors path="login" class="label label-important"></form:errors></td>
@@ -59,7 +59,7 @@
 				</td>
 			</tr>
 		</table>
-		<button class="btn btn-lg btn-primary btn-block" type="submit"><spring:message code="register.submitButton" /></button>
+		<button class="btn btn-lg btn-primary btn-block" type="submit"><spring:message code="signup.submitButton" /></button>
 	</form:form>
 </div>
 

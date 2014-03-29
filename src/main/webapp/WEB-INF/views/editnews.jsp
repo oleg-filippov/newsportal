@@ -84,7 +84,7 @@ function sendFile(file,editor,welEditable) {
 	$.ajax({
 		data: data,
 		type: "POST",
-		url: "${pageContext.request.contextPath}/news/uploadimage",
+		url: "${pageContext.request.contextPath}/uploadimage",
 		cache: false,
 		contentType: false,
 		processData: false,

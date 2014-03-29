@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.filippov.newsportal</groupId>
-	<artifactId>news-portal</artifactId>
+	<artifactId>newsportal</artifactId>
 	<name>Newsportal</name>
 	<packaging>war</packaging>
 	<version>1.0.2</version>
@@ -234,7 +234,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<path>/news-portal</path>
+					<path>/newsportal</path>
 				</configuration>
 			</plugin>
 			<plugin>

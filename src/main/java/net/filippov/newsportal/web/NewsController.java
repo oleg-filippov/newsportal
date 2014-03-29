@@ -1,10 +1,5 @@
 package net.filippov.newsportal.web;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,26 +10,21 @@ import javax.validation.Valid;
 import net.filippov.newsportal.domain.Comment;
 import net.filippov.newsportal.domain.News;
 import net.filippov.newsportal.domain.User;
-import net.filippov.newsportal.exception.UnacceptableFileFormatException;
+import net.filippov.newsportal.domain.UserRole;
 import net.filippov.newsportal.service.CommentService;
 import net.filippov.newsportal.service.NewsService;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -50,13 +40,6 @@ public class NewsController {
 	private static final String EDIT_NEWS_URL = "/{id}/edit";
 	private static final String DELETE_NEWS_URL = "/{id}/delete";
 	private static final String CANCEL_URL = "/{id}/cancel";
-	private static final String UPLOAD_IMAGE_URL = "/uploadimage";
-	private static final String SHOW_IMAGE_URL = "**/images/{name}.{type}";
-	
-	// Constants operating with images
-	private static final String NEWS_IMAGES_PATH = "c:/Newsportal/news_images/";
-	private static final String JPG_CONTENT_TYPE = "image/jpeg";
-	private static final String PNG_CONTENT_TYPE = "image/png";
 	
 	@Autowired
 	private NewsService newsService;
@@ -65,41 +48,6 @@ public class NewsController {
 	private CommentService commentService;
 	
 	public NewsController() {}
-	
-	// Upload image
-	@RequestMapping(method = RequestMethod.POST, value = UPLOAD_IMAGE_URL)
-	@ResponseBody
-	public String uploadimage(@RequestParam("file") MultipartFile image)
-			throws IOException {
-
-		String imageName = Calendar.getInstance().getTimeInMillis() + image.getOriginalFilename();
-		
-		if (!image.isEmpty()) {
-			String imageType = image.getContentType();
-			if (!(imageType.equals(JPG_CONTENT_TYPE)
-					|| imageType.equals(PNG_CONTENT_TYPE))) {
-				
-				// TODO: additional validation based on the content of the file
-				
-				throw new UnacceptableFileFormatException();
-			}
-			
-            File file = new File(NEWS_IMAGES_PATH + imageName);
-        	FileUtils.writeByteArrayToFile(file, image.getBytes());
-        }
-		
-		return "images/" + imageName;
-	}
-
-	// Get image
-	@RequestMapping(method=RequestMethod.GET, value = SHOW_IMAGE_URL)
-	public void showImg(@PathVariable("name") String imageName, @PathVariable("type") String type,
-			HttpServletResponse response) throws IOException {
-
-		InputStream in = new FileInputStream(NEWS_IMAGES_PATH + imageName + "." + type);
-		FileCopyUtils.copy(in, response.getOutputStream());
-		in.close();
-	}
 	
 	// Current news view-page
 	@RequestMapping(method = RequestMethod.GET, value = SHOW_NEWS_URL)
@@ -153,8 +101,11 @@ public class NewsController {
 	// Page of news to be added
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = ADD_NEWS_URL)
-	public String addNewsPage() {
+	public String addNewsPage(HttpServletResponse r) {
+		if (true) {
 		
+
+		}
 		return "editnews";
 	}
 
@@ -188,9 +139,14 @@ public class NewsController {
 			HttpSession session) {
 
 		User loggedUser = (User) session.getAttribute("loggedUser");
-		
+
 		News newsToEdit = newsService.getById(newsId);
-		if (loggedUser.getId() != newsToEdit.getAuthor().getId()) {
+		UserRole roleAdmin = new UserRole();
+		roleAdmin.setId((long) 1);
+
+
+		if (loggedUser.getId() != newsToEdit.getAuthor().getId()
+				&& !loggedUser.getRoles().contains(roleAdmin)) {
 			return "redirect:/news/" + newsId;
 		}
 		model.addAttribute("news", newsToEdit);
@@ -228,6 +184,7 @@ public class NewsController {
 	public String deleteNews(Model model, @PathVariable("id") Long id) {
 
 		newsService.deleteById(id);
+		LOG.info("News[id=" + id + "] has been deleted successfully");
 		
 		return "redirect:/";
 	}

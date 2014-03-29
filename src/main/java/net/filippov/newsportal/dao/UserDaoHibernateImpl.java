@@ -32,7 +32,8 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<User, Long>
 	public User getByLogin(String login) {
     	try {
     		Query query = getCurrentSession().getNamedQuery("User.GET_BY_LOGIN")
-    			.setParameter("login", login);
+    				.setCacheable(true)
+    				.setParameter("login", login);
     		
     		if (query.list().size() > 0) {
     			return (User) query.list().get(0);
@@ -44,12 +45,13 @@ public class UserDaoHibernateImpl extends GenericDaoHibernateImpl<User, Long>
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<User> getAll() {
 		try {
     		return getCurrentSession().getNamedQuery("User.GET_ALL")
-    			.list();
+    				.setCacheable(true)
+    				.list();
 		} catch (HibernateException e) {
 			throw new PersistentException("Error getting all users", e);
 		}

@@ -10,11 +10,14 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "role", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "authority") })
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries({
 	@NamedQuery(
 			name = "UserRole.GET_ALL",

@@ -1,17 +1,13 @@
 package net.filippov.newsportal.web;
 
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import net.filippov.newsportal.domain.News;
 import net.filippov.newsportal.service.NewsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +23,7 @@ public class MainController {
 	private static final String HOME_URL = "/";
 	private static final String HOME_CUSTOM_PAGE_URL = "/page/{pageNumber}";
 	
-	private static final int NEWS_PER_PAGE = 9;
+	private static final int NEWS_PER_PAGE = 3;
 
 	@Autowired
 	private NewsService service;
@@ -85,25 +81,5 @@ public class MainController {
 	public String contactsPage() {
 
 		return "contacts";
-	}
-
-	// Error-page
-	@RequestMapping(value = ERROR_URL)
-	public String errorPage(Model model, HttpServletRequest request) {
-
-		model.addAttribute("messageProperty", "error.signIn");
-		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-
-		String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-		if (requestUri == null) {
-			requestUri = "Unknown";
-		}
-
-		String message = MessageFormat.format("{0} returned for {1}", 
-				statusCode, requestUri);
-
-		model.addAttribute("errorMessage", message);
-		  
-		return "errors/error";
 	}
 }
