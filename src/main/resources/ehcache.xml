@@ -21,8 +21,8 @@
 		name="net.filippov.newsportal.domain.Comment"
 		maxElementsInMemory="3000"
 		eternal="false"
-		timeToIdleSeconds="10"
-		timeToLiveSeconds="20"
+		timeToIdleSeconds="0"
+		timeToLiveSeconds="120"
 		memoryStoreEvictionPolicy="FIFO"
 	/>
 
@@ -30,8 +30,18 @@
 		name="net.filippov.newsportal.domain.News"
 		maxElementsInMemory="1000"
 		eternal="false"
+		timeToIdleSeconds="3"
+		timeToLiveSeconds="10"
+		overflowToDisk="false"
+		memoryStoreEvictionPolicy="FIFO"
+	/>
+	
+	<cache
+		name="net.filippov.newsportal.domain.Tag"
+		maxElementsInMemory="100"
+		eternal="false"
 		timeToIdleSeconds="0"
-		timeToLiveSeconds="20"
+		timeToLiveSeconds="0"
 		overflowToDisk="false"
 		memoryStoreEvictionPolicy="FIFO"
 	/>

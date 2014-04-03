@@ -6,6 +6,8 @@ import java.util.Map;
 
 import net.filippov.newsportal.dao.NewsDao;
 import net.filippov.newsportal.domain.News;
+import net.filippov.newsportal.domain.Tag;
+import net.filippov.newsportal.domain.User;
 import net.filippov.newsportal.exception.PersistentException;
 import net.filippov.newsportal.exception.ServiceException;
 
@@ -13,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("ServiceDao")
+@Service("NewsService")
 public class NewsServiceImpl implements NewsService {
 
 	@Autowired
@@ -35,24 +37,75 @@ public class NewsServiceImpl implements NewsService {
 	@Transactional
 	public Map<String, Object> getByPage(int page, int newsPerPage) {
 		try {
-			Map<String, Object> newsData = new HashMap<String, Object>();
-			int newsCount = storage.getNewsCount();
-			int pagesCount = newsCount / newsPerPage
-					+ (newsCount % newsPerPage == 0 ? 0 : 1);
-			
-			if (newsCount == 0) {
-				newsData.put("pagesCount", 0);
-			} else if (page > pagesCount) {
-				newsData.put("pagesCount", -1);
-			} else {
-				newsData.put("pagesCount", pagesCount);
-				newsData.put("newsByPage", storage.getByPage(page, newsPerPage));
-			}
-			
-			return newsData;
+			return fillNewsData(page, newsPerPage);
 		} catch (PersistentException e) {
 			throw new ServiceException(e.getMessage(), e);
 		}
+	}
+	
+	@Override
+	@Transactional
+	public Map<String, Object> getByPageByUserId(int page, int newsPerPage, Long id) {
+		try {
+			return fillNewsData(page, newsPerPage, User.class, id);
+		} catch (PersistentException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public Map<String, Object> getByPageByTagId(int page, int newsPerPage, Long id) {
+		try {
+			return fillNewsData(page, newsPerPage, Tag.class, id);
+		} catch (PersistentException e) {
+			throw new ServiceException(e.getMessage(), e);
+		}
+	}
+	
+	private Map<String, Object> fillNewsData(int page, int newsPerPage)
+			throws PersistentException {
+		
+		return fillNewsData(page, newsPerPage, News.class, null);
+	}
+	
+	private Map<String, Object> fillNewsData(int page, int newsPerPage,
+			@SuppressWarnings("rawtypes") Class type, Long id)
+			throws PersistentException {
+		
+		Map<String, Object> newsData = new HashMap<String, Object>();
+
+		int newsCount;
+		if (type == User.class) {
+			newsCount = storage.getNewsCountByUserId(id);
+		} else if (type == Tag.class) {
+			newsCount = storage.getNewsCountByTagId(id);
+		} else {
+			newsCount = storage.getNewsCount();
+		}
+		
+		int pagesCount = newsCount / newsPerPage
+				+ (newsCount % newsPerPage == 0 ? 0 : 1);
+		
+		if (newsCount == 0) {
+			newsData.put("pagesCount", 0);
+		} else if (page > pagesCount) {
+			newsData.put("pagesCount", -1);
+		} else {
+			newsData.put("pagesCount", pagesCount);
+			
+			if (type == User.class) {
+				newsData.put("newsByPage",
+						storage.getByPageByUserId(page, newsPerPage, id));
+			} else if (type == Tag.class) {
+				newsData.put("newsByPage",
+						storage.getByPageByTagId(page, newsPerPage, id));
+			} else {
+				newsData.put("newsByPage",
+						storage.getByPage(page, newsPerPage));
+			}
+		}
+		return newsData;
 	}
 
 	@Override

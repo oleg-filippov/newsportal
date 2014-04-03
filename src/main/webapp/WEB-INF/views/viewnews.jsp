@@ -5,11 +5,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<c:set var="title" value="${news.title}" />
-<jsp:include page="common/header.jsp">
-	<jsp:param name="pageTitle" value="${title}" />
-</jsp:include>
+<c:set var="title">${news.title} | <spring:message code="project.title" /></c:set>
+
+<t:template title="${title}">
+<jsp:body>
 
 <c:url value="/user" var="profileUrl" />
 <c:url value="/signin" var="signinUrl" />
@@ -32,18 +33,19 @@
 	</c:if>
 </sec:authorize>
 
-<!-- Container begin -->
-<div class="container">
 <h2><c:out value="${news.title}" /></h2>
-<hr>
 
 <!-- Show Edit/Delete links -->
 <sec:authorize access="hasRole('ROLE_AUTHOR')">
 	<c:if test="${isThisNewsAuthor || isAdmin}">
-		<a href="${editNewsUrl}"><spring:message code="news.editNewsUrl" /></a> | 
-		<a class="btn-link" onclick="deleteConfirm()"><spring:message code="news.deleteNewsUrl" /></a><br>
+		<a href="${editNewsUrl}" class="btn btn-info btn-xs" type="button">
+			<i class="glyphicon glyphicon-edit"></i> <spring:message code="news.editNewsUrl" /></a>
+		<a href="${deleteNewsUrl}" class="btn btn-danger btn-xs" type="button"
+			onclick="return deleteConfirm();"><i class="glyphicon glyphicon-exclamation-sign">
+				</i> <spring:message code="news.deleteNewsUrl" /></a><br>
 	</c:if>
 </sec:authorize>
+<hr>
 
 <small>
 <i class="icon-user"></i>
@@ -64,7 +66,16 @@
 <c:out value="${news.commentsCount}" />
 <br>
 </small>
-<br><br>
+<br>
+
+
+<c:if test="${not empty news.tags}">
+	<c:forEach var="curTag" items="${news.tags}">
+		<c:out value="${curTag.name}" />
+	</c:forEach>
+</c:if>
+
+
 <c:out value="${news.content}" escapeXml="false" />
 <hr>
 
@@ -81,20 +92,12 @@
 
 <!-- Add comments form -->
 <sec:authorize access="hasRole('ROLE_USER')">
-	<form:form action="${addCommentUrl}" method="post" commandName="comment" >
-		<table>
-			<tr>
-				<td><form:errors path="content" class="label label-important" /></td>
-			</tr>
-			<tr>
-				<td>
-					<spring:bind path="content">
-						<textarea name="content" class="field span6" rows="4" maxlength="500"
-							placeholder="<spring:message code="viewnews.leaveComment" />" ></textarea>
-					</spring:bind>
-				</td>
-			</tr>
-		</table>
+	<form:form action="${addCommentUrl}" method="post" modelAttribute="comment" >
+		<h4><form:errors path="content" class="label label-danger" /></h4>
+		<spring:bind path="content">
+			<textarea class="form-control" name="content" maxlength="500" rows="3"
+				placeholder="<spring:message code="viewnews.leaveComment" />" ></textarea>
+		</spring:bind>
 		<button class="btn" type="submit"><spring:message code="viewnews.addCommentButton" /></button>
   		<button class="btn" type="reset"><spring:message code="viewnews.resetCommentButton" /></button>
 	</form:form>
@@ -103,14 +106,15 @@
 <!-- List of comments -->
 <c:choose>
 	<c:when test="${news.commentsCount > 0}">
-		<h2><spring:message code="viewnews.commentsToNews" /></h2>
+		<h2 id="comments"><spring:message code="viewnews.commentsToNews" /></h2>
 		<c:forEach var="comment" items="${comments}">
 			<div class="well well-small">
-				<small>
-					<a href="${profileUrl}/${comment.author.id}"><strong>${comment.author.login}</strong></a> - 
-					<i class="icon-time"></i>
-					<fmt:formatDate value="${comment.created}" type="both" />
-				</small><br>
+				<ul class="list-inline">
+					<li><a href="${profileUrl}/${comment.author.id}">
+						<strong>${comment.author.login}</strong></a></li>
+					<li><i class="glyphicon glyphicon-time"></i>
+						<fmt:formatDate value="${comment.created}" type="both" /></li>
+				</ul>
 				<c:out value="${comment.content}" escapeXml="false" />
 			</div>
 		</c:forEach>
@@ -119,8 +123,6 @@
 		<h2><spring:message code="viewnews.noComments" /></h2>
 	</c:otherwise>
 </c:choose>
-			
-</div> <!-- Container end -->
 
 <script>
 $('textarea[maxlength]').maxlength({threshold:20});
@@ -135,7 +137,9 @@ function deleteConfirm(url){
 	if (confirm(message)){
 		location.href="${deleteNewsUrl}";
 	};
+	return false;
 };
 </script>
 
-<jsp:include page="common/footer.jsp" />
+</jsp:body>
+</t:template>

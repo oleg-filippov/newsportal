@@ -24,7 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 			query = "from UserRole"),
 	@NamedQuery(
 			name = "UserRole.GET_BY_AUTHORITY",
-			query = "from UserRole where authority = :authority")
+			query = "from UserRole ur where ur.authority = :authority")
 })
 public class UserRole extends AbstractEntity implements GrantedAuthority {
 
@@ -54,7 +54,7 @@ public class UserRole extends AbstractEntity implements GrantedAuthority {
 	}
 
 	@Override
-	public int entityHashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 17;
 		result = prime * result
@@ -63,7 +63,7 @@ public class UserRole extends AbstractEntity implements GrantedAuthority {
 	}
 	
 	@Override
-	public boolean entityEquals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -72,8 +72,13 @@ public class UserRole extends AbstractEntity implements GrantedAuthority {
 			return false;
 
 		UserRole other = (UserRole) obj;
-
-		return getAuthority().equals(other.getAuthority());
+		
+		if (getAuthority() != null
+				? !getAuthority().equals(other.getAuthority())
+				: other.getAuthority() != null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

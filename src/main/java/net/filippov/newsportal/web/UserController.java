@@ -50,14 +50,14 @@ public class UserController {
 		return "signin";
 	}
 	
-	// Register-page
+	// SignUp-page
 	@RequestMapping(method=RequestMethod.GET, value = SIGNUP_URL)
 	public String signupPage() {
 		
 		return "signup";
 	}
 	
-	// Register submit
+	// SignUp submit
 	@RequestMapping(method=RequestMethod.POST, value = SIGNUP_URL)
 	public String registerSubmit(Model model, @Valid @ModelAttribute User user,
 			BindingResult result, RedirectAttributes attr, HttpServletRequest request) {
@@ -71,7 +71,7 @@ public class UserController {
 		
 		try {
 			userService.add(user);
-			LOG.info(user + " has been added successfully");
+			LOG.info("ADDED: " + user);
 		} catch (NotUniqueUserLoginException e) {
 			result.rejectValue("login", "validation.user.loginUnique");
 			user.setPassword("");

@@ -19,8 +19,8 @@ public class UserRoleDaoHibernateImpl extends GenericDaoHibernateImpl<UserRole, 
 	public UserRole getByAuthority(String authority) {
 		try {
     		Query query = getCurrentSession().getNamedQuery("UserRole.GET_BY_AUTHORITY")
-    				.setCacheable(true)
-    				.setParameter("authority", authority);
+    				.setParameter("authority", authority)
+    				.setCacheable(true);
     		
     		if (query.list().size() > 0) {
     			return (UserRole) query.list().get(0);

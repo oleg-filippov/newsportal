@@ -2,18 +2,21 @@ package net.filippov.newsportal.web;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.filippov.newsportal.domain.Comment;
 import net.filippov.newsportal.domain.News;
+import net.filippov.newsportal.domain.Tag;
 import net.filippov.newsportal.domain.User;
 import net.filippov.newsportal.domain.UserRole;
 import net.filippov.newsportal.service.CommentService;
 import net.filippov.newsportal.service.NewsService;
+import net.filippov.newsportal.service.TagService;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -40,17 +45,32 @@ public class NewsController {
 	private static final String EDIT_NEWS_URL = "/{id}/edit";
 	private static final String DELETE_NEWS_URL = "/{id}/delete";
 	private static final String CANCEL_URL = "/{id}/cancel";
+	private static final String TAGS_AUTOCOMPLETE_URL = "/tags/autocomplete";
 	
 	@Autowired
 	private NewsService newsService;
+	
+	@Autowired
+	private TagService tagService;
 
 	@Autowired
 	private CommentService commentService;
 	
 	public NewsController() {}
 	
+	// Tags Autocomplete
+	@RequestMapping(method = RequestMethod.GET, value = TAGS_AUTOCOMPLETE_URL)
+	@ResponseBody
+	public String viewNewsPage() {
+		String r = tagService.getAutocompleteJson();
+System.err.println("** json=" + r);
+			return r;
+
+		
+	}
+	
 	// Current news view-page
-	@RequestMapping(method = RequestMethod.GET, value = SHOW_NEWS_URL)
+	@RequestMapping(method = RequestMethod.POST, value = SHOW_NEWS_URL)
 	public String viewNewsPage(Model model, @PathVariable("id") Long newsId,
 			HttpSession session) {
 
@@ -58,12 +78,13 @@ public class NewsController {
 		
 		News currentNews = newsService.getById(newsId);
 		if (currentNews == null) {
-			model.addAttribute("message", "NO NEWS");
 			return "/error";
 		}
+		
 		model.addAttribute("news", currentNews);
 		List<Comment> comments = commentService.getAllByNewsId(newsId);
 		model.addAttribute("comments", comments);
+		Hibernate.initialize(currentNews.getTags());
 		
 		if (loggedUser == null
 				|| loggedUser.getId() != currentNews.getAuthor().getId()) {
@@ -93,7 +114,7 @@ public class NewsController {
 		comment.setAuthor(loggedUser);
 		comment.setNews(news);
 		commentService.add(comment);
-		LOG.info(comment + " has been added successfully");
+		LOG.info("ADDED: " + comment);
 		
 		return "redirect:/news/" + news.getId();
 	}
@@ -101,11 +122,8 @@ public class NewsController {
 	// Page of news to be added
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = ADD_NEWS_URL)
-	public String addNewsPage(HttpServletResponse r) {
-		if (true) {
-		
+	public String addNewsPage() {
 
-		}
 		return "editnews";
 	}
 
@@ -113,7 +131,8 @@ public class NewsController {
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = ADD_NEWS_URL)
 	public String addNewsSubmit(Model model, @Valid @ModelAttribute("news") News news,
-			BindingResult result, RedirectAttributes attr, HttpSession session) {
+			BindingResult result, RedirectAttributes attr, HttpSession session,
+			@RequestParam(value = "tagsString", defaultValue = "") String tagsString) {
 
 		if (result.hasErrors()) {
 			attr.addFlashAttribute(
@@ -124,10 +143,15 @@ public class NewsController {
 		}
 		
 		User loggedUser = (User) session.getAttribute("loggedUser");
-		
 		news.setAuthor(loggedUser);
+
+		if (!tagsString.isEmpty()) {
+			Set<Tag> tags = tagService.getTagsFromString(tagsString);
+			news.setTags(tags);
+		}
+		
 		newsService.add(news);
-		LOG.info(news + " has been added successfully");
+		LOG.info("ADDED: " + news);
 
 		return "redirect:/news/" + news.getId();
 	}
@@ -142,12 +166,18 @@ public class NewsController {
 
 		News newsToEdit = newsService.getById(newsId);
 		UserRole roleAdmin = new UserRole();
-		roleAdmin.setId((long) 1);
-
+		roleAdmin.setAuthority("ROLE_ADMIN");
 
 		if (loggedUser.getId() != newsToEdit.getAuthor().getId()
 				&& !loggedUser.getRoles().contains(roleAdmin)) {
 			return "redirect:/news/" + newsId;
+		}
+		
+		Hibernate.initialize(newsToEdit.getTags());
+		Set<Tag> tags = newsToEdit.getTags();
+		if (tags != null && !tags.isEmpty()) {
+			String tagsString = tagService.getTagsString(tags);
+			model.addAttribute("tagsString", tagsString);
 		}
 		model.addAttribute("news", newsToEdit);
 
@@ -158,7 +188,8 @@ public class NewsController {
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = EDIT_NEWS_URL)
 	public String editNewsSubmit(Model model, @Valid @ModelAttribute("news") News news,
-			BindingResult result, RedirectAttributes attr, HttpSession session) {
+			BindingResult result, RedirectAttributes attr, HttpSession session,
+			@RequestParam(value = "tagsString", defaultValue = "") String tagsString) {
 		
 		if (result.hasErrors()) {
 			attr.addFlashAttribute(
@@ -169,11 +200,16 @@ public class NewsController {
 		}
 
 		User loggedUser = (User) session.getAttribute("loggedUser");
-		
 		news.setAuthor(loggedUser);
+		
+		if (!tagsString.isEmpty()) {
+			Set<Tag> tags = tagService.getTagsFromString(tagsString);
+			news.setTags(tags);
+		}
+		
 		news.setLastModified(new Date());
 		newsService.update(news);
-		LOG.info(news + " has been updated successfully");
+		LOG.info("UPDATED: " + news);
 
 		return "redirect:/news/" + news.getId();
 	}
@@ -184,7 +220,7 @@ public class NewsController {
 	public String deleteNews(Model model, @PathVariable("id") Long id) {
 
 		newsService.deleteById(id);
-		LOG.info("News[id=" + id + "] has been deleted successfully");
+		LOG.info("DELETED: " + "News[id=" + id + "]");
 		
 		return "redirect:/";
 	}

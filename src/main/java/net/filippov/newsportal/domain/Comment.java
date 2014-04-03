@@ -22,7 +22,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @NamedQueries({
 	@NamedQuery(
 			name = "Comment.GET_ALL_BY_NEWS_ID",
-			query = "from Comment where news_id = :id order by created desc")
+			query = "from Comment c where c.news.id = :id order by c.created desc")
 })
 public class Comment extends AbstractEntity {
 
@@ -35,7 +35,7 @@ public class Comment extends AbstractEntity {
 	@Column(name = "created", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
+	private final Date created;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -45,7 +45,9 @@ public class Comment extends AbstractEntity {
 	@JoinColumn(name = "news_id")
 	private News news;
 	
-	public Comment() {}
+	public Comment() {
+		created = new Date();
+	}
 
 	public String getContent() {
 		return content;
@@ -57,10 +59,6 @@ public class Comment extends AbstractEntity {
 
 	public Date getCreated() {
 		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
 	}
 
 	public User getAuthor() {
@@ -80,7 +78,7 @@ public class Comment extends AbstractEntity {
 	}
 	
 	@Override
-	public int entityHashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 17;
 		result = prime * result
@@ -91,7 +89,7 @@ public class Comment extends AbstractEntity {
 	}
 
 	@Override
-	public boolean entityEquals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -100,14 +98,23 @@ public class Comment extends AbstractEntity {
 			return false;
 
 		Comment other = (Comment) obj;
-
-		return getContent().equals(other.getContent())
-				&& getCreated().equals(other.getCreated());
+		
+		if (getContent() != null
+				? !getContent().equals(other.getContent())
+				: other.getContent() != null) {
+			return false;
+		}
+		if (getCreated() != null
+				? getCreated().compareTo(other.getCreated()) != 0
+				: other.getCreated() != null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Comment[id=%d, author=%s, news=%s]",
-				getId(), getAuthor(), getNews());
+		return String.format("Comment[id=%d, author=%s, newsId=%s]",
+				getId(), getAuthor().getLogin(), getNews().getId());
 	}
 }

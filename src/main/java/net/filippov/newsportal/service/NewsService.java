@@ -15,6 +15,10 @@ public interface NewsService {
 	
 	Map<String, Object> getByPage(int page, int newsPerPage);
 	
+	Map<String, Object> getByPageByUserId(int page, int newsPerPage, Long id);
+	
+	Map<String, Object> getByPageByTagId(int page, int newsPerPage, Long id);
+	
 	void update(News news);
 	
 	void deleteById(Long id);

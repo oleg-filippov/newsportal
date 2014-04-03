@@ -67,8 +67,8 @@ public class FileUploadController {
 			@PathVariable("type") String type, HttpServletResponse response)
 			throws IOException {
 
-		InputStream in = new FileInputStream(NEWS_IMAGES_PATH + imageName + "."
-				+ type);
+		InputStream in = new FileInputStream(NEWS_IMAGES_PATH
+				+ imageName + "." + type);
 		FileCopyUtils.copy(in, response.getOutputStream());
 		in.close();
 	}

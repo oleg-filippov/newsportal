@@ -6,6 +6,7 @@ import java.util.Map;
 import net.filippov.newsportal.domain.News;
 import net.filippov.newsportal.service.NewsService;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +59,11 @@ public class MainController {
 		
 		@SuppressWarnings("unchecked")
 		List<News> newsByPage = (List<News>) newsData.get("newsByPage");
+		if (newsByPage != null) {
+			for (News curNews : newsByPage) {
+				Hibernate.initialize(curNews.getTags());
+			}
+		}
 		
 		ModelAndView mav = new ModelAndView();
 		

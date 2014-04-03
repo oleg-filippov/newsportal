@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,10 +31,22 @@ import org.hibernate.validator.constraints.NotBlank;
 @NamedQueries({
 	@NamedQuery(
 			name = "News.GET_ALL",
-			query = "from News order by created desc"),
+			query = "from News n order by n.created desc"),
+	@NamedQuery(
+			name = "News.GET_ALL_BY_USER_ID",
+			query = "from News n where n.author.id = :id order by n.created desc"),
+	@NamedQuery(
+			name = "News.GET_ALL_BY_TAG_ID",
+			query = "from News n join n.tags t where t.id = :id"),
 	@NamedQuery(
 			name = "News.GET_COUNT",
 			query = "select count(*) from News"),
+	@NamedQuery(
+			name = "News.GET_COUNT_BY_USER_ID",
+			query = "select count(*) from News n where n.author.id = :id"),
+	@NamedQuery(
+			name = "News.GET_COUNT_BY_TAG_ID",
+			query = "select count(*) from News n join n.tags t where t.id = :id"),
 	@NamedQuery(
 			name = "News.INCREASE_VIEWS_COUNT_BY_ID",
 			query = "update News set views_count = views_count + 1 where id = :id")
@@ -57,16 +70,16 @@ public class News extends AbstractEntity {
 	@Column(name = "created", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
+	private final Date created;
 
 	@Column(name = "last_modified")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastModified;
 
-	@Column(name = "views_count", columnDefinition = "INT DEFAULT 0")
+	@Column(name = "views_count")
 	private int viewsCount;
 
-	@Formula("select count(*) from comment where comment.news_id = id")
+	@Formula("select count(*) from Comment c where c.news_id = id")
 	private int commentsCount;
 
 	@ManyToOne
@@ -76,13 +89,17 @@ public class News extends AbstractEntity {
 	@OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE)
 	private List<Comment> comments;
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "news_tag",
 			joinColumns = {@JoinColumn(name = "news_id") },
 			inverseJoinColumns = {@JoinColumn(name = "tag_id") })
+	@OrderBy("name")
 	private Set<Tag> tags;
 
-	public News() {}
+	public News() {
+		created = new Date();
+		viewsCount = 0;
+	}
 
 	public String getTitle() {
 		return title;
@@ -110,10 +127,6 @@ public class News extends AbstractEntity {
 
 	public Date getCreated() {
 		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
 	}
 
 	public Date getLastModified() {
@@ -165,7 +178,7 @@ public class News extends AbstractEntity {
 	}
 
 	@Override
-	public int entityHashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 17;
 		result = prime * result
@@ -176,7 +189,7 @@ public class News extends AbstractEntity {
 	}
 
 	@Override
-	public boolean entityEquals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -185,14 +198,23 @@ public class News extends AbstractEntity {
 			return false;
 
 		News other = (News) obj;
-
-		return getTitle().equals(other.getTitle())
-				&& getContent().equals(other.getContent())
-				&& getCreated().equals(other.getCreated());
+		
+		if (getTitle() != null
+				? !getTitle().equals(other.getTitle())
+				: other.getTitle() != null) {
+			return false;
+		}
+		if (getCreated() != null
+				? getCreated().compareTo(other.getCreated()) != 0
+				: other.getCreated() != null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("News[id=%d, author=%s]", getId(), getAuthor());
+		return String.format("News[id=%d, author=%s]",
+				getId(), getAuthor().getLogin());
 	}
 }

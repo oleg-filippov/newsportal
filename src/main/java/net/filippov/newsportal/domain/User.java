@@ -27,23 +27,22 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "login"),
-		@UniqueConstraint(columnNames = "email") })
+		@UniqueConstraint(columnNames = {"login", "email"}) })
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries({
 	@NamedQuery(
 			name = "User.GET_BY_LOGIN",
-			query = "from User where login = :login"),
+			query = "from User u where u.login = :login"),
 	@NamedQuery(
 			name = "User.GET_ALL",
-			query = "from User")
+			query = "from User u order by u.login")
 })
 public class User extends AbstractEntity {
 
 	private static final long serialVersionUID = 286409866205173021L;
 	
 	@Size(min = 4, max = 20, message = "{validation.user.loginSize}")
-	@Column(name = "login", unique = true, nullable = false)
+	@Column(name = "login", nullable = false)
 	private String login;
 
 	@Size(min = 7, max = 60, message = "{validation.user.passwordSize}")
@@ -56,13 +55,13 @@ public class User extends AbstractEntity {
 
 	@NotBlank(message = "{validation.user.emailNotBlank}")
 	@Email(message = "{validation.user.emailValid}")
-	@Column(name = "email", unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
+	@Column(name = "email", nullable = false, columnDefinition = "VARCHAR(50)")
 	private String email;
 
 	@Column(name = "registered", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date registered;
+	private final Date registered;
 
 	@Column(name = "locked", columnDefinition = "BOOLEAN DEFAULT FALSE")
 	private boolean locked;
@@ -82,7 +81,11 @@ public class User extends AbstractEntity {
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private List<Comment> comments;
 	
-	public User() {}
+	public User() {
+		registered = new Date();
+		locked = false;
+		enabled = true;
+	}
 
 	public String getLogin() {
 		return login;
@@ -118,10 +121,6 @@ public class User extends AbstractEntity {
 
 	public Date getRegistered() {
 		return registered;
-	}
-
-	public void setRegistered(Date registered) {
-		this.registered = registered;
 	}
 
 	public boolean isLocked() {
@@ -165,7 +164,7 @@ public class User extends AbstractEntity {
 	}
 
 	@Override
-	public int entityHashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 17;
 		result = prime * result
@@ -176,7 +175,7 @@ public class User extends AbstractEntity {
 	}
 	
 	@Override
-	public boolean entityEquals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -186,8 +185,17 @@ public class User extends AbstractEntity {
 		
 		User other = (User) obj;
 		
-		return getEmail().equals(other.getEmail())
-				&& getLogin().equals(other.getLogin());
+		if (getLogin() != null
+				? !getLogin().equals(other.getLogin())
+				: other.getLogin() != null) {
+			return false;
+		}
+		if (getEmail() != null
+				? !getEmail().equals(other.getEmail())
+				: other.getEmail() != null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

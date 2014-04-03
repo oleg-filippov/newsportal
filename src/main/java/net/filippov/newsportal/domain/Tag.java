@@ -4,21 +4,47 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "tag", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "name") })
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@NamedQueries({
+	@NamedQuery(
+			name = "Tag.GET_ALL",
+			query = "from Tag t order by t.name"),
+	@NamedQuery(
+			name = "Tag.GET_ALL_NAMES",
+			query = "select t.name from Tag t order by t.name"),
+	@NamedQuery(
+			name = "Tag.GET_BY_NAME",
+			query = "from Tag t where t.name = :name"),
+	@NamedQuery(
+			name = "Tag.GET_ALL_BY_FRAGMENT",
+			query = "from Tag t where t.name like :fragment order by t.name")
+})
 public class Tag extends AbstractEntity {
 
 	private static final long serialVersionUID = 1282054549729552169L;
 
-	@Column(name = "name", unique = true, nullable = false)
+	@Column(name = "name", nullable = false)
 	private String name;
 	
-	@ManyToMany(mappedBy = "tags")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "news_tag",
+		joinColumns = {@JoinColumn(name = "tag_id") },
+		inverseJoinColumns = {@JoinColumn(name = "news_id") })
 	private Set<News> news;
 	
 	public Tag() {}
@@ -40,7 +66,7 @@ public class Tag extends AbstractEntity {
 	}
 
 	@Override
-	public int entityHashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 17;
 		result = prime * result
@@ -49,7 +75,7 @@ public class Tag extends AbstractEntity {
 	}
 	
 	@Override
-	public boolean entityEquals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -58,12 +84,18 @@ public class Tag extends AbstractEntity {
 			return false;
 
 		Tag other = (Tag) obj;
-
-		return getName().equals(other.getName());
+		
+		if (getName() != null
+				? !getName().equals(other.getName())
+				: other.getName() != null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public String toString() {
 		return String.format("Tag[id=%d, name=%s]", getId(), getName());
 	}
+
 }

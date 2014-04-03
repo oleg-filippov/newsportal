@@ -11,7 +11,7 @@
 	</appender>
 	
 	<appender name="application" class="org.apache.log4j.RollingFileAppender">
-		<param name="file" value="C:/newsportal-logs/application.log"/>
+		<param name="file" value="C:/Newsportal/logs/application.log"/>
 		<param name="MaxFileSize" value="10MB"/>
 		<param name="MaxBackupIndex" value="10"/>
 		<param name="Encoding" value="UTF-8"/>
@@ -21,7 +21,7 @@
 	</appender>
 	
 	<appender name="orm" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="C:/newsportal-logs/orm.log"/>
+		<param name="File" value="C:/Newsportal/logs/orm.log"/>
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
 		<param name="Encoding" value="UTF-8"/>
 		<layout class="org.apache.log4j.TTCCLayout">

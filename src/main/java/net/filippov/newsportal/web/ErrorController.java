@@ -15,8 +15,7 @@ public class ErrorController {
 
 	private static final String ERROR_URL = "/error";
 
-	public ErrorController() {
-	}
+	public ErrorController() {}
 
 	// Error-page
 	@RequestMapping(value = ERROR_URL)
@@ -44,16 +43,16 @@ public class ErrorController {
 		if (requestUrl == null)
 			requestUrl = "Unknown";
 
-		Throwable e = (Throwable) request.getAttribute("javax.servlet.error.exception");
-		if (e != null) {
-			LOG.error(e.getCause().getMessage(), e.getCause());
+		Throwable ex = (Throwable) request.getAttribute("javax.servlet.error.exception");
+		if (ex != null) {
+			LOG.error(ex.getCause().getMessage(), ex.getCause());
 			// hidden attribute
-			model.addAttribute("exception", e.getCause());
+			model.addAttribute("exception", ex.getCause());
 		}
 
 		model.addAttribute("statusCode", statusCode);
 		model.addAttribute("requestUrl", requestUrl);
 
-		return "errors/error";
+		return "error";
 	}
 }
