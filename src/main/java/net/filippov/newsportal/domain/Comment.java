@@ -18,18 +18,18 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "comment")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
 			name = "Comment.GET_ALL_BY_NEWS_ID",
 			query = "from Comment c where c.news.id = :id order by c.created desc")
 })
-public class Comment extends AbstractEntity {
+public class Comment extends BaseEntity {
 
 	private static final long serialVersionUID = 8668190795666429761L;
 
 	@NotBlank(message = "{validation.comment.content}")
-	@Column(name = "content")
+	@Column(name = "content", length = 500)
 	private String content;
 	
 	@Column(name = "created", insertable = false, updatable = false,
@@ -114,7 +114,9 @@ public class Comment extends AbstractEntity {
 
 	@Override
 	public String toString() {
-		return String.format("Comment[id=%d, author=%s, newsId=%s]",
-				getId(), getAuthor().getLogin(), getNews().getId());
+		return String.format("Comment[id=%d, author=%s, news_id=%s]",
+				getId(),
+				getAuthor() == null ? "null" : getAuthor().getLogin(),
+				getNews() == null ? "null" : getNews().getId());
 	}
 }

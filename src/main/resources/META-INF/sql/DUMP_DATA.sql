@@ -17,10 +17,11 @@ INSERT INTO user_role (`user_id`, `role_id`) VALUES
 ('2', '2'), ('2', '3'),
 ('3', '3');
 
---INSERT INTO tag (`name`) VALUES
---('Games'),
---('Movies'),
---('Industry');
+INSERT INTO category (`name`) VALUES
+('Games'),
+('Movies'),
+('GameIndustry'),
+('Gadgets');
 
 -- -----------------------------------------------------
 -- DUMP NEWS

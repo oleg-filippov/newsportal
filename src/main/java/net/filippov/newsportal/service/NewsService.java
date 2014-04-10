@@ -1,27 +1,25 @@
 package net.filippov.newsportal.service;
 
-import java.util.List;
 import java.util.Map;
 
+import net.filippov.newsportal.domain.Comment;
 import net.filippov.newsportal.domain.News;
 
-public interface NewsService {
+public interface NewsService extends AbstractService<News> {
 	
-	Long add(News news);
+	void add(News news, Long authorId, String categoryName, String tagString);
 	
-	News getById(Long id);
+	News get(Long newsId, Long userId);
 	
-	List<News> getAll();
+	void update(News news, String categoryName, String tagString);
 	
 	Map<String, Object> getByPage(int page, int newsPerPage);
-	
+
 	Map<String, Object> getByPageByUserId(int page, int newsPerPage, Long id);
 	
-	Map<String, Object> getByPageByTagId(int page, int newsPerPage, Long id);
+	Map<String, Object> getByPageByCategoryName(int page, int newsPerPage, String name);
 	
-	void update(News news);
+	Map<String, Object> getByPageByTagName(int page, int newsPerPage, String name);
 	
-	void deleteById(Long id);
-	
-	void increaseViewsCountById(Long id);
+	void addComment(Comment comment, Long authorId, News news);
 }

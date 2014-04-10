@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import net.filippov.newsportal.domain.User;
-import net.filippov.newsportal.exception.NotUniqueUserEmailException;
-import net.filippov.newsportal.exception.NotUniqueUserLoginException;
 import net.filippov.newsportal.service.UserService;
 
 import org.slf4j.Logger;
@@ -69,18 +67,9 @@ public class UserController {
 			return "redirect:/signup";
 		}
 		
-		try {
-			userService.add(user);
-			LOG.info("ADDED: " + user);
-		} catch (NotUniqueUserLoginException e) {
-			result.rejectValue("login", "validation.user.loginUnique");
-			user.setPassword("");
-			return "signup";
-		} catch (NotUniqueUserEmailException e) {
-			result.rejectValue("email", "validation.user.emailUnique");
-			return "signup";
-		}
-		
+		userService.add(user);
+		LOG.info("ADDED: " + user);
+
 		model.addAttribute("messageProperty", "success.registration");
 		model.addAttribute("url", request.getServletContext().getContextPath());
 		return "success";
@@ -91,7 +80,7 @@ public class UserController {
 	@RequestMapping(method=RequestMethod.GET, value = USER_PROFILE_URL)
 	public String profilePage(Model model, @PathVariable("id") Long userId) {
 		
-		User user = userService.getById(userId);
+		User user = userService.get(userId);
 		model.addAttribute("user", user);
 		
 		return "profile";

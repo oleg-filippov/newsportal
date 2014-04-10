@@ -5,25 +5,15 @@ import java.util.Set;
 
 import net.filippov.newsportal.domain.Tag;
 
-public interface TagService {
-	
-	Long add(Tag tag);
-	
-	void addAll(Set<Tag> tags);
-	
-	Tag getById(Long id);
+public interface TagService extends AbstractService<Tag> {
 	
 	Tag getByName(String name);
 	
-	List<Tag> getAll();
-	
-	void update(Tag tag);
-	
-	void deleteById(Long id);
+	List<String> getAllNames(int resultLimit);
 	
 	String getAutocompleteJson();
 	
-	Set<Tag> getTagsFromString(String tagsString);
+	Set<Tag> getTagsFromString(String tagString);
 	
-	String getTagsString(Set<Tag> tags);
+	String getTagString(Set<Tag> tags);
 }

@@ -1,7 +1,6 @@
 package net.filippov.newsportal.domain;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -36,27 +35,30 @@ import org.hibernate.validator.constraints.NotBlank;
 			name = "News.GET_ALL_BY_USER_ID",
 			query = "from News n where n.author.id = :id order by n.created desc"),
 	@NamedQuery(
-			name = "News.GET_ALL_BY_TAG_ID",
-			query = "from News n join n.tags t where t.id = :id"),
+			name = "News.GET_ALL_BY_CATEGORY_NAME",
+			query = "select n from Category c join c.news n where n.category.name = :name order by n.created desc"),
+	@NamedQuery(
+			name = "News.GET_ALL_BY_TAG_NAME",
+			query = "select n from Tag t join t.news n where t.name = :name order by n.created desc"),
 	@NamedQuery(
 			name = "News.GET_COUNT",
-			query = "select count(*) from News"),
+			query = "select count(id) from News"),
 	@NamedQuery(
 			name = "News.GET_COUNT_BY_USER_ID",
-			query = "select count(*) from News n where n.author.id = :id"),
+			query = "select count(n.id) from User u join u.news n where u.id = :id"),
 	@NamedQuery(
-			name = "News.GET_COUNT_BY_TAG_ID",
-			query = "select count(*) from News n join n.tags t where t.id = :id"),
+			name = "News.GET_COUNT_BY_CATEGORY_NAME",
+			query = "select count(n.id) from Category c join c.news n where c.name = :name"),
 	@NamedQuery(
-			name = "News.INCREASE_VIEWS_COUNT_BY_ID",
-			query = "update News set views_count = views_count + 1 where id = :id")
+			name = "News.GET_COUNT_BY_TAG_NAME",
+			query = "select count(n.id) from Tag t join t.news n where t.name = :name")
 })
-public class News extends AbstractEntity {
+public class News extends BaseEntity {
 
 	private static final long serialVersionUID = 3513552163842451989L;
 
 	@NotBlank(message = "{validation.news.title}")
-	@Column(name = "title", nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "title", nullable = false, length = 100)
 	private String title;
 
 	@NotBlank(message = "{validation.news.preview}")
@@ -64,7 +66,7 @@ public class News extends AbstractEntity {
 	private String preview;
 
 	@NotBlank(message = "{validation.news.content}")
-	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "content", nullable = false, length = 65535)
 	private String content;
 
 	@Column(name = "created", insertable = false, updatable = false,
@@ -76,20 +78,26 @@ public class News extends AbstractEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastModified;
 
-	@Column(name = "views_count")
+	@Column(name = "views_count", insertable = false,
+			columnDefinition = "INT DEFAULT 0")
 	private int viewsCount;
 
-	@Formula("select count(*) from Comment c where c.news_id = id")
+	@Formula("select count(id) from Comment c where c.news_id = id")
+//	@Formula("select count(c.id) from News n join n.comments c where c.news.id = n.id")
 	private int commentsCount;
-
-	@ManyToOne
-	@JoinColumn(name = "user_id")
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(name = "user_id", nullable = false, updatable = false)
 	private User author;
 
-	@OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE)
-	private List<Comment> comments;
+	@ManyToOne
+	@JoinColumn(name = "category_id", nullable = false)
+	private Category category;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "news", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	private Set<Comment> comments;
+	
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "news_tag",
 			joinColumns = {@JoinColumn(name = "news_id") },
 			inverseJoinColumns = {@JoinColumn(name = "tag_id") })
@@ -149,10 +157,6 @@ public class News extends AbstractEntity {
 		return commentsCount;
 	}
 
-	public void setCommentsCount(int commentsCount) {
-		this.commentsCount = commentsCount;
-	}
-
 	public User getAuthor() {
 		return author;
 	}
@@ -160,12 +164,20 @@ public class News extends AbstractEntity {
 	public void setAuthor(User author) {
 		this.author = author;
 	}
+	
+	public Category getCategory() {
+		return category;
+	}
 
-	public List<Comment> getComments() {
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public Set<Comment> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> comments) {
+	public void setComments(Set<Comment> comments) {
 		this.comments = comments;
 	}
 	
@@ -215,6 +227,6 @@ public class News extends AbstractEntity {
 	@Override
 	public String toString() {
 		return String.format("News[id=%d, author=%s]",
-				getId(), getAuthor().getLogin());
+				getId(), getAuthor() == null ? "null" : getAuthor().getLogin());
 	}
 }

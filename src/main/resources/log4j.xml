@@ -9,42 +9,42 @@
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>
 	</appender>
-	
+
 	<appender name="application" class="org.apache.log4j.RollingFileAppender">
-		<param name="file" value="C:/Newsportal/logs/application.log"/>
-		<param name="MaxFileSize" value="10MB"/>
-		<param name="MaxBackupIndex" value="10"/>
-		<param name="Encoding" value="UTF-8"/>
+		<param name="file" value="C:/Newsportal/logs/application.log" />
+		<param name="MaxFileSize" value="10MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="Encoding" value="UTF-8" />
 		<layout class="org.apache.log4j.PatternLayout">
-		<param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%30c] - %m%n"/>
+			<param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%30c] - %m%n" />
 		</layout>
 	</appender>
-	
+
 	<appender name="orm" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="C:/Newsportal/logs/orm.log"/>
-		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
-		<param name="Encoding" value="UTF-8"/>
+		<param name="File" value="C:/Newsportal/logs/orm.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<param name="Encoding" value="UTF-8" />
 		<layout class="org.apache.log4j.TTCCLayout">
-			<param name="DateFormat" value="ABSOLUTE"/>
-			<param name="ContextPrinting" value="false"/>
+			<param name="DateFormat" value="ABSOLUTE" />
+			<param name="ContextPrinting" value="false" />
 		</layout>
 	</appender>
-	
+
 	<!-- Application Loggers -->
 	<logger name="net.filippov.newsportal">
 		<level value="info" />
 		<appender-ref ref="application" />
 	</logger>
-	
+
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />
 	</logger>
-	
+
 	<logger name="org.springframework.beans">
 		<level value="info" />
 	</logger>
-	
+
 	<logger name="org.springframework.context">
 		<level value="info" />
 	</logger>
@@ -52,10 +52,10 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
-	
+
 	<logger name="org.hibernate" additivity="false">
-		<level value="WARN"/>
-		<appender-ref ref="orm"/>
+		<level value="WARN" />
+		<appender-ref ref="orm" />
 	</logger>
 
 	<!-- Root Logger -->
@@ -63,5 +63,5 @@
 		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
-	
+
 </log4j:configuration>

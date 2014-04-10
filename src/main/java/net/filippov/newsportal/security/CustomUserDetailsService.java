@@ -3,8 +3,8 @@ package net.filippov.newsportal.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.filippov.newsportal.dao.UserDao;
 import net.filippov.newsportal.domain.UserRole;
+import net.filippov.newsportal.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,24 +13,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component("UserDetailsService")
-@Transactional(readOnly = true)
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UserDao storage;
+	private UserService service;
 
 	@Override
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
-		
+	
 		if ("".equals(login)) {
 			throw new UsernameNotFoundException("User not found");
 		}
 		
-		net.filippov.newsportal.domain.User user = storage.getByLogin(login);
+		net.filippov.newsportal.domain.User user = service.getByLogin(login);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
@@ -56,7 +54,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 		for (UserRole role : roles) {
 			resultRoles.add(role);
 		}
-		
 		return resultRoles;
 	}
 }

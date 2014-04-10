@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="entityManager"
+		transaction-type="RESOURCE_LOCAL">
+		<validation-mode>NONE</validation-mode>
+	</persistence-unit>
+</persistence>

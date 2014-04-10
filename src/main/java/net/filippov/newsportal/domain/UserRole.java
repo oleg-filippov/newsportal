@@ -1,9 +1,10 @@
 package net.filippov.newsportal.domain;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -12,11 +13,14 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "role", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "authority") })
+@Immutable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries({
 	@NamedQuery(
@@ -26,21 +30,21 @@ import org.springframework.security.core.GrantedAuthority;
 			name = "UserRole.GET_BY_AUTHORITY",
 			query = "from UserRole ur where ur.authority = :authority")
 })
-public class UserRole extends AbstractEntity implements GrantedAuthority {
+public class UserRole extends BaseEntity implements GrantedAuthority {
 
 	private static final long serialVersionUID = -3981661393211469078L;
 	
-	@Column(name = "authority")
+	@Column(name = "authority", length = 20)
 	private String authority;
 	
-	@ManyToMany(mappedBy = "roles")
-	private List<User> users;
+	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+	private Set<User> users;
 
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 	

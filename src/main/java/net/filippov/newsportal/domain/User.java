@@ -1,7 +1,6 @@
 package net.filippov.newsportal.domain;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -28,20 +27,20 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 @Table(name = "user", uniqueConstraints = {
 		@UniqueConstraint(columnNames = {"login", "email"}) })
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
-			name = "User.GET_BY_LOGIN",
-			query = "from User u where u.login = :login"),
-	@NamedQuery(
 			name = "User.GET_ALL",
-			query = "from User u order by u.login")
+			query = "from User u order by u.login"),
+	@NamedQuery(
+			name = "User.GET_BY_LOGIN",
+			query = "from User u where u.login = :login")
 })
-public class User extends AbstractEntity {
+public class User extends BaseEntity {
 
 	private static final long serialVersionUID = 286409866205173021L;
 	
-	@Size(min = 4, max = 20, message = "{validation.user.loginSize}")
+	@Size(min = 4, max = 30, message = "{validation.user.loginSize}")
 	@Column(name = "login", nullable = false)
 	private String login;
 
@@ -55,7 +54,7 @@ public class User extends AbstractEntity {
 
 	@NotBlank(message = "{validation.user.emailNotBlank}")
 	@Email(message = "{validation.user.emailValid}")
-	@Column(name = "email", nullable = false, columnDefinition = "VARCHAR(50)")
+	@Column(name = "email", nullable = false, length = 50)
 	private String email;
 
 	@Column(name = "registered", insertable = false, updatable = false,
@@ -63,23 +62,31 @@ public class User extends AbstractEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private final Date registered;
 
-	@Column(name = "locked", columnDefinition = "BOOLEAN DEFAULT FALSE")
+	@Column(name = "locked", insertable = false,
+			columnDefinition = "BOOLEAN DEFAULT FALSE")
 	private boolean locked;
 	
-	@Column(name = "enabled", columnDefinition = "BOOLEAN DEFAULT TRUE")
+	@Column(name = "enabled", insertable = false,
+			columnDefinition = "BOOLEAN DEFAULT TRUE")
 	private boolean enabled;
+	
+//	@Formula("select count(n.id) from User u join u.news n where u.id = n.user.id")
+//	private int newsCount;
+	
+//	@Formula("select count(c.id) from User u join u.comments c where u.id = c.user.id")
+//	private int commentCount;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "user_role",
 			joinColumns = {@JoinColumn(name = "user_id") },
 			inverseJoinColumns = {@JoinColumn(name = "role_id") })
 	private Set<UserRole> roles;
 	
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-	private List<News> news;
+	private Set<News> news;
 
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-	private List<Comment> comments;
+	private Set<Comment> comments;
 	
 	public User() {
 		registered = new Date();
@@ -147,19 +154,19 @@ public class User extends AbstractEntity {
 		this.roles = roles;
 	}
 
-	public List<Comment> getComments() {
+	public Set<Comment> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> comments) {
+	public void setComments(Set<Comment> comments) {
 		this.comments = comments;
 	}
 
-	public List<News> getNews() {
+	public Set<News> getNews() {
 		return news;
 	}
 
-	public void setNews(List<News> news) {
+	public void setNews(Set<News> news) {
 		this.news = news;
 	}
 

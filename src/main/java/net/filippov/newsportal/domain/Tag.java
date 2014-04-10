@@ -15,6 +15,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "tag", uniqueConstraints = {
@@ -34,17 +36,17 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 			name = "Tag.GET_ALL_BY_FRAGMENT",
 			query = "from Tag t where t.name like :fragment order by t.name")
 })
-public class Tag extends AbstractEntity {
+public class Tag extends BaseEntity {
 
 	private static final long serialVersionUID = 1282054549729552169L;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", nullable = false, length = 20)
 	private String name;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "news_tag",
-		joinColumns = {@JoinColumn(name = "tag_id") },
-		inverseJoinColumns = {@JoinColumn(name = "news_id") })
+//	@Formula("select count(n.id) from Tag t join t.news n where t.id = n.tags.id")
+//	private int newsCount;
+	
+	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
 	private Set<News> news;
 	
 	public Tag() {}
@@ -56,6 +58,10 @@ public class Tag extends AbstractEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+//	public int getNewsCount() {
+//		return newsCount;
+//	}
 
 	public Set<News> getNews() {
 		return news;
@@ -97,5 +103,4 @@ public class Tag extends AbstractEntity {
 	public String toString() {
 		return String.format("Tag[id=%d, name=%s]", getId(), getName());
 	}
-
 }

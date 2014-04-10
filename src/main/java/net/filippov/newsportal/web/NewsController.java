@@ -1,22 +1,17 @@
 package net.filippov.newsportal.web;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.filippov.newsportal.domain.Comment;
 import net.filippov.newsportal.domain.News;
 import net.filippov.newsportal.domain.Tag;
-import net.filippov.newsportal.domain.User;
-import net.filippov.newsportal.domain.UserRole;
-import net.filippov.newsportal.service.CommentService;
 import net.filippov.newsportal.service.NewsService;
 import net.filippov.newsportal.service.TagService;
 
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
 @Controller
 @RequestMapping("/news")
+@SessionAttributes("news")
 public class NewsController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(NewsController.class);
@@ -52,9 +49,6 @@ public class NewsController {
 	
 	@Autowired
 	private TagService tagService;
-
-	@Autowired
-	private CommentService commentService;
 	
 	public NewsController() {}
 	
@@ -63,33 +57,23 @@ public class NewsController {
 	@ResponseBody
 	public String viewNewsPage() {
 		String r = tagService.getAutocompleteJson();
-System.err.println("** json=" + r);
-			return r;
-
-		
+		System.out.println("** r:" + r);
+		return r;
 	}
 	
 	// Current news view-page
-	@RequestMapping(method = RequestMethod.POST, value = SHOW_NEWS_URL)
+	@RequestMapping(method = RequestMethod.GET, value = SHOW_NEWS_URL)
 	public String viewNewsPage(Model model, @PathVariable("id") Long newsId,
 			HttpSession session) {
-
-		User loggedUser = (User) session.getAttribute("loggedUser");
 		
-		News currentNews = newsService.getById(newsId);
+		Long loggedUserId  = (Long) session.getAttribute("loggedUserId");	// null for unauthorized
+		News currentNews = newsService.get(newsId, loggedUserId);
 		if (currentNews == null) {
 			return "/error";
 		}
 		
 		model.addAttribute("news", currentNews);
-		List<Comment> comments = commentService.getAllByNewsId(newsId);
-		model.addAttribute("comments", comments);
-		Hibernate.initialize(currentNews.getTags());
-		
-		if (loggedUser == null
-				|| loggedUser.getId() != currentNews.getAuthor().getId()) {
-			newsService.increaseViewsCountById(newsId);
-		}
+		model.addAttribute("comment", new Comment());
 
 		return "viewnews";
 	}
@@ -99,31 +83,26 @@ System.err.println("** json=" + r);
 	@RequestMapping(method = RequestMethod.POST, value = ADD_COMMENT_URL)
 	public String addCommentSubmit(Model model, @ModelAttribute("news") News news,
 			@Valid @ModelAttribute("comment") Comment comment, BindingResult result,
-			RedirectAttributes attr, HttpSession session) {
-		
+			HttpSession session) {
+
 		if (result.hasErrors()) {
-			attr.addFlashAttribute(
-					"org.springframework.validation.BindingResult.comment", result);
-			attr.addFlashAttribute("comment", comment);
-			
-			return "redirect:/news/" + news.getId();
+			return "viewnews";
 		}
 		
-		User loggedUser = (User) session.getAttribute("loggedUser");
-		
-		comment.setAuthor(loggedUser);
-		comment.setNews(news);
-		commentService.add(comment);
+		Long authorId  = (Long) session.getAttribute("loggedUserId");
+		newsService.addComment(comment, authorId, news);
 		LOG.info("ADDED: " + comment);
 		
 		return "redirect:/news/" + news.getId();
 	}
-
+	
 	// Page of news to be added
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = ADD_NEWS_URL)
-	public String addNewsPage() {
-
+	public String addNewsPage(Model model) {
+		
+		model.addAttribute("news", new News());
+		
 		return "editnews";
 	}
 
@@ -131,28 +110,20 @@ System.err.println("** json=" + r);
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = ADD_NEWS_URL)
 	public String addNewsSubmit(Model model, @Valid @ModelAttribute("news") News news,
-			BindingResult result, RedirectAttributes attr, HttpSession session,
-			@RequestParam(value = "tagsString", defaultValue = "") String tagsString) {
+			BindingResult result, HttpSession session, SessionStatus status,
+			@RequestParam(value = "categoryName", defaultValue = "") String categoryName,
+			@RequestParam(value = "tagString", defaultValue = "") String tagString) {
 
 		if (result.hasErrors()) {
-			attr.addFlashAttribute(
-					"org.springframework.validation.BindingResult.news", result);
-			attr.addFlashAttribute("news", news);
-			
-			return "redirect:/news/add";
+			model.addAttribute("tagString", tagString);
+			return "editnews";
 		}
 		
-		User loggedUser = (User) session.getAttribute("loggedUser");
-		news.setAuthor(loggedUser);
-
-		if (!tagsString.isEmpty()) {
-			Set<Tag> tags = tagService.getTagsFromString(tagsString);
-			news.setTags(tags);
-		}
-		
-		newsService.add(news);
+		Long authorId  = (Long) session.getAttribute("loggedUserId");
+		newsService.add(news, authorId, categoryName, tagString);
+		status.setComplete();
 		LOG.info("ADDED: " + news);
-
+		
 		return "redirect:/news/" + news.getId();
 	}
 	
@@ -160,24 +131,20 @@ System.err.println("** json=" + r);
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = EDIT_NEWS_URL)
 	public String editNewsPage(Model model, @PathVariable("id") Long newsId,
-			HttpSession session) {
+			HttpSession session, HttpServletRequest request) {
+		
+		Long loggedUserId  = (Long) session.getAttribute("loggedUserId");
+		News newsToEdit = newsService.getTransactionally(newsId);
 
-		User loggedUser = (User) session.getAttribute("loggedUser");
-
-		News newsToEdit = newsService.getById(newsId);
-		UserRole roleAdmin = new UserRole();
-		roleAdmin.setAuthority("ROLE_ADMIN");
-
-		if (loggedUser.getId() != newsToEdit.getAuthor().getId()
-				&& !loggedUser.getRoles().contains(roleAdmin)) {
+		if (loggedUserId != newsToEdit.getAuthor().getId()
+				&& !request.isUserInRole("ROLE_ADMIN")) {
 			return "redirect:/news/" + newsId;
 		}
 		
-		Hibernate.initialize(newsToEdit.getTags());
 		Set<Tag> tags = newsToEdit.getTags();
 		if (tags != null && !tags.isEmpty()) {
-			String tagsString = tagService.getTagsString(tags);
-			model.addAttribute("tagsString", tagsString);
+			String tagString = tagService.getTagString(tags);
+			model.addAttribute("tagString", tagString);
 		}
 		model.addAttribute("news", newsToEdit);
 
@@ -188,27 +155,17 @@ System.err.println("** json=" + r);
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = EDIT_NEWS_URL)
 	public String editNewsSubmit(Model model, @Valid @ModelAttribute("news") News news,
-			BindingResult result, RedirectAttributes attr, HttpSession session,
-			@RequestParam(value = "tagsString", defaultValue = "") String tagsString) {
-		
-		if (result.hasErrors()) {
-			attr.addFlashAttribute(
-					"org.springframework.validation.BindingResult.news", result);
-			attr.addFlashAttribute("news", news);
-			
-			return "redirect:/news/" + news.getId() + "/edit";
-		}
+			BindingResult result, SessionStatus status,
+			@RequestParam(value = "categoryName", defaultValue = "") String categoryName,
+			@RequestParam(value = "tagString", defaultValue = "") String tagString) {
 
-		User loggedUser = (User) session.getAttribute("loggedUser");
-		news.setAuthor(loggedUser);
-		
-		if (!tagsString.isEmpty()) {
-			Set<Tag> tags = tagService.getTagsFromString(tagsString);
-			news.setTags(tags);
+		if (result.hasErrors()) {
+			model.addAttribute("tagString", tagString);
+			return "editnews";
 		}
 		
-		news.setLastModified(new Date());
-		newsService.update(news);
+		newsService.update(news, categoryName, tagString);
+		status.setComplete();
 		LOG.info("UPDATED: " + news);
 
 		return "redirect:/news/" + news.getId();
@@ -217,32 +174,28 @@ System.err.println("** json=" + r);
 	// Delete news
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = DELETE_NEWS_URL)
-	public String deleteNews(Model model, @PathVariable("id") Long id) {
+	public String deleteNews(Model model, @PathVariable("id") Long id,
+			SessionStatus status, HttpServletRequest request) {
 
-		newsService.deleteById(id);
+		newsService.deleteByIdTransactionally(id);
+		status.setComplete();
 		LOG.info("DELETED: " + "News[id=" + id + "]");
 		
-		return "redirect:/";
+		model.addAttribute("messageProperty", "success.news.deleted");
+		model.addAttribute("url", request.getServletContext().getContextPath());
+		
+		return "success";
 	}
 	
 	// Cancel news edit
     @RequestMapping(method=RequestMethod.GET, value = CANCEL_URL)
-    public String cancelNewsEdit(@PathVariable("id") Long id) {
+    public String cancelNewsEdit(@PathVariable("id") Long id,
+    		SessionStatus status) {
 
-    	if (id == 0) {
+    	status.setComplete();
+    	if (id == 0)
     		return "redirect:/";
-    	}
     	
     	return "redirect:/news/" + id;
     }
-
-	@ModelAttribute("news")
-	public News populateNews() {
-		return new News();
-	}
-
-	@ModelAttribute("comment")
-	public Comment populateComment() {
-		return new Comment();
-	}
 }

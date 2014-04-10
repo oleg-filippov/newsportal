@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	@Autowired
-	UserService service;
+	private UserService service;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request,
@@ -26,7 +26,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 			throws IOException, ServletException {
 		
 		User user = service.getByLogin(auth.getName());
-		request.getSession().setAttribute("loggedUser", user);
+		request.getSession().setAttribute("loggedUserId", user.getId());
+		
 		super.onAuthenticationSuccess(request, response, auth);
 	}
 }

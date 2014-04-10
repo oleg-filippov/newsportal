@@ -2,66 +2,59 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="ehcache.xsd">
 
-	<diskStore path="java.io.tmpdir"/>
-	
-	<defaultCache
-		maxElementsInMemory="10000"
-		eternal="false"
-		timeToIdleSeconds="120"
-		timeToLiveSeconds="120"
-		overflowToDisk="true"
-		diskSpoolBufferSizeMB="30"
-		maxElementsOnDisk="10000000"
-		diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="120"
+	<diskStore path="java.io.tmpdir" />
+
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
 		memoryStoreEvictionPolicy="LRU">
 	</defaultCache>
 
-	<cache
-		name="net.filippov.newsportal.domain.Comment"
-		maxElementsInMemory="3000"
-		eternal="false"
-		timeToIdleSeconds="0"
-		timeToLiveSeconds="120"
-		memoryStoreEvictionPolicy="FIFO"
-	/>
+	<cache name="net.filippov.newsportal.domain.Category"
+		maxEntriesLocalHeap="50" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
 
-	<cache
-		name="net.filippov.newsportal.domain.News"
-		maxElementsInMemory="1000"
-		eternal="false"
-		timeToIdleSeconds="3"
-		timeToLiveSeconds="10"
-		overflowToDisk="false"
-		memoryStoreEvictionPolicy="FIFO"
-	/>
-	
-	<cache
-		name="net.filippov.newsportal.domain.Tag"
-		maxElementsInMemory="100"
-		eternal="false"
-		timeToIdleSeconds="0"
-		timeToLiveSeconds="0"
-		overflowToDisk="false"
-		memoryStoreEvictionPolicy="FIFO"
-	/>
-	
-	<cache
-		name="net.filippov.newsportal.domain.User"
-		maxElementsInMemory="1000"
-		eternal="false"
-		timeToIdleSeconds="0"
-		timeToLiveSeconds="0"
-		overflowToDisk="false"
-		memoryStoreEvictionPolicy="FIFO"
-	/>
+	<cache name="net.filippov.newsportal.domain.Comment"
+		maxEntriesLocalHeap="3000" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="120" memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
 
-	<cache
-		name="net.filippov.newsportal.domain.UserRole"
-		maxElementsInMemory="10"
-		eternal="false"
-		timeToIdleSeconds="0"
-		timeToLiveSeconds="0"
-		memoryStoreEvictionPolicy="FIFO"
-	/>
+	<cache name="net.filippov.newsportal.domain.News"
+		maxEntriesLocalHeap="1000" eternal="false" timeToIdleSeconds="3"
+		timeToLiveSeconds="10" memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
+
+	<cache name="net.filippov.newsportal.domain.Tag"
+		maxEntriesLocalHeap="100" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
+
+	<cache name="net.filippov.newsportal.domain.User"
+		maxEntriesLocalHeap="1000" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
+
+	<cache name="net.filippov.newsportal.domain.UserRole"
+		maxEntriesLocalHeap="10" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
+
+	<cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+		maxEntriesLocalHeap="5000" eternal="true">
+		<persistence strategy="localTempSwap" />
+	</cache>
+
+	<cache name="org.hibernate.cache.internal.StandardQueryCache"
+		maxEntriesLocalHeap="5" eternal="false" timeToLiveSeconds="120"
+		memoryStoreEvictionPolicy="FIFO">
+		<persistence strategy="localTempSwap" />
+	</cache>
 </ehcache>

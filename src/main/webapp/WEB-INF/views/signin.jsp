@@ -5,24 +5,32 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <c:set var="title">
-	<spring:message code="signin.pageTitle" /> | <spring:message code="project.title" />
+	<spring:message code="signin.pageTitle" /> | <spring:message
+		code="project.title" />
 </c:set>
 
 <t:template title="${title}">
-<jsp:body>
+	<jsp:body>
 
-<form name="form-s" class="form-signin" action="signin/check" method="post">
-	<h2 class="form-signin-heading"><spring:message code="signin.heading" /></h2>
+<form name="form-s" class="form-signin" action="signin/check"
+			method="post">
+	<h2 class="form-signin-heading">
+				<spring:message code="signin.heading" />
+			</h2>
 	<c:if test="${not empty error}">
-		<h4><span class="label label-danger"><spring:message code="error.signIn" /></span></h4>
+		<h4>
+					<span class="label label-danger"><spring:message
+							code="error.signIn" /></span>
+				</h4>
 	</c:if>
 	<input type="text" class="form-control" name="j_username"
-		placeholder="<spring:message code="signin.username" />" autofocus>
+				placeholder="<spring:message code="signin.username" />" autofocus>
 	<input type="password" name="j_password" class="form-control"
-		placeholder="<spring:message code="signin.password" />">
+				placeholder="<spring:message code="signin.password" />">
 	<label class="checkbox">
-		<input type="checkbox" name="_spring_security_remember_me" value="true"
-			checked> <spring:message code="signin.rememberMe" />
+		<input type="checkbox" name="_spring_security_remember_me"
+				value="true" checked> <spring:message
+					code="signin.rememberMe" />
 	</label>
 	<button class="btn btn-lg btn-primary btn-block" type="submit">
 		<spring:message code="signin.signInUrl" />
