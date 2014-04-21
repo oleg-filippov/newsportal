@@ -9,23 +9,17 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-@Table(name = "role", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "authority") })
+@Table(name = "role")
 @Immutable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries({
-	@NamedQuery(
-			name = "UserRole.GET_ALL",
-			query = "from UserRole"),
 	@NamedQuery(
 			name = "UserRole.GET_BY_AUTHORITY",
 			query = "from UserRole ur where ur.authority = :authority")
@@ -34,11 +28,13 @@ public class UserRole extends BaseEntity implements GrantedAuthority {
 
 	private static final long serialVersionUID = -3981661393211469078L;
 	
-	@Column(name = "authority", length = 20)
+	@Column(name = "authority", nullable = false, unique = true, length = 20)
 	private String authority;
 	
 	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
 	private Set<User> users;
+
+	public UserRole() {}
 
 	public Set<User> getUsers() {
 		return users;

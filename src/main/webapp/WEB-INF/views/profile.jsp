@@ -6,24 +6,37 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <c:set var="title">
-	<spring:message code="profile.pageTitle" /> | <spring:message
-		code="project.title" />
+	<spring:message code="profile.pageTitle" /> | <spring:message code="project.title" />
 </c:set>
 
 <t:template title="${title}">
 	<jsp:body>
-
-<h3>
-			<spring:message code="profile.header"></spring:message> ${user.login}</h3>
-<hr>
-<h4>
-			<spring:message code="user.registered"></spring:message>: 
-	<fmt:formatDate value="${user.registered}" type="both" />
+		<h4>
+			<spring:message code="profile.header"/><strong>${user.login}</strong>
 		</h4>
-<h4>
-			<spring:message code="user.name"></spring:message>: ${user.name}</h4>
-<h4>
-			<spring:message code="user.email"></spring:message>: ${user.email}</h4>
-
-</jsp:body>
+		<hr>
+		<table class="profile">
+			<tr>
+				<th><spring:message code="user.registered"/>:</th>
+				<td><fmt:formatDate value="${user.registered}" type="both" /></td>
+			</tr>
+			<tr>
+				<th><spring:message code="user.name"/>:</th>
+				<td>${user.name}</td>
+			</tr>
+			<tr>
+				<th><spring:message code="user.email"/>:</th>
+				<td>${user.email}</td>
+			</tr>
+			<tr>
+				<c:url var="articlesByUser" value="/user/${user.id}/articles"></c:url>
+				<th><spring:message code="profile.articleCount" /></th>
+				<td><a href="${articlesByUser}">${user.articleCount}</a></td>
+			</tr>
+			<tr>
+				<th><spring:message code="profile.commentCount" /></th>
+				<td>${user.commentCount}</td>
+			</tr>
+		</table>
+	</jsp:body>
 </t:template>

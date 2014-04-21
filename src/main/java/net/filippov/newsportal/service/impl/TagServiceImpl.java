@@ -10,6 +10,7 @@ import net.filippov.newsportal.domain.Tag;
 import net.filippov.newsportal.exception.ServiceException;
 import net.filippov.newsportal.repository.GenericRepository;
 import net.filippov.newsportal.service.TagService;
+import net.filippov.newsportal.web.constants.Web;
 import static net.filippov.newsportal.service.util.QueryParameters.setParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +35,24 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 			throw new ServiceException(message, e);
 		}
 	}
+	
+	@Override
+	@Transactional
+	public List<Tag> getAllTransactionally() {
+		try {
+			return repository.getAllByNamedQuery(
+					"Tag.GET_ALL", 0, Web.TAG_MAX_COUNT);
+		} catch (PersistenceException e) {
+			throw new ServiceException("Unable to get all tags", e);
+		}
+	}
 
 	@Override
 	@Transactional
-	public List<String> getAllNames(int resultLimit) {
+	public List<String> getAllNames() {
 		try {
 			return repository.getAllNamesByNamedQuery(
-					"Tag.GET_ALL_NAMES", resultLimit);
+					"Tag.GET_ALL_NAMES", 0);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Unable to get all tag names", e);
 		}
@@ -48,16 +60,22 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 	
 	@Override
 	public String getAutocompleteJson() {
-		List<String> tagNames = getAllNames(0);
-		StringBuilder r = new StringBuilder("[");
-		for (String name : tagNames) {
-			r.append("{value:\'")
-				.append(name)
-				.append("\'},");
+		List<String> tagNames = this.getAllNames();
+		
+		if (tagNames.isEmpty()) {
+			return "[]";
 		}
-		r.delete(r.length()-1, r.length());
-		r.append("]");
-		return r.toString();
+		
+		StringBuilder result = new StringBuilder("[");
+		for (String name : tagNames) {
+			result.append("\"")
+				.append(name)
+				.append("\"")
+				.append(",");
+		}
+		result.delete(result.length()-1, result.length())
+			.append("]");
+		return result.toString();
 	}
 	
 	@Override

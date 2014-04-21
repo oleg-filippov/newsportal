@@ -41,14 +41,14 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	}
 
 	@PersistenceContext
-    protected EntityManager em;
+	protected EntityManager em;
 
 	/**
 	 * @see net.filippov.newsportal.repository.GenericRepository#add(java.lang.Object)
 	 */
 	@Override
 	public void add(T obj) {
-    	em.persist(obj);
+		em.persist(obj);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public T get(PK id) {
-    	return em.find(type, id);
+		return em.find(type, id);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public T update(T obj) {
-    	return em.merge(obj);
+		return em.merge(obj);
 	}
 
 	/**
@@ -140,6 +140,8 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	}
 
 	/**
+	 * All getAllByNamedQuery...-methods delegate to this one
+	 * 
 	 * @see net.filippov.newsportal.repository.GenericRepository#getAllByNamedQuery(
 	 * java.lang.String, java.util.Map, int, int)
 	 */
@@ -177,7 +179,6 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public int getCount() {
-		
 		CriteriaBuilder cBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cQuery = cBuilder.createQuery(Long.class);
 		cQuery.select(cBuilder.count(cQuery.from(type)));

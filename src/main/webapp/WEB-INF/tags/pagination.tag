@@ -1,59 +1,61 @@
-<%@ tag language="java" description="Displays a list of news"
-	pageEncoding="UTF-8"%>
+<%@ tag language="java" description="Displays a list of news" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ attribute name="pagesCount" required="true"
-	description="Number of pages"%>
+<%@ attribute name="pageCount" required="true" description="Number of pages"%>
 <%@ attribute name="currentPage" required="true"%>
 
+<c:set var="rootUrl" value="${pageContext.request.contextPath}${requestUrl}"></c:set>
+
 <!-- Pagination -->
-<c:if test="${pagesCount > 1}">
+<c:if test="${pageCount > 1}">
 	<div class="text-center">
 		<ul class="pagination">
-			<!-- Show links to the first and prev pages -->
-			<c:choose>
-				<c:when test="${currentPage > 1}">
-					<li><a href="<c:url value="/"></c:url>"> &laquo; <spring:message
-								code="home.firstPage" /></a></li>
-					<li><a href="<c:url value="/page/${currentPage-1}"></c:url>">&laquo;</a></li>
-				</c:when>
-			</c:choose>
-
-			<!-- Numbers of pages to show -->
-			<c:if test="${currentPage-2 > 0}">
-				<li class="disabled"><span>...</span></li>
-			</c:if>
-			<c:forEach var="pageNum" begin="${currentPage-1}"
-				end="${currentPage+2}">
+			<!-- Show link to the first page -->
+			<c:if test="${currentPage > 3}">
+				<li><a href="${rootUrl}">1</a></li>
+				<!-- Show link to the second page or '...' -->
 				<c:choose>
-					<c:when test="${pageNum eq currentPage}">
-						<li class="active"><span><c:out value="${pageNum}" /></span></li>
+					<c:when test="${currentPage > 5}">
+						<li class="disabled"><span>...</span></li>
 					</c:when>
 					<c:otherwise>
-						<c:if test="${pageNum > 0 && pageNum <= pagesCount}">
-							<li><a
-								href="<c:url value="/page/${pageNum}">
-			  					</c:url>"><c:out
-										value="${pageNum}" /></a></li>
+						<c:if test="${currentPage > 4}">
+							<li><a href="${rootUrl}page/2">2</a></li>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+
+			<!-- Numbers of pages to show -->
+			<c:forEach var="pageNum" begin="${currentPage-1}" end="${currentPage+3}">
+				<c:choose>
+	
+					<c:when test="${pageNum-1 eq currentPage}">
+						<li class="active"><span>${pageNum-1}</span></li>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${pageNum-1 > 0 && pageNum-1 <= pageCount}">
+							<li><a href="${rootUrl}page/${pageNum-1}">${pageNum-1}</a></li>
 						</c:if>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
-			<c:if test="${currentPage+2 < pagesCount}">
-				<li class="disabled"><span>...</span></li>
+			
+			<!-- Show link to the last page -->
+			<c:if test="${currentPage < pageCount-2}">
+				<!-- Show link to the pre-last page or '...' -->
+				<c:choose>
+					<c:when test="${currentPage < pageCount-4}">
+						<li class="disabled"><span>...</span></li>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${currentPage < pageCount-3}">
+							<li><a href="${rootUrl}page/${pageCount-1}">${pageCount-1}</a></li>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
+				<li><a href="${rootUrl}page/${pageCount}">${pageCount}</a></li>
 			</c:if>
-
-			<!-- Show links to the last and next pages -->
-			<c:choose>
-				<c:when test="${currentPage < pagesCount}">
-					<li><a href="<c:url value="/page/${currentPage+1}"></c:url>">&raquo;</a></li>
-					<li><a
-						href="<c:url value="/page/${pagesCount}">
-			  			</c:url>"><spring:message
-								code="home.lastPage" /> &raquo;</a></li>
-				</c:when>
-			</c:choose>
 		</ul>
 	</div>
-	<!-- Pagination -->
 </c:if>

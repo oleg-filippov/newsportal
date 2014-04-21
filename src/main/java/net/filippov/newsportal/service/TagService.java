@@ -9,7 +9,7 @@ public interface TagService extends AbstractService<Tag> {
 	
 	Tag getByName(String name);
 	
-	List<String> getAllNames(int resultLimit);
+	List<String> getAllNames();
 	
 	String getAutocompleteJson();
 	

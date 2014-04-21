@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generic repository providing basic operations
+ * Generic repository providing basic and custom operations
  * 
  * @author Oleg Filippov
  *

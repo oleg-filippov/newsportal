@@ -25,47 +25,38 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "news")
+@Table(name = "article")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
-			name = "News.GET_ALL",
-			query = "from News n order by n.created desc"),
+			name = "Article.GET_ALL",
+			query = "from Article a order by a.created desc"),
 	@NamedQuery(
-			name = "News.GET_ALL_BY_USER_ID",
-			query = "from News n where n.author.id = :id order by n.created desc"),
+			name = "Article.GET_ALL_BY_USER_ID",
+			query = "from Article a where a.author.id = :id order by a.created desc"),
 	@NamedQuery(
-			name = "News.GET_ALL_BY_CATEGORY_NAME",
-			query = "select n from Category c join c.news n where n.category.name = :name order by n.created desc"),
+			name = "Article.GET_ALL_BY_CATEGORY_NAME",
+			query = "from Article a where a.category.name = :name order by a.created desc"),
 	@NamedQuery(
-			name = "News.GET_ALL_BY_TAG_NAME",
-			query = "select n from Tag t join t.news n where t.name = :name order by n.created desc"),
+			name = "Article.GET_ALL_BY_TAG_NAME",
+			query = "select a from Tag t join t.articles a where t.name = :name order by a.created desc"),
 	@NamedQuery(
-			name = "News.GET_COUNT",
-			query = "select count(id) from News"),
-	@NamedQuery(
-			name = "News.GET_COUNT_BY_USER_ID",
-			query = "select count(n.id) from User u join u.news n where u.id = :id"),
-	@NamedQuery(
-			name = "News.GET_COUNT_BY_CATEGORY_NAME",
-			query = "select count(n.id) from Category c join c.news n where c.name = :name"),
-	@NamedQuery(
-			name = "News.GET_COUNT_BY_TAG_NAME",
-			query = "select count(n.id) from Tag t join t.news n where t.name = :name")
+			name = "Article.GET_ALL_BY_FRAGMENT",
+			query = "from Article a where a.title like :fragment order by a.created desc")
 })
-public class News extends BaseEntity {
+public class Article extends BaseEntity {
 
 	private static final long serialVersionUID = 3513552163842451989L;
 
-	@NotBlank(message = "{validation.news.title}")
+	@NotBlank(message = "{validation.article.title}")
 	@Column(name = "title", nullable = false, length = 100)
 	private String title;
 
-	@NotBlank(message = "{validation.news.preview}")
+	@NotBlank(message = "{validation.article.preview}")
 	@Column(name = "preview", nullable = false)
 	private String preview;
 
-	@NotBlank(message = "{validation.news.content}")
+	@NotBlank(message = "{validation.article.content}")
 	@Column(name = "content", nullable = false, length = 65535)
 	private String content;
 
@@ -78,35 +69,33 @@ public class News extends BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastModified;
 
-	@Column(name = "views_count", insertable = false,
-			columnDefinition = "INT DEFAULT 0")
-	private int viewsCount;
+	@Column(name = "view_count", insertable = false, columnDefinition = "INT DEFAULT 0")
+	private int viewCount;
 
-	@Formula("select count(id) from Comment c where c.news_id = id")
-//	@Formula("select count(c.id) from News n join n.comments c where c.news.id = n.id")
-	private int commentsCount;
+	@Formula("select count(id) from Comment c where c.article_id = id")
+	private int commentCount;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "user_id", nullable = false, updatable = false)
 	private User author;
 
 	@ManyToOne
-	@JoinColumn(name = "category_id", nullable = false)
+	@JoinColumn(name = "category_id")
 	private Category category;
 	
-	@OneToMany(mappedBy = "news", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<Comment> comments;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "news_tag",
-			joinColumns = {@JoinColumn(name = "news_id") },
+	@JoinTable(name = "article_tag",
+			joinColumns = {@JoinColumn(name = "article_id") },
 			inverseJoinColumns = {@JoinColumn(name = "tag_id") })
 	@OrderBy("name")
 	private Set<Tag> tags;
 
-	public News() {
+	public Article() {
 		created = new Date();
-		viewsCount = 0;
+		viewCount = 0;
 	}
 
 	public String getTitle() {
@@ -145,16 +134,16 @@ public class News extends BaseEntity {
 		this.lastModified = lastModified;
 	}
 
-	public int getViewsCount() {
-		return viewsCount;
+	public int getViewCount() {
+		return viewCount;
 	}
 	
-	public void setViewsCount(int viewsCount) {
-		this.viewsCount = viewsCount;
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
 	}
 	
-	public int getCommentsCount() {
-		return commentsCount;
+	public int getCommentCount() {
+		return commentCount;
 	}
 
 	public User getAuthor() {
@@ -209,7 +198,7 @@ public class News extends BaseEntity {
 		if (getClass() != obj.getClass())
 			return false;
 
-		News other = (News) obj;
+		Article other = (Article) obj;
 		
 		if (getTitle() != null
 				? !getTitle().equals(other.getTitle())
@@ -226,7 +215,7 @@ public class News extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return String.format("News[id=%d, author=%s]",
+		return String.format("Article[id=%d, author=%s]",
 				getId(), getAuthor() == null ? "null" : getAuthor().getLogin());
 	}
 }

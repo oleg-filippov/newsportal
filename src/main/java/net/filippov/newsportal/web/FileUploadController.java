@@ -9,6 +9,7 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletResponse;
 
 import net.filippov.newsportal.exception.UnacceptableFileFormatException;
+import net.filippov.newsportal.web.constants.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
@@ -23,20 +24,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class FileUploadController {
 
-	// URL's
-	private static final String UPLOAD_IMAGE_URL = "/uploadimage";
-	private static final String SHOW_IMAGE_URL = "**/images/{name}.{type}";
-
 	// Constants operating with images
-	private static final String NEWS_IMAGES_PATH = "c:/Newsportal/news_images/";
+	private static final String ARTICLE_IMAGES_PATH = "c:/Newsportal/article_images/";
 	private static final String JPG_CONTENT_TYPE = "image/jpeg";
 	private static final String PNG_CONTENT_TYPE = "image/png";
 
-	public FileUploadController() {
-	}
+	public FileUploadController() {}
 
 	// Upload image
-	@RequestMapping(method = RequestMethod.POST, value = UPLOAD_IMAGE_URL)
+	@RequestMapping(method = RequestMethod.POST, value = URL.UPLOAD_IMAGE)
 	@ResponseBody
 	public String uploadimage(@RequestParam("file") MultipartFile image)
 			throws IOException {
@@ -54,7 +50,7 @@ public class FileUploadController {
 				throw new UnacceptableFileFormatException();
 			}
 
-			File file = new File(NEWS_IMAGES_PATH + imageName);
+			File file = new File(ARTICLE_IMAGES_PATH + imageName);
 			FileUtils.writeByteArrayToFile(file, image.getBytes());
 		}
 
@@ -62,12 +58,12 @@ public class FileUploadController {
 	}
 
 	// Get image
-	@RequestMapping(method = RequestMethod.GET, value = SHOW_IMAGE_URL)
+	@RequestMapping(method = RequestMethod.GET, value = URL.SHOW_IMAGE)
 	public void showImg(@PathVariable("name") String imageName,
 			@PathVariable("type") String type, HttpServletResponse response)
 			throws IOException {
 
-		InputStream in = new FileInputStream(NEWS_IMAGES_PATH
+		InputStream in = new FileInputStream(ARTICLE_IMAGES_PATH
 				+ imageName + "." + type);
 		FileCopyUtils.copy(in, response.getOutputStream());
 		in.close();

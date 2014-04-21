@@ -5,4 +5,6 @@ import net.filippov.newsportal.domain.User;
 public interface UserService extends AbstractService<User> {
 
 	User getByLogin(String login);
+	
+	User getByEmail(String email);
 }

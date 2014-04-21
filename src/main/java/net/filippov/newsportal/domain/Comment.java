@@ -21,8 +21,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
-			name = "Comment.GET_ALL_BY_NEWS_ID",
-			query = "from Comment c where c.news.id = :id order by c.created desc")
+			name = "Comment.GET_ALL_BY_ARTICLE_ID",
+			query = "from Comment c where c.article.id = :id order by c.created desc")
 })
 public class Comment extends BaseEntity {
 
@@ -42,8 +42,8 @@ public class Comment extends BaseEntity {
 	private User author;
 	
 	@ManyToOne
-	@JoinColumn(name = "news_id")
-	private News news;
+	@JoinColumn(name = "article_id")
+	private Article article;
 	
 	public Comment() {
 		created = new Date();
@@ -69,12 +69,12 @@ public class Comment extends BaseEntity {
 		this.author = author;
 	}
 
-	public News getNews() {
-		return news;
+	public Article getArticle() {
+		return article;
 	}
 
-	public void setNews(News news) {
-		this.news = news;
+	public void setArticle(Article article) {
+		this.article = article;
 	}
 	
 	@Override
@@ -114,9 +114,9 @@ public class Comment extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return String.format("Comment[id=%d, author=%s, news_id=%s]",
+		return String.format("Comment[id=%d, author=%s, article_id=%s]",
 				getId(),
 				getAuthor() == null ? "null" : getAuthor().getLogin(),
-				getNews() == null ? "null" : getNews().getId());
+				getArticle() == null ? "null" : getArticle().getId());
 	}
 }

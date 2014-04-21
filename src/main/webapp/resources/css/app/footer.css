@@ -1,0 +1,18 @@
+html,body {
+	height: 100%;
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+	min-height: 100%;
+	height: auto;
+	/* Negative indent footer by its height */
+	margin: 0 auto -30px;
+	/* Pad bottom by footer height */
+	padding: 0 0 30px;
+}
+
+/* Set the fixed height of the footer */
+#footer {
+	height: 30px;
+}

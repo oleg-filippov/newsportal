@@ -3,119 +3,222 @@ package net.filippov.newsportal.web;
 import java.util.List;
 import java.util.Map;
 
-import net.filippov.newsportal.domain.News;
-import net.filippov.newsportal.service.CategoryService;
-import net.filippov.newsportal.service.NewsService;
-import net.filippov.newsportal.service.TagService;
+import net.filippov.newsportal.domain.Article;
+import net.filippov.newsportal.service.ArticleService;
+import net.filippov.newsportal.web.constants.View;
+import net.filippov.newsportal.web.constants.URL;
+import net.filippov.newsportal.web.constants.Web;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class SearchController {
 
-	// URL's
-	private static final String SEARCH_BY_TAG_URL = "/tags/{name}";
-	private static final String SEARCH_BY_CATEGORY_URL = "/category/{name}";
-	private static final String SEARCH_BY_CONTENT_URL = "/news/search";
-	private static final String SEARCH_BY_TAG_CUSTOM_PAGE_URL = "/tags/{name}/page/{pageNumber}";
-	private static final String SEARCH_BY_CATEGORY_CUSTOM_PAGE_URL = "/category/{name}/page/{pageNumber}";
-	private static final String SEARCH_BY_CONTENT_CUSTOM_PAGE_URL = "/news/search/page/{pageNumber}";
-	private static final String ERROR_URL = "/error";
-
-	private static final int NEWS_PER_PAGE = 3;
-
 	@Autowired
-	private NewsService newsService;
-
-	@Autowired
-	private TagService tagService;
-
-	@Autowired
-	private CategoryService categoryService;
+	private ArticleService articleService;
 	
-	@RequestMapping(method = RequestMethod.GET, value = SEARCH_BY_CATEGORY_URL)
-	public ModelAndView viewNewsByCategory(@PathVariable("name") String categoryName) {
+	@Autowired
+	ApplicationContext context;
+	
+	public SearchController() {}
 
-		return tagModelAndView(1, categoryName);
+	/**
+	 * Search by category - first page
+	 * @param categoryName
+	 * @return search by category ModelAndView
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_CATEGORY)
+	public ModelAndView viewArticlesByCategory(@PathVariable("name") String categoryName) {
+
+		return categoryModelAndView(1, categoryName);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = SEARCH_BY_CATEGORY_CUSTOM_PAGE_URL)
-	public ModelAndView viewNewsByCategory(@PathVariable("name") String categoryName,
-			@PathVariable("pageNumber") Integer pageNumber) {
+	/**
+	 * Search by category - custom page
+	 * @param categoryName
+	 * @param pageNumber
+	 * @return search by category ModelAndView
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_CATEGORY_CUSTOM_PAGE)
+	public ModelAndView viewArticlesByCategory(@PathVariable("name") String categoryName,
+			@PathVariable("number") Integer pageNumber) {
 
 		if (pageNumber == 1) {
-			return new ModelAndView("redirect:" + SEARCH_BY_CATEGORY_URL);
+			return new ModelAndView("redirect:" + URL.SEARCH_BY_CATEGORY);
 		}
-
 		return categoryModelAndView(pageNumber, categoryName);
 	}
-
+	
+	/**
+	 * 
+	 */
 	private ModelAndView categoryModelAndView(Integer pageNumber, String categoryName) {
-
-		Map<String, Object> newsData = newsService.getByPageByCategoryName(
-				pageNumber, NEWS_PER_PAGE, categoryName);
-		Integer pagesCount = (Integer) newsData.get("pagesCount");
-
-		// pageNumber > pagesCount
-		if (pagesCount == -1) {
-			return new ModelAndView("redirect:" + ERROR_URL);
-		}
-
-		@SuppressWarnings("unchecked")
-		List<News> newsByPage = (List<News>) newsData.get("newsByPage");
-
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("pagesCount", pagesCount);
-		mav.addObject("newsByPage", newsByPage);
-		mav.addObject("currentPage", pageNumber);
-		mav.setViewName("search");
-
-		return mav;
+		
+		Map<String, Object> articlesData = articleService.getByPageByCategoryName(
+				pageNumber, Web.ARTICLES_PER_PAGE, categoryName);
+		String requestUrl = String.format("/category/%s/", categoryName);
+		String message = String.format(context.getMessage("search.result.byCategory", null,
+				LocaleContextHolder.getLocale()), categoryName);
+		
+		return searchModelAndView(articlesData, pageNumber, message, requestUrl);
 	}
-
-	@RequestMapping(method = RequestMethod.GET, value = SEARCH_BY_TAG_URL)
-	public ModelAndView viewNewsByTag(@PathVariable("name") String tagName) {
+	
+	/**
+	 * Search by tag - first page
+	 * @param tagName
+	 * @return search by tag ModelAndView
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_TAG)
+	public ModelAndView viewArticlesByTag(@PathVariable("name") String tagName) {
 
 		return tagModelAndView(1, tagName);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = SEARCH_BY_TAG_CUSTOM_PAGE_URL)
-	public ModelAndView viewNewsByTag(@PathVariable("name") String tagName,
-			@PathVariable("pageNumber") Integer pageNumber) {
+	/**
+	 * Search by tag - custom page
+	 * @param tagName
+	 * @return search by tag ModelAndView
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_TAG_CUSTOM_PAGE)
+	public ModelAndView viewArticlesByTag(@PathVariable("name") String tagName,
+			@PathVariable("number") Integer pageNumber) {
 
 		if (pageNumber == 1) {
-			return new ModelAndView("redirect:" + SEARCH_BY_TAG_URL);
+			return new ModelAndView("redirect:" + URL.SEARCH_BY_TAG);
 		}
-
 		return tagModelAndView(pageNumber, tagName);
 	}
 
+	/**
+	 * 
+	 */
 	private ModelAndView tagModelAndView(Integer pageNumber, String tagName) {
 
-		Map<String, Object> newsData = newsService.getByPageByTagName(
-				pageNumber, NEWS_PER_PAGE, tagName);
-		Integer pagesCount = (Integer) newsData.get("pagesCount");
+		Map<String, Object> articlesData = articleService.getByPageByTagName(
+				pageNumber, Web.ARTICLES_PER_PAGE, tagName);
+		String requestUrl = String.format("/tags/%s/", tagName);
+		String message = String.format(context.getMessage("search.result.byTag", null,
+				LocaleContextHolder.getLocale()), tagName);
+		
+		return searchModelAndView(articlesData, pageNumber, message, requestUrl);
+	}
+	
+	/**
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_USER)
+	public ModelAndView viewArticlesByUser(@PathVariable("id") Long userId) {
 
-		// pageNumber > pagesCount
-		if (pagesCount == -1) {
-			return new ModelAndView("redirect:" + ERROR_URL);
+		return userModelAndView(1, userId);
+	}
+	
+	/**
+	 * @param userId
+	 * @param pageNumber
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_USER_CUSTOM_PAGE)
+	public ModelAndView viewArticlesByUser(@PathVariable("id") Long userId,
+			@PathVariable("number") Integer pageNumber) {
+
+		if (pageNumber == 1) {
+			return new ModelAndView("redirect:" + URL.SEARCH_BY_USER);
+		}
+		return userModelAndView(pageNumber, userId);
+	}
+	
+	/**
+	 * 
+	 */
+	private ModelAndView userModelAndView(Integer pageNumber, Long userId) {
+		
+		Map<String, Object> articlesData = articleService.getByPageByUserId(
+				pageNumber, Web.ARTICLES_PER_PAGE, userId);
+		String userLogin = (String) articlesData.get("userLogin");
+		String requestUrl = String.format("/user/%d/articles/", userId);
+		String message = String.format(context.getMessage("search.result.byUser", null,
+				LocaleContextHolder.getLocale()), userLogin);
+		
+		return searchModelAndView(articlesData, pageNumber, message, requestUrl);
+	}
+	
+	/**
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_FRAGMENT)
+	public ModelAndView viewArticlesByFragment(@RequestParam("fragment") String fragment) {
+		
+		return fragmentModelAndView(1, fragment);
+	}
+	
+	/**
+	 * @param userId
+	 * @param pageNumber
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_FRAGMENT_CUSTOM_PAGE)
+	public ModelAndView viewArticlesByFragment(@RequestParam String fragment,
+			@PathVariable("number") Integer pageNumber) {
+
+		if (pageNumber == 1) {
+			return new ModelAndView("redirect:" + URL.SEARCH_BY_USER);
+		}
+		return fragmentModelAndView(pageNumber, fragment);
+	}
+	
+	/**
+	 * 
+	 */
+	private ModelAndView fragmentModelAndView(Integer pageNumber, String fragment) {
+		
+		Map<String, Object> articlesData = articleService.getByPageByFragment(
+				pageNumber, Web.ARTICLES_PER_PAGE, fragment);
+		String requestUrl = String.format("/search/%s/", fragment);
+		String message = String.format(context.getMessage("search.result.byFragment", null,
+				LocaleContextHolder.getLocale()), fragment);
+		
+		return searchModelAndView(articlesData, pageNumber, message, requestUrl);
+	}
+	
+	/**
+	 * 
+	 */
+	private ModelAndView searchModelAndView(Map<String, Object> articlesData,
+			Integer pageNumber, String message, String requestUrl) {
+		
+		// Set required model attributes
+		ModelAndView mav = new ModelAndView(View.SEARCH);
+		mav.addObject("message", message);
+		mav.addObject("requestUrl", requestUrl);
+		mav.addObject("currentPage", pageNumber);
+		
+		if (articlesData.isEmpty()) {	// articleCount == 0
+			return mav;
+		}
+		
+		Integer pageCount = (Integer) articlesData.get("pageCount");
+		// pageNumber > pageCount
+		if (pageCount == -1) {
+			return new ModelAndView(View.ERROR);
 		}
 
 		@SuppressWarnings("unchecked")
-		List<News> newsByPage = (List<News>) newsData.get("newsByPage");
+		List<Article> articlesByPage = (List<Article>) articlesData.get("articlesByPage");
 
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("pagesCount", pagesCount);
-		mav.addObject("newsByPage", newsByPage);
-		mav.addObject("currentPage", pageNumber);
-		mav.setViewName("search");
-
+		// Set the rest model attributes
+		mav.addObject("pageCount", pageCount);
+		mav.addObject("articlesByPage", articlesByPage);
+		
 		return mav;
 	}
 }

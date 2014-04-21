@@ -5,16 +5,13 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <c:set var="title">
-	<spring:message code="contacts.pageTitle" /> | <spring:message
-		code="project.title" />
+	<spring:message code="contacts.pageTitle" /> | <spring:message code="project.title" />
 </c:set>
 
 <t:template title="${title}">
 	<jsp:body>
-
-<h2>Contacts...</h2>
-
-</jsp:body>
+		<h2>Contacts...</h2>
+	</jsp:body>
 </t:template>
 
 

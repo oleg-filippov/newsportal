@@ -14,6 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+/**
+ * Puts logged user id into session
+ * 
+ * @author Oleg Filippov
+ */
 @Component("AuthenticationSuccessHandler")
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 

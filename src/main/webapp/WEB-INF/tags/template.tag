@@ -7,35 +7,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/bootstrap.min.css"/>" />
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/font-awesome.min.css"/>" />
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/summernote.css"/>" />
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/tokenfield-typeahead.css"/>" />
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/bootstrap-tokenfield.css"/>" />
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/newsportal.css"/>" />
 
-<script type="text/javascript"
-	src="<c:url value="/resources/js/jquery-1.10.2.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/bootstrap-maxlength.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/bootstrap-tokenfield.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/typeahead.jquery.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/bloodhound.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/summernote.min.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/summernote-ru-RU.js"/>"></script>
+<link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/font-awesome.min.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/summernote.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/tokenfield-typeahead.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/bootstrap-tokenfield.css"/>" />
+<!-- Application styles -->
+<link rel="stylesheet" href="<c:url value="/resources/css/app/header.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/app/signin-signup.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/app/footer.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/app/common.css"/>" />
+
+<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.10.2.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/bootstrap-maxlength.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/bootstrap-tokenfield.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/typeahead.jquery.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/bloodhound.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/summernote.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/summernote-ru-RU.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/validator.min.js"/>"></script>
 
 <title>${title}</title>
 </head>

@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("CategoryService")
-public class CategoryServiceImpl extends AbstractServiceImpl<Category> implements
-		CategoryService {
+public class CategoryServiceImpl extends AbstractServiceImpl<Category>
+		implements CategoryService {
 
 	@Autowired
 	public CategoryServiceImpl(GenericRepository<Category, Long> repository) {

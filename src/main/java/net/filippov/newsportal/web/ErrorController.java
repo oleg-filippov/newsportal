@@ -2,6 +2,9 @@ package net.filippov.newsportal.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.filippov.newsportal.web.constants.View;
+import net.filippov.newsportal.web.constants.URL;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -13,12 +16,10 @@ public class ErrorController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ErrorController.class);
 
-	private static final String ERROR_URL = "/error";
-
 	public ErrorController() {}
 
 	// Error-page
-	@RequestMapping(value = ERROR_URL)
+	@RequestMapping(value = URL.ERROR)
 	public String errorPage(Model model, HttpServletRequest request) {
 
 		Integer statusCode = (Integer) request
@@ -53,6 +54,6 @@ public class ErrorController {
 		model.addAttribute("statusCode", statusCode);
 		model.addAttribute("requestUrl", requestUrl);
 
-		return "error";
+		return View.ERROR;
 	}
 }

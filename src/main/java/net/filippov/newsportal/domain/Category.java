@@ -9,43 +9,34 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name = "category", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "name") })
+@Table(name = "category")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
 			name = "Category.GET_ALL",
 			query = "from Category c order by c.name"),
 	@NamedQuery(
-			name = "Category.GET_ALL_NAMES",
-			query = "select c.name from Category c order by c.name"),
-	@NamedQuery(
 			name = "Category.GET_BY_NAME",
-			query = "from Category c where c.name = :name"),
-	@NamedQuery(
-			name = "Category.GET_ALL_BY_FRAGMENT",
-			query = "from Category c where c.name like :fragment order by c.name")
+			query = "from Category c where c.name = :name")
 })
 public class Category extends BaseEntity {
 
 	private static final long serialVersionUID = 7371123602615782324L;
 
-	@Column(name = "name", nullable = false, length = 30)
+	@Column(name = "name", nullable = false, unique = true, length = 30)
 	private String name;
 	
-//	@Formula("select count(n.id) from Category c join c.news n where c.id = n.category.id")
-//	private int newsCount;
+	@Formula("select count(id) from Article a where a.category_id = id")
+	private int articleCount;
 	
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-	private Set<News> news;
+	private Set<Article> articles;
 	
 	public Category() {}
 
@@ -57,16 +48,16 @@ public class Category extends BaseEntity {
 		this.name = name;
 	}
 
-//	public int getNewsCount() {
-//		return newsCount;
-//	}
-
-	public Set<News> getNews() {
-		return news;
+	public int getArticleCount() {
+		return articleCount;
 	}
 
-	public void setNews(Set<News> news) {
-		this.news = news;
+	public Set<Article> getArticles() {
+		return articles;
+	}
+
+	public void setArticles(Set<Article> articles) {
+		this.articles = articles;
 	}
 
 	@Override

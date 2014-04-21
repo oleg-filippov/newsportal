@@ -16,32 +16,31 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "user", uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"login", "email"}) })
+@Table(name = "user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
-			name = "User.GET_ALL",
-			query = "from User u order by u.login"),
-	@NamedQuery(
 			name = "User.GET_BY_LOGIN",
-			query = "from User u where u.login = :login")
+			query = "from User u where u.login = :login"),
+	@NamedQuery(
+			name = "User.GET_BY_EMAIL",
+			query = "from User u where u.email = :email")
 })
 public class User extends BaseEntity {
 
 	private static final long serialVersionUID = 286409866205173021L;
 	
 	@Size(min = 4, max = 30, message = "{validation.user.loginSize}")
-	@Column(name = "login", nullable = false)
+	@Column(name = "login", nullable = false, unique = true)
 	private String login;
 
 	@Size(min = 7, max = 60, message = "{validation.user.passwordSize}")
@@ -54,7 +53,7 @@ public class User extends BaseEntity {
 
 	@NotBlank(message = "{validation.user.emailNotBlank}")
 	@Email(message = "{validation.user.emailValid}")
-	@Column(name = "email", nullable = false, length = 50)
+	@Column(name = "email", nullable = false, unique = true, length = 50)
 	private String email;
 
 	@Column(name = "registered", insertable = false, updatable = false,
@@ -70,11 +69,11 @@ public class User extends BaseEntity {
 			columnDefinition = "BOOLEAN DEFAULT TRUE")
 	private boolean enabled;
 	
-//	@Formula("select count(n.id) from User u join u.news n where u.id = n.user.id")
-//	private int newsCount;
+	@Formula("select count(a.id) from Article a where a.user_id = id")
+	private int articleCount;
 	
-//	@Formula("select count(c.id) from User u join u.comments c where u.id = c.user.id")
-//	private int commentCount;
+	@Formula("select count(c.id) from Comment c where c.user_id = id")
+	private int commentCount;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "user_role",
@@ -83,7 +82,7 @@ public class User extends BaseEntity {
 	private Set<UserRole> roles;
 	
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-	private Set<News> news;
+	private Set<Article> articles;
 
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private Set<Comment> comments;
@@ -145,6 +144,14 @@ public class User extends BaseEntity {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	public int getArticleCount() {
+		return articleCount;
+	}
+
+	public int getCommentCount() {
+		return commentCount;
+	}
 
 	public Set<UserRole> getRoles() {
 		return roles;
@@ -162,12 +169,12 @@ public class User extends BaseEntity {
 		this.comments = comments;
 	}
 
-	public Set<News> getNews() {
-		return news;
+	public Set<Article> getArticles() {
+		return articles;
 	}
 
-	public void setNews(Set<News> news) {
-		this.news = news;
+	public void setArticles(Set<Article> articles) {
+		this.articles = articles;
 	}
 
 	@Override

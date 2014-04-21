@@ -5,22 +5,17 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name = "tag", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "name") })
+@Table(name = "tag")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
 	@NamedQuery(
@@ -31,23 +26,23 @@ import org.hibernate.annotations.NaturalId;
 			query = "select t.name from Tag t order by t.name"),
 	@NamedQuery(
 			name = "Tag.GET_BY_NAME",
-			query = "from Tag t where t.name = :name"),
-	@NamedQuery(
-			name = "Tag.GET_ALL_BY_FRAGMENT",
-			query = "from Tag t where t.name like :fragment order by t.name")
+			query = "from Tag t where t.name = :name")
 })
 public class Tag extends BaseEntity {
 
 	private static final long serialVersionUID = 1282054549729552169L;
 
-	@Column(name = "name", nullable = false, length = 20)
+	@Column(name = "name", nullable = false, unique = true, length = 20)
 	private String name;
 	
-//	@Formula("select count(n.id) from Tag t join t.news n where t.id = n.tags.id")
-//	private int newsCount;
+	// Mock
+	@Formula("select count(a.id) from article_tag at "
+			+ "join Article a on at.article_id = a.id "
+			+ "join Tag t on at.tag_id = t.id where t.id = id")
+	private int articleCount;
 	
 	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
-	private Set<News> news;
+	private Set<Article> articles;
 	
 	public Tag() {}
 	
@@ -59,16 +54,20 @@ public class Tag extends BaseEntity {
 		this.name = name;
 	}
 	
-//	public int getNewsCount() {
-//		return newsCount;
-//	}
-
-	public Set<News> getNews() {
-		return news;
+	public int getArticleCount() {
+		return articleCount;
+	}
+	
+	public int getScale() {
+		return articleCount > 9 ? 9 : articleCount;
 	}
 
-	public void setNews(Set<News> news) {
-		this.news = news;
+	public Set<Article> getArticles() {
+		return articles;
+	}
+
+	public void setArticles(Set<Article> articles) {
+		this.articles = articles;
 	}
 
 	@Override
