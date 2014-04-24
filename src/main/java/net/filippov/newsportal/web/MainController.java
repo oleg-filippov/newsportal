@@ -20,19 +20,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Controller for home-page and static pages (about, contacts)
+ * 
+ * @author Oleg Filippov
+ */
 @Controller
 public class MainController {
 
-	@Autowired
 	private ArticleService articleService;
-	
-	@Autowired
 	private CategoryService categoryService;
-	
-	@Autowired
 	private TagService tagService;
-	
-	public MainController() {}
+
+	/**
+	 * Constructor autowiring needed services
+	 */
+	@Autowired
+	public MainController(ArticleService articleService,
+			CategoryService categoryService,
+			TagService tagService) {
+		this.articleService = articleService;
+		this.categoryService = categoryService;
+		this.tagService = tagService;
+	}
 
 	/**
 	 * Home-page, get news on first page
@@ -79,13 +89,11 @@ public class MainController {
 			session.setAttribute("tags", tagService.getAllTransactionally());
 		}
 		
-		ModelAndView mav = new ModelAndView(View.HOME);
-		mav.addObject("pageCount", pageCount);
-		mav.addObject("articlesByPage", articlesByPage);
-		mav.addObject("currentPage", pageNumber);
-		mav.addObject("requestUrl", URL.HOME);
-		
-		return mav;
+		return new ModelAndView(View.HOME)
+				.addObject("pageCount", pageCount)
+				.addObject("articlesByPage", articlesByPage)
+				.addObject("currentPage", pageNumber)
+				.addObject("requestUrl", URL.HOME);
 	}
 	
 	/**

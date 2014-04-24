@@ -24,6 +24,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * Represents an article with String content
+ * 
+ * @author Oleg Filippov
+ */
 @Entity
 @Table(name = "article")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -42,7 +47,10 @@ import org.hibernate.validator.constraints.NotBlank;
 			query = "select a from Tag t join t.articles a where t.name = :name order by a.created desc"),
 	@NamedQuery(
 			name = "Article.GET_ALL_BY_FRAGMENT",
-			query = "from Article a where a.title like :fragment order by a.created desc")
+			query = "from Article a where a.content like :fragment order by a.created desc"),
+	@NamedQuery(
+			name = "Article.GET_COUNT_BY_FRAGMENT",
+			query = "select count(a.id) from Article a where a.content like :fragment order by a.created desc")
 })
 public class Article extends BaseEntity {
 

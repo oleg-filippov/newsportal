@@ -14,6 +14,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 
+/**
+ * Tag of article
+ * 
+ * @author Oleg Filippov
+ */
 @Entity
 @Table(name = "tag")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -32,15 +37,23 @@ public class Tag extends BaseEntity {
 
 	private static final long serialVersionUID = 1282054549729552169L;
 
+	/**
+	 * Tag name
+	 */
 	@Column(name = "name", nullable = false, unique = true, length = 20)
 	private String name;
 	
-	// Mock
+	/**
+	 * Article count tagged with this tag
+	 */
 	@Formula("select count(a.id) from article_tag at "
 			+ "join Article a on at.article_id = a.id "
 			+ "join Tag t on at.tag_id = t.id where t.id = id")
 	private int articleCount;
 	
+	/**
+	 * Articles tagged with this tag
+	 */
 	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
 	private Set<Article> articles;
 	

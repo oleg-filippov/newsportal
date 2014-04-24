@@ -13,6 +13,13 @@ import net.filippov.newsportal.service.AbstractService;
 
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of {@link AbstractService}
+ * 
+ * @param <T>
+ * 
+ * @author Oleg Filippov
+ */
 public abstract class AbstractServiceImpl<T extends Serializable>
 		implements AbstractService<T> {
 	
@@ -40,6 +47,9 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 		this.repository.setType(type);
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#add(java.io.Serializable)
+	 */
 	@Override
 	public void add(T obj) {
 		try {
@@ -50,12 +60,18 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#addTransactionally(java.io.Serializable)
+	 */
 	@Override
 	@Transactional
 	public void addTransactionally(T obj) {
 		this.add(obj);
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#get(java.lang.Long)
+	 */
 	@Override
 	public T get(Long id) {
 		try {
@@ -66,12 +82,18 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#getTransactionally(java.lang.Long)
+	 */
 	@Override
 	@Transactional
 	public T getTransactionally(Long id) {
 		return this.get(id);
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#update(java.io.Serializable)
+	 */
 	@Override
 	public void update(T obj) {
 		try {
@@ -82,12 +104,18 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#updateTransactionally(java.io.Serializable)
+	 */
 	@Override
 	@Transactional
 	public void updateTransactionally(T obj) {
 		this.update(obj);
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#deleteTransactionally(java.io.Serializable)
+	 */
 	@Override
 	@Transactional
 	public void deleteTransactionally(T obj) {
@@ -99,6 +127,9 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#deleteByIdTransactionally(java.lang.Long)
+	 */
 	@Override
 	@Transactional
 	public void deleteByIdTransactionally(Long id) {
@@ -110,6 +141,9 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.AbstractService#getAllTransactionally()
+	 */
 	@Override
 	@Transactional
 	public List<T> getAllTransactionally() {

@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Controller for file upload
+ * 
+ * @author Oleg Filippov
+ */
 @Controller
 public class FileUploadController {
 
@@ -29,9 +34,9 @@ public class FileUploadController {
 	private static final String JPG_CONTENT_TYPE = "image/jpeg";
 	private static final String PNG_CONTENT_TYPE = "image/png";
 
-	public FileUploadController() {}
-
-	// Upload image
+	/**
+	 * Upload image submit
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = URL.UPLOAD_IMAGE)
 	@ResponseBody
 	public String uploadimage(@RequestParam("file") MultipartFile image)
@@ -57,15 +62,23 @@ public class FileUploadController {
 		return "images/" + imageName;
 	}
 
-	// Get image
+	
+	/**
+	 * Get image from file-system
+	 * 
+	 * @param imageName image-name
+	 * @param type extension of image
+	 * @param response {@link HttpServletResponse}
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SHOW_IMAGE)
 	public void showImg(@PathVariable("name") String imageName,
 			@PathVariable("type") String type, HttpServletResponse response)
 			throws IOException {
-
-		InputStream in = new FileInputStream(ARTICLE_IMAGES_PATH
-				+ imageName + "." + type);
-		FileCopyUtils.copy(in, response.getOutputStream());
-		in.close();
+		
+		try (InputStream in = new FileInputStream(ARTICLE_IMAGES_PATH
+				+ imageName + "." + type)) {
+			FileCopyUtils.copy(in, response.getOutputStream());
+		}
 	}
 }

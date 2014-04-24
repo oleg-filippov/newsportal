@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
- * Abstract JPA implementation of AbstractRepository
+ * JPA implementation of {@link GenericRepository}
  * 
  * @param <T> The persistent type
  * @param <PK> The primary key type
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Repository;
  * 
  * @author Oleg Filippov
  */
-
 @Repository
 @Scope("prototype")
 public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Serializable>

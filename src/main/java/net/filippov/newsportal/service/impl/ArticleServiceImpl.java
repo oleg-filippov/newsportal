@@ -4,15 +4,14 @@ import static net.filippov.newsportal.service.util.QueryParameters.setParam;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import net.filippov.newsportal.domain.Article;
 import net.filippov.newsportal.domain.Category;
 import net.filippov.newsportal.domain.Comment;
-import net.filippov.newsportal.domain.Article;
 import net.filippov.newsportal.domain.Tag;
 import net.filippov.newsportal.domain.User;
 import net.filippov.newsportal.exception.NotFoundException;
@@ -27,35 +26,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of {@link ArticleService}
+ * 
+ * @author Oleg Filippov
+ */
 @Service("ArticleService")
 public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements ArticleService {
 
+	/**
+	 * Default error-message template for "getByPage" methods
+	 */
 	private static final String ERROR_BY_PAGE = "Unable to get all articles by page=";
 
 	private GenericRepository<Comment, Long> commentRepository;
-	
 	private GenericRepository<Category, Long> categoryRepository;
-	
-	@Autowired
 	private TagService tagService;
-	
-	@Autowired
 	private UserService userService;
 	
+	/**
+	 * Constructor autowiring needed repositories and services
+	 */
 	@Autowired
-	public ArticleServiceImpl(GenericRepository<Article, Long> rep,
+	public ArticleServiceImpl(GenericRepository<Article, Long> repository,
 			GenericRepository<Comment, Long> commentRepository,
-			GenericRepository<Category, Long> categoryRepository) {
-		
-		super(rep);
-		
+			GenericRepository<Category, Long> categoryRepository,
+			TagService tagService,
+			UserService userService) {
+		super(repository);
 		this.commentRepository = commentRepository;
 		this.commentRepository.setType(Comment.class);
 		
 		this.categoryRepository = categoryRepository;
 		this.categoryRepository.setType(Category.class);
+		
+		this.tagService = tagService;
+		this.userService = userService;
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#add(
+	 * net.filippov.newsportal.domain.Article,java.lang.Long, java.lang.String, java.lang.String)
+	 */
 	@Override
 	@Transactional
 	public void add(Article article, Long authorId, String categoryName, String tagString) {
@@ -68,6 +80,10 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#update(
+	 * net.filippov.newsportal.domain.Article, java.lang.String, java.lang.String)
+	 */
 	@Override
 	@Transactional
 	public void update(Article article, String categoryName, String tagString) {
@@ -81,6 +97,16 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 	
+	/**
+	 * Populates an article with author, category and tags from tag-string
+	 * 
+	 * @param article
+	 * @param authorId
+	 * @param categoryName
+	 * @param tagString
+	 * @return populated object
+	 * @throws PersistenceException
+	 */
 	private Article populateArticle(Article article, Long authorId, String categoryName, String tagString)
 			throws PersistenceException {
 		
@@ -104,6 +130,9 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		return article;
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#get(java.lang.Long, java.lang.Long, boolean)
+	 */
 	@Override
 	@Transactional
 	public Article get(Long articleId, Long userId, boolean needIncreaseViewCount) {
@@ -124,6 +153,9 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		return article;
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#getByPage(int, int)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> getByPage(int page, int articlesPerPage) {
@@ -135,6 +167,10 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#getByPageByCategoryName(
+	 * int, int, java.lang.String)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> getByPageByCategoryName(int page,
@@ -157,6 +193,10 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#getByPageByTagName(
+	 * int, int, java.lang.String)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> getByPageByTagName(int page, int articlesPerPage,
@@ -177,6 +217,10 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#getByPageByUserId(
+	 * int, int, java.lang.Long)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> getByPageByUserId(int page, int articlesPerPage, Long id) {
@@ -198,14 +242,21 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#getByPageByFragment(
+	 * int, int, java.lang.String)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> getByPageByFragment(int page, int articlesPerPage,
 			String fragment) {
 		try {
+			Map<String, Object> parameters = setParam(
+					"fragment", "%" + fragment + "%").buildMap();
+			int articleCount = repository.getCountByNamedQuery(
+					"Article.GET_COUNT_BY_FRAGMENT", parameters);
 			return getArticlesData(page, articlesPerPage,
-					"Article.GET_ALL_BY_FRAGMENT",
-					setParam("fragment", "%" + fragment + "%").buildMap(), -1);
+					"Article.GET_ALL_BY_FRAGMENT", parameters, articleCount);
 		} catch (PersistenceException e) {
 			String message = String.format(
 					"%s%d, fragment=%s", ERROR_BY_PAGE, page, fragment);
@@ -213,6 +264,10 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#addComment(
+	 * net.filippov.newsportal.domain.Comment, java.lang.Long, net.filippov.newsportal.domain.Article)
+	 */
 	@Override
 	@Transactional
 	public void addComment(Comment comment, Long authorId, Article article) {
@@ -227,11 +282,25 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 	}
 	
+	/**
+	 * Get map of articles data by named query without query parameters
+	 */
 	private Map<String, Object> getArticlesData(int page, int articlesPerPage,
 			String namedQuery, int articleCount) {
 		return getArticlesData(page, articlesPerPage, namedQuery, null, articleCount);
 	}
 	
+	/**
+	 * Get map of articles data by named query
+	 * 
+	 * @param page
+	 * @param articlesPerPage number of articles per page
+	 * @param namedQuery to use
+	 * @param params Map of parameters of the named query
+	 * @param articleCount article count by specified parameter
+	 * @return filled Map with articles and number of pages
+	 * @throws PersistenceException
+	 */
 	private Map<String, Object> getArticlesData(int page, int articlesPerPage,
 			String namedQuery, Map<String, Object> params, int articleCount)
 					throws PersistenceException {
@@ -240,32 +309,19 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		
 		if (articleCount == 0) {
 			return articlesData;
-		// articleCount is unknown in advance (search by fragment)
-		} else if (articleCount < 0 ) {
-			int firstResult = articlesPerPage * (page - 1);
-			List<Article> articlesByPage = repository.getAllByNamedQuery(
-					namedQuery, params, firstResult, articlesPerPage);
-			articleCount = articlesByPage.size();
-			if (articleCount == 0) {
-				return articlesData;
-			}
-			articlesData.put("articlesByPage", articlesByPage);
 		}
 		
 		int pageCount = articleCount / articlesPerPage
 				+ (articleCount % articlesPerPage == 0 ? 0 : 1);	
 		if (page > pageCount) {
-			articlesData.put("pageCount", -1);
-			return articlesData;
+			throw new NotFoundException("page > pageCount");
 		}
 		
 		articlesData.put("pageCount", pageCount);
 		
-		if (!articlesData.containsKey("articlesByPage")) {
-			int firstResult = articlesPerPage * (page - 1);
-			articlesData.put("articlesByPage", repository.getAllByNamedQuery(
-					namedQuery, params, firstResult, articlesPerPage));
-		}
+		int firstResult = articlesPerPage * (page - 1);
+		articlesData.put("articlesByPage", repository.getAllByNamedQuery(
+				namedQuery, params, firstResult, articlesPerPage));
 		return articlesData;
 	}
 }

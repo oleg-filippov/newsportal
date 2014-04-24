@@ -17,14 +17,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of {@link TagService}
+ * 
+ * @author Oleg Filippov
+ */
 @Service("TagService")
 public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagService {
 	
-	@Autowired
+	/**
+	 * Constructor autowiring tag-repository
+	 */
+	@Autowired 
 	public TagServiceImpl(GenericRepository<Tag, Long> repository) {
 		super(repository);
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.TagService#getByName(java.lang.String)
+	 */
 	@Override
 	public Tag getByName(String name) {
 		try {
@@ -36,6 +47,9 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.impl.AbstractServiceImpl#getAllTransactionally()
+	 */
 	@Override
 	@Transactional
 	public List<Tag> getAllTransactionally() {
@@ -47,6 +61,9 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.TagService#getAllNames()
+	 */
 	@Override
 	@Transactional
 	public List<String> getAllNames() {
@@ -58,6 +75,9 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 		}
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.TagService#getAutocompleteJson()
+	 */
 	@Override
 	public String getAutocompleteJson() {
 		List<String> tagNames = this.getAllNames();
@@ -78,6 +98,9 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 		return result.toString();
 	}
 	
+	/**
+	 * @see net.filippov.newsportal.service.TagService#getTagsFromString(java.lang.String)
+	 */
 	@Override
 	public Set<Tag> getTagsFromString(String tagString) {
 		Set<Tag> result = new HashSet<Tag>();
@@ -93,6 +116,9 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 		return result;
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.TagService#getTagString(java.util.Set)
+	 */
 	@Override
 	public String getTagString(Set<Tag> tags) {
 		StringBuilder result = new StringBuilder();

@@ -16,6 +16,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * Comment on article
+ * 
+ * @author Oleg Filippov
+ */
 @Entity
 @Table(name = "comment")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -28,19 +33,31 @@ public class Comment extends BaseEntity {
 
 	private static final long serialVersionUID = 8668190795666429761L;
 
+	/**
+	 * Comment content
+	 */
 	@NotBlank(message = "{validation.comment.content}")
 	@Column(name = "content", length = 500)
 	private String content;
 	
+	/**
+	 * Creation time
+	 */
 	@Column(name = "created", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private final Date created;
 	
+	/**
+	 * Author of this comment
+	 */
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User author;
 	
+	/**
+	 * Article which owns comment
+	 */
 	@ManyToOne
 	@JoinColumn(name = "article_id")
 	private Article article;

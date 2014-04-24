@@ -38,8 +38,9 @@ public class URL {
 	// Search URL's
 	public static final String SEARCH_BY_CATEGORY = "/category/{name}";
 	public static final String SEARCH_BY_CATEGORY_CUSTOM_PAGE = "/category/{name}/page/{number}";
-	public static final String SEARCH_BY_FRAGMENT = "/search";
-	public static final String SEARCH_BY_FRAGMENT_CUSTOM_PAGE = "/search/page/{number}";
+	public static final String SEARCH_BY_FRAGMENT = "/search/{fragment}";
+	public static final String SEARCH_BY_FRAGMENT_CUSTOM_PAGE = "/search/{fragment}/page/{number}";
+	public static final String SEARCH_BY_FRAGMENT_SUBMIT = "/search";
 	public static final String SEARCH_BY_TAG = "/tags/{name}";
 	public static final String SEARCH_BY_TAG_CUSTOM_PAGE = "/tags/{name}/page/{number}";
 	public static final String SEARCH_BY_USER = "/user/{id}/articles";

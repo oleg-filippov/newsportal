@@ -40,9 +40,10 @@
 			</ul>
 			
 			<!-- Search form -->
-			<form class="navbar-form navbar-left" action="${searchUrl}">
-				<div class="input-group">
-					<input type="text" name="fragment" class="form-control"
+			<form class="navbar-form navbar-left" action="${searchUrl}" method="post"
+					data-toggle="validator">
+				<div class="input-group input-group-sm">
+					<input type="text" name="fragment" class="form-control" required
 						placeholder="<spring:message code="header.search" />">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="submit">Go!</button>

@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
+/**
+ * Exception-handler
+ * Catches an exception, logs it and sends validation message as @ResponseBody
+ * 
+ * @author Oleg Filippov
+ */
 @ControllerAdvice
 public class CustomExceptionHandler {
 
@@ -23,6 +29,13 @@ public class CustomExceptionHandler {
 	@Autowired
 	ApplicationContext context;
 
+	/**
+	 * Handle {@link MaxUploadSizeExceededException}
+	 * Image size is more than allowed
+	 * 
+	 * @param e exception to catch
+	 * @return validation message
+	 */
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
 	@ResponseBody
 	public String handleMaxUploadSizeException(MaxUploadSizeExceededException e) {
@@ -33,6 +46,13 @@ public class CustomExceptionHandler {
 		return message;
 	}
 
+	/**
+	 * Handle {@link UnacceptableFileFormatException}
+	 * An attempt to upload the image with not allowed format
+	 * 
+	 * @param e exception to catch
+	 * @return validation message
+	 */
 	@ExceptionHandler(UnacceptableFileFormatException.class)
 	@ResponseBody
 	public String handleFileFormatException(UnacceptableFileFormatException e) {
@@ -43,6 +63,13 @@ public class CustomExceptionHandler {
 		return message;
 	}
 
+	/**
+	 * Handle {@link IOException}, {@link MultipartException}
+	 * File-system exceptions during image-upload process
+	 * 
+	 * @param e exception to catch
+	 * @return validation message
+	 */
 	@ExceptionHandler(value = {IOException.class, MultipartException.class})
 	@ResponseBody
 	public String handleCustomException(Exception e) {
@@ -52,6 +79,4 @@ public class CustomExceptionHandler {
 				LocaleContextHolder.getLocale());
 		return message;
 	}
-
-	
 }

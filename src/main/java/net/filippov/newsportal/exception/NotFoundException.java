@@ -3,6 +3,11 @@ package net.filippov.newsportal.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Throws if searching item (Article, Tag, Category...) not found
+ * 
+ * @author Oleg Filippov
+ */
 @ResponseStatus(value=HttpStatus.NOT_FOUND)
 public class NotFoundException extends RuntimeException {
 

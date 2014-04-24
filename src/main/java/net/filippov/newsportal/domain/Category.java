@@ -14,6 +14,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 
+/**
+ * Category of article
+ * 
+ * @author Oleg Filippov
+ */
 @Entity
 @Table(name = "category")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -29,12 +34,21 @@ public class Category extends BaseEntity {
 
 	private static final long serialVersionUID = 7371123602615782324L;
 
+	/**
+	 * Category name
+	 */
 	@Column(name = "name", nullable = false, unique = true, length = 30)
 	private String name;
 	
+	/**
+	 * Article count having this category
+	 */
 	@Formula("select count(id) from Article a where a.category_id = id")
 	private int articleCount;
 	
+	/**
+	 * Articles having this category
+	 */
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	private Set<Article> articles;
 	

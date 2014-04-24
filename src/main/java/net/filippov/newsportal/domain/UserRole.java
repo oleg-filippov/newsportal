@@ -15,6 +15,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * Implementation of {@link GrantedAuthority}
+ * Represents user-roles (ROLE_USER, ROLE_AUTHOR, ROLE_ADMIN)
+ * 
+ * @author Oleg Filippov
+ */
 @Entity
 @Table(name = "role")
 @Immutable
@@ -28,9 +34,15 @@ public class UserRole extends BaseEntity implements GrantedAuthority {
 
 	private static final long serialVersionUID = -3981661393211469078L;
 	
+	/**
+	 * Name of role
+	 */
 	@Column(name = "authority", nullable = false, unique = true, length = 20)
 	private String authority;
 	
+	/**
+	 * Set of users having this role
+	 */
 	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
 	private Set<User> users;
 

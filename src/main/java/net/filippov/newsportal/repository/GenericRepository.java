@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generic repository providing basic and custom operations
- * 
- * @author Oleg Filippov
+ * Generic repository providing basic and custom operations using named queries
  *
  * @param <T> The persistent type
  * @param <PK> The primary key type
+ * 
+ * @author Oleg Filippov
  */
 public interface GenericRepository <T extends Serializable, PK extends Serializable> {
 	

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import net.filippov.newsportal.domain.Article;
 import net.filippov.newsportal.service.ArticleService;
-import net.filippov.newsportal.web.constants.View;
 import net.filippov.newsportal.web.constants.URL;
+import net.filippov.newsportal.web.constants.View;
 import net.filippov.newsportal.web.constants.Web;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +19,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Controller for search-actions
+ * 
+ * @author Oleg Filippov
+ */
 @Controller
 public class SearchController {
 
-	@Autowired
 	private ArticleService articleService;
+	private ApplicationContext context;
 	
+	/**
+	 * Constructor autowiring needed services
+	 * 
+	 * @param articleService {@link ArticleService}
+	 * @param context {@link ApplicationContext}
+	 */
 	@Autowired
-	ApplicationContext context;
-	
-	public SearchController() {}
+	public SearchController(ArticleService articleService,
+			ApplicationContext context) {
+		this.articleService = articleService;
+		this.context = context;
+	}
 
 	/**
 	 * Search by category - first page
-	 * @param categoryName
-	 * @return search by category ModelAndView
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_CATEGORY)
 	public ModelAndView viewArticlesByCategory(@PathVariable("name") String categoryName) {
@@ -43,9 +54,6 @@ public class SearchController {
 
 	/**
 	 * Search by category - custom page
-	 * @param categoryName
-	 * @param pageNumber
-	 * @return search by category ModelAndView
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_CATEGORY_CUSTOM_PAGE)
 	public ModelAndView viewArticlesByCategory(@PathVariable("name") String categoryName,
@@ -58,7 +66,7 @@ public class SearchController {
 	}
 	
 	/**
-	 * 
+	 * Prepare searchByCategory-objects for search-ModelAndView
 	 */
 	private ModelAndView categoryModelAndView(Integer pageNumber, String categoryName) {
 		
@@ -73,8 +81,6 @@ public class SearchController {
 	
 	/**
 	 * Search by tag - first page
-	 * @param tagName
-	 * @return search by tag ModelAndView
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_TAG)
 	public ModelAndView viewArticlesByTag(@PathVariable("name") String tagName) {
@@ -84,8 +90,6 @@ public class SearchController {
 
 	/**
 	 * Search by tag - custom page
-	 * @param tagName
-	 * @return search by tag ModelAndView
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_TAG_CUSTOM_PAGE)
 	public ModelAndView viewArticlesByTag(@PathVariable("name") String tagName,
@@ -98,7 +102,7 @@ public class SearchController {
 	}
 
 	/**
-	 * 
+	 * Prepare searchByTag-objects for search-ModelAndView
 	 */
 	private ModelAndView tagModelAndView(Integer pageNumber, String tagName) {
 
@@ -112,8 +116,7 @@ public class SearchController {
 	}
 	
 	/**
-	 * @param userId
-	 * @return
+	 * Search by user - first page
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_USER)
 	public ModelAndView viewArticlesByUser(@PathVariable("id") Long userId) {
@@ -122,9 +125,7 @@ public class SearchController {
 	}
 	
 	/**
-	 * @param userId
-	 * @param pageNumber
-	 * @return
+	 * Search by user - first page
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_USER_CUSTOM_PAGE)
 	public ModelAndView viewArticlesByUser(@PathVariable("id") Long userId,
@@ -137,7 +138,7 @@ public class SearchController {
 	}
 	
 	/**
-	 * 
+	 * Prepare searchByUser-objects for search-ModelAndView
 	 */
 	private ModelAndView userModelAndView(Integer pageNumber, Long userId) {
 		
@@ -152,35 +153,41 @@ public class SearchController {
 	}
 	
 	/**
-	 * @param userId
-	 * @return
+	 * Search by fragment submit-form
+	 */
+	@RequestMapping(method = RequestMethod.POST, value = URL.SEARCH_BY_FRAGMENT_SUBMIT)
+	public String searchSubmit(@RequestParam("fragment") String fragment) {
+		
+		return "redirect:/search/" + fragment;
+	}
+	
+	/**
+	 * Search by fragment - first page
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_FRAGMENT)
-	public ModelAndView viewArticlesByFragment(@RequestParam("fragment") String fragment) {
+	public ModelAndView viewArticlesByFragment(@PathVariable("fragment") String fragment) {
 		
 		return fragmentModelAndView(1, fragment);
 	}
 	
 	/**
-	 * @param userId
-	 * @param pageNumber
-	 * @return
+	 * Search by fragment - custom page
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SEARCH_BY_FRAGMENT_CUSTOM_PAGE)
-	public ModelAndView viewArticlesByFragment(@RequestParam String fragment,
+	public ModelAndView viewArticlesByFragment(@PathVariable("fragment") String fragment,
 			@PathVariable("number") Integer pageNumber) {
 
 		if (pageNumber == 1) {
-			return new ModelAndView("redirect:" + URL.SEARCH_BY_USER);
+			return new ModelAndView("redirect:" + URL.SEARCH_BY_FRAGMENT);
 		}
 		return fragmentModelAndView(pageNumber, fragment);
 	}
 	
 	/**
-	 * 
+	 * Prepare searchByFragment-objects for search-ModelAndView
 	 */
 	private ModelAndView fragmentModelAndView(Integer pageNumber, String fragment) {
-		
+
 		Map<String, Object> articlesData = articleService.getByPageByFragment(
 				pageNumber, Web.ARTICLES_PER_PAGE, fragment);
 		String requestUrl = String.format("/search/%s/", fragment);
@@ -191,34 +198,33 @@ public class SearchController {
 	}
 	
 	/**
+	 * Fill search-ModelAndView with needed objects
 	 * 
+	 * @param articlesData	Map with articles
+	 * @param pageNumber	number of page
+	 * @param message		localized search-message
+	 * @param requestUrl	root URL
+	 * @return filled {@link ModelAndView}
 	 */
 	private ModelAndView searchModelAndView(Map<String, Object> articlesData,
 			Integer pageNumber, String message, String requestUrl) {
 		
 		// Set required model attributes
-		ModelAndView mav = new ModelAndView(View.SEARCH);
-		mav.addObject("message", message);
-		mav.addObject("requestUrl", requestUrl);
-		mav.addObject("currentPage", pageNumber);
+		ModelAndView mav = new ModelAndView(View.SEARCH)
+				.addObject("message", message)
+				.addObject("requestUrl", requestUrl)
+				.addObject("currentPage", pageNumber);
 		
 		if (articlesData.isEmpty()) {	// articleCount == 0
 			return mav;
 		}
 		
 		Integer pageCount = (Integer) articlesData.get("pageCount");
-		// pageNumber > pageCount
-		if (pageCount == -1) {
-			return new ModelAndView(View.ERROR);
-		}
 
 		@SuppressWarnings("unchecked")
 		List<Article> articlesByPage = (List<Article>) articlesData.get("articlesByPage");
 
-		// Set the rest model attributes
-		mav.addObject("pageCount", pageCount);
-		mav.addObject("articlesByPage", articlesByPage);
-		
-		return mav;
+		return mav.addObject("pageCount", pageCount)
+				.addObject("articlesByPage", articlesByPage);
 	}
 }

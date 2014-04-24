@@ -31,8 +31,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controller for article-related actions
+ * 
+ * @author Oleg Filippov
+ */
 @Controller
 @RequestMapping("/article")
 @SessionAttributes("article")
@@ -40,18 +46,32 @@ public class ArticleController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
 	
-	@Autowired
 	private ArticleService articleService;
-	
-	@Autowired
 	private CategoryService categoryService;
-	
-	@Autowired
 	private TagService tagService;
 	
+	/**
+	 * Default constructor
+	 */
 	public ArticleController() {}
 	
-	// Tags Autocomplete
+	/**
+	 * Constructor autowiring needed services
+	 */
+	@Autowired
+	public ArticleController(ArticleService articleService,
+			CategoryService categoryService,
+			TagService tagService) {
+		this.articleService = articleService;
+		this.categoryService = categoryService;
+		this.tagService = tagService;
+	}
+	
+	/**
+	 * Tags Autocomplete
+	 * 
+	 * @return tags-json
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.TAGS_AUTOCOMPLETE)
 	@ResponseBody
 	public String tagsAutocomplete() {
@@ -59,7 +79,9 @@ public class ArticleController {
 		return tagService.getAutocompleteJson();
 	}
 	
-	// Current article view-page
+	/**
+	 * Current article view-page
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = URL.SHOW_ARTICLE)
 	public String viewArticlePage(Model model, @PathVariable("id") Long articleId,
 			HttpSession session, HttpServletRequest request, HttpServletResponse resp) {
@@ -76,7 +98,10 @@ public class ArticleController {
 		return View.VIEW_ARTICLE;
 	}
 	
-	// Add comment submit
+	
+	/**
+	 * Add comment submit
+	 */
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = RequestMethod.POST, value = URL.ADD_COMMENT)
 	public String addCommentSubmit(Model model, @ModelAttribute("article") Article article,
@@ -97,18 +122,24 @@ public class ArticleController {
 		return "redirect:/article/" + article.getId();
 	}
 	
-	// Page of article to be added
+	
+	/**
+	 * Page of article to be added
+	 */
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = URL.ADD_ARTICLE)
 	public String addArticlePage(Model model) {
 		
-		// clear article-modelAttribute
+		// clear article-sessionAttribute
 		model.addAttribute("article", populateArticle());
 		
 		return View.EDIT_ARTICLE;
 	}
 
-	// Add article submit
+	
+	/**
+	 * Add article submit
+	 */
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = URL.ADD_ARTICLE)
 	public String addArticleSubmit(Model model, @Valid @ModelAttribute("article") Article article,
@@ -130,7 +161,10 @@ public class ArticleController {
 		return "redirect:/article/" + article.getId();
 	}
 	
-	// Page of article to be edited
+	
+	/**
+	 * Page of article to be edited
+	 */
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = URL.EDIT_ARTICLE)
 	public String editArticlePage(Model model, @PathVariable("id") Long articleId,
@@ -154,7 +188,10 @@ public class ArticleController {
 		return View.EDIT_ARTICLE;
 	}
 	
-	// Edit article submit
+	
+	/**
+	 * Edit article submit
+	 */
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.POST, value = URL.EDIT_ARTICLE)
 	public String editArticleSubmit(Model model, @Valid @ModelAttribute("article") Article article,
@@ -175,24 +212,29 @@ public class ArticleController {
 		return "redirect:/article/" + article.getId();
 	}
 	
-	// Delete article
+	
+	/**
+	 * Delete article
+	 */
 	@PreAuthorize("hasRole('ROLE_AUTHOR')")
 	@RequestMapping(method = RequestMethod.GET, value = URL.DELETE_ARTICLE)
-	public String deleteArticle(Model model, @PathVariable("id") Long id,
+	public ModelAndView deleteArticle(@PathVariable("id") Long id,
 			HttpSession session, SessionStatus status, HttpServletRequest request) {
 
 		articleService.deleteByIdTransactionally(id);
 		status.setComplete();
 		updateSessionAttributes(session);
 		LOG.info(String.format("DELETED: Article[id=%d]", id));
-		
-		model.addAttribute("messageProperty", "success.article.deleted");
-		model.addAttribute("url", request.getServletContext().getContextPath());
-		
-		return View.SUCCESS;
+
+		return new ModelAndView(View.SUCCESS)
+				.addObject("messageProperty", "success.article.deleted")
+				.addObject("url", request.getServletContext().getContextPath());
 	}
 	
-	// Cancel article edit
+	
+    /**
+     * Cancel article edit
+     */
     @RequestMapping(method=RequestMethod.GET, value = URL.CANCEL)
     public String cancelArticleEdit(@PathVariable("id") Long id,
     		SessionStatus status) {
@@ -204,16 +246,31 @@ public class ArticleController {
     	return "redirect:/article/" + id;
     }
     
+    /**
+     * Fill model attribute
+     * 
+     * @return new instance of {@link Article}
+     */
     @ModelAttribute("article")
 	public Article populateArticle() {
 		return new Article();
 	}
     
+    /**
+     * Fill model attribute
+     * 
+     * @return new instance of {@link Comment}
+     */
 	@ModelAttribute("comment")
 	public Comment populateComment() {
 		return new Comment();
 	}
 	
+	/**
+	 * Update session attributes after add or edit article
+	 * 
+	 * @param session
+	 */
 	private void updateSessionAttributes(HttpSession session) {
 		session.setAttribute("categories", categoryService.getAllTransactionally());
 		session.setAttribute("tags", tagService.getAllTransactionally());

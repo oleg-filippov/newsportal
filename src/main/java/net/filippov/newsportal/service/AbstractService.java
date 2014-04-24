@@ -4,56 +4,74 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 
+ * Abstract service providing basic transactional and nontransactional operations
  * 
  * @author Oleg Filippov
  */
 public interface AbstractService<T extends Serializable> {
 	
 	/**
-	 * @param obj
+	 * Save object into repository
+	 * 
+	 * @param obj to save
 	 */
 	void add(T obj);
 	
 	/**
-	 * @param obj
+	 * Save object transactionally
+	 * 
+	 * @param obj to save
 	 */
 	void addTransactionally(T obj);
 	
 	/**
-	 * @param id
-	 * @return
+	 * Get object from repository
+	 * 
+	 * @param id of object
+	 * @return persistent object or null if not found
 	 */
 	T get(Long id);
 	
 	/**
-	 * @param id
-	 * @return
+	 * Get object from repository transactionally
+	 * 
+	 * @param id of object
+	 * @return persistent object or null if not found
 	 */
 	T getTransactionally(Long id);
 	
 	/**
-	 * @param obj
+	 * Update object
+	 * 
+	 * @param obj to update
 	 */
 	void update(T obj);
 	
 	/**
-	 * @param obj
+	 * Update object transactionally
+	 * 
+	 * @param obj to update
 	 */
 	void updateTransactionally(T obj);
 	
 	/**
-	 * @param obj
+	 * Delete object transactionally
+	 * 
+	 * @param obj to delete
 	 */
 	void deleteTransactionally(T obj);
 	
 	/**
-	 * @param id
+	 * Delete object by it's id transactionally
+	 * 
+	 * @param id of the object to delete
 	 */
 	void deleteByIdTransactionally(Long id);
 	
 	/**
-	 * @return
+	 * Get all objects from repository transactionally
+	 * 
+	 * @return list of objects
 	 */
 	List<T> getAllTransactionally();
 }

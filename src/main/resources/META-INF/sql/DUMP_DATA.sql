@@ -17,71 +17,103 @@ INSERT INTO user_role (`user_id`, `role_id`) VALUES
 ('2', '2'), ('2', '3'),
 ('3', '3');
 
--- -----------------------------------------------------
--- DUMP CATEGORIES
--- -----------------------------------------------------
-
-INSERT INTO category (`name`) VALUES
-('Games'), ('Movies'), ('GameIndustry'), ('Gadgets');
-
--- -----------------------------------------------------
--- DUMP ARTICLES
--- -----------------------------------------------------
-
-INSERT INTO article (`title`, `preview`, `content`, `user_id`, `category_id`) VALUES
-('«Тихоокеанский рубеж» готовится к выходу на Blu-ray',
-'DVD с фильмом уже в продаже, а Blu-ray и 3D Blu-ray выйдут 21 ноября.',
-'Зрелищный блокбастер Гильермо дель Торо успешно прошелся этим летом по киноэкранам всего мира, а сейчас выходит на дисках для любителей домашнего просмотра. В ближайшее время вас ждет еще парочка публикаций по «Тихоокеанскому рубежу», которые наверняка смогут заинтересовать любителей фильма. Оставайтесь на связи!',
-'2',
-'2'),
-
-('Sony рекламирует PS Plus и Tearaway',
-'В преддверии начала продаж своей новой игровой консоли PlayStation 4 Sony решила напомнить о том, что её владельцам (а также пользователям PS3 и PS Vita) сможет предложить популярный сервис PlayStation Plus.',
-'В преддверии начала продаж своей новой игровой консоли PlayStation 4 Sony решила напомнить о том, что её владельцам (а также пользователям PS3 и PS Vita) сможет предложить популярный сервис PlayStation Plus. Кроме того, в Европе началась трансляция нового рекламного ролика Tearaway - выходящей 22 ноября приключенческой игры для PlayStation Vita. Основными особенностями нового портативного эксклюзива будет будто вырезанный из бумаги игровой мир и активное использование всего функционала консоли, включая заднюю сенсорную панель. Разработкой игры занималась британская компания Media Molecule, прославившаяся игровым сериалом LittleBigPlanet.',
-'2',
-'3'),
-
-('Cyan собрала деньги на наследницу серии Myst',
-'Студия Cyan объявила, что кампания по сбору средств на разработку приключенческой игры  Obduction завершилась успехом.',
-'Студия Cyan объявила, что кампания по сбору средств на разработку приключенческой игры  Obduction завершилась успехом. Изначально разработчики хотели получить $1,1 миллиона. Сейчас на счету проекта уже $1,51 миллиона, причем до завершения акции на момент написания этой новости остается еще 51 час. Cyan рассчитывает, что за это время удастся собрать еще несколько сотен тысяч долларов. В этом случае в Obduction может появиться поддержка шлема виртуальной реальности Oculus Rift или еще один игровой мир. Правда, для этого нужно собрать $1,3 или $1,7 миллиона соответственно. Obduction позиционируется как идейная наследница культового приключенческого сериала Myst. Это значит, что нас ждет не только захватывающий сюжет, рассказывающий о герое, который таинственным образом попал на загадочную планету, но и роскошная графика — именно картинкой Myst выделялся на фоне других квестов. Для этого у Cyan есть все инструменты, ведь Obduction создается на движке Unreal Engine 4. Игра разрабатывается для РС и Mac и выйдет во второй половине 2015 года.',
-'2',
-'1'),
-
-('Завтра Neverwinter Online откроют для тестеров',
-'Уже завтра, 15 ноября, в 16:00 по московскому времени стартует первый этап закрытого бета-тестирования глобальной сетевой игры Neverwinter Online, который продлится ровно до 01:00 18 ноября.',
-'Уже завтра, 15 ноября, в 16:00 по московскому времени стартует первый этап закрытого бета-тестирования глобальной сетевой игры Neverwinter Online, который продлится ровно до 01:00 18 ноября. В тесте примут участие не только счастливые обладатели ключей, но и пользователи, купившие «Наборы Основателей». Напомним, что последние не только гарантируют доступ к закрытому тестированию, но и содержат полезные предметы, которые нельзя купить в игровом магазине. Подробнее о «Наборах Основателей» можно прочитать на официальном сайте игры. Тестеры смогут одними из первых изучить материалы грядущего масштабного обновления «Шедоумантл», которое установят на российские серверы Neverwinter Online в день релиза. Одним из главных нововведений станет новый класс — рейнджер-охотник. Этот боец, вооруженный луком и парой кинжалов, может действовать одинаково эффективно и в ближнем, и в дальнем бою. Кроме того, «Шедоумантл» добавит в игру систему артефактов и новые пути совершенствования для всех классов.',
-'2',
-'1'),
-
-('Стартовало открытое тестирование бесплатного симулятора FIFA World',
-'Electronic Arts запустила открытое бета-тестирование бесплатного сетевого футбольного симулятора FIFA World, созданного специально для России и Бразилии.',
-'Electronic Arts запустила открытое бета-тестирование бесплатного сетевого футбольного симулятора FIFA World, созданного специально для России и Бразилии. ОБТ предшествовали четыре этапа закрытого тестирования, в которых приняли участие более 120 тысяч игроков. На основе их отзывов в FIFA World внесли некоторые изменения. Например, появилась поддержка геймпадов, улучшенная система организации матчей и центр для общения, в котором игроки могут обмениваться лучшими игровыми моментами с друзьями. Для участия в открытом тестировании нужно просто зарегистрироваться на этой странице.',
-'1',
-'1'),
-
-('Eidos Montreal готова рассказать, как выглядит хардкорный режим новой Thief',
-'Разработчики убирают QTE из Thief в ответ на отзывы фанатов и рассказывают, чем хорош хардкорный режим сложности.',
-'В Eidos Montreal подтвердили, что уберут QTE из новой Thief. Как объясняют разработчики в блоге студии, это решение было принято по итогам отзывов на демоверсию Thief, представленную на этой E3. "Мы решили от них отказаться, - говорится в записи. - Вообще, с самого начала QTE у нас было по минимуму. В часовой демоверсии игры, которую мы привезли на E3, пользователи фактически лишь однажды сталкивались с QTE. Однако приняв во внимание, что пресса и коммьюнити так бурно отреагировали на появление этой особенности, мы решили, что проще всего будет QTE исключить. Так что у нас их не будет. Вообще". Также по ходу записи разработчики рассказывают подробнее о том, что предложит хардкорный режим сложности. По сути, вам позволят с помощью множества настроек самолично задавать условия прохождения и таким образом делать игру настолько суровой, насколько захочется.',
-'1',
-'1');
-
--- -----------------------------------------------------
--- DUMP TAGS
--- -----------------------------------------------------
-
-INSERT INTO tag (`name`) VALUES
-('Blu-ray'), ('DVD'),
-('Sony'), ('PS'), ('PS Vita'),
-('Myst'), ('Cyan'), ('Oculus Rift'),
-('Neverwinter'),
-('FIFA'), ('Simulator'),
-('Thief'),  ('Eidos'),
-('Game');
-
-INSERT INTO article_tag (`article_id`, `tag_id`) VALUES
-('1', '1'), ('1', '2'),
-('2', '3'), ('2', '4'), ('2', '5'),
-('3', '6'), ('3', '7'), ('3', '8'), ('3', '14'),
-('4', '9'), ('4', '14'),
-('5', '10'), ('5', '11'), ('5', '14'),
-('6', '12'), ('5', '13'), ('6', '14');
+---- -----------------------------------------------------
+---- DUMP CATEGORIES
+---- -----------------------------------------------------
+--
+--INSERT INTO category (`name`) VALUES
+--('Games'), ('Movies'), ('GameIndustry'), ('Gadgets');
+--
+---- -----------------------------------------------------
+---- DUMP ARTICLES
+---- -----------------------------------------------------
+--
+--INSERT INTO article (`title`, `preview`, `content`, `user_id`, `category_id`) VALUES
+--('Terminator: Genesis Starts Filming',
+--'Terminator: Genesis - the fifth film in the Terminator franchise - began principal photograph today in New Orleans.',
+--'<p><a href="http://www.ign.com/movies/terminator-5">Terminator: Genesis</a> - the fifth film in the Terminator franchise - began principal photograph today in New Orleans.</p>
+--<p>The film, directed by <a class="autolink" title="Alan Taylor" href="http://www.ign.com/stars/alan-taylor">Alan Taylor</a> (Thor: The Dark World, Game of Thrones), stars <a class="autolink" title="Emilia Clarke" href="http://www.ign.com/stars/emilia-clarke">Emilia Clarke</a> (Game of Thrones) as Sarah Connor, <a class="autolink" title="Jason Clarke" href="http://www.ign.com/stars/jason-clarke">Jason Clarke</a> (Zero Dark Thirty) as John Connor, and <a class="autolink" title="Jai Courtney" href="http://www.ign.com/stars/jai-courtney">Jai Courtney</a> (A Good Day to Die Hard) as Kyle Reese. More recent additions to the cast include Byng-hun Lee (G.I. Joe: Retaliation), <a class="autolink" title="J.K. Simmons" href="http://www.ign.com/stars/j-k-simmons">J.K. Simmons</a> (Spider-Man), Sandrine Holt (House of Cards) and Dayao Okeniyi (The Hunger Games).</p><p style="text-align: center"><strong><a href="http://www.ign.com/articles/2014/03/26/schwarzenegger-on-how-he-will-return-in-terminator-genesis">Schwarzenegger on How He Will Return in Terminator: Genesis</a></strong></p>
+--<p>Skydance Productions posted an image of a film slate (complete with an R.I.P. for late camera assistant Sarah Jones) on <a href="https://www.facebook.com/SkydanceProductions" rel="nofollow">their Facebook page</a> along with the message:</p>
+--<p>::SKYNET preparation routines complete.</p>
+--<p>::Initialization sequence complete.</p>
+--<p>::Reboot initiating in 03m00s.</p><p>Oh, and <a class="autolink" title="Arnold Schwarzenegger" href="http://www.ign.com/stars/arnold-schwarzenegger">Arnold Schwarzenegger</a> of course!</p>',
+--'1',
+--'2'),
+--
+--('Nike Lays Off Staff, FuelBand Line`s Future In Question',
+--'Nike is reportedly discontinuing its FuelBand line of wearable hardware, with up to 55 people laid off in the process, according to a confidential source.',
+--'<p><strong>UPDATE:</strong> Nike spokespeople <a href="http://recode.net/2014/04/18/nike-denies-fuelband-shutdown-but-layoffs-could-reveal-new-cracks-in-wearables-market/" target="_blank" rel="nofollow">speaking to Recode</a> have denied CNET`s claims that it would discontinue the FuelBand hardware line, but confirmed that it has laid off a portion of its staff. In the very same report, however, the site`s sources say the future of the line is still uncertain, with the company potentially clearing out FuelBand inventory before determining how to proceed with wearable tech.</p>
+--<p><!-- poilib start --></p>
+--<div class="accentDivider"></div>
+--<p><!-- poilib end --></p>
+--<p>Nike is reportedly discontinuing its FuelBand line of wearable hardware, with up to 55 people laid off in the process, according to a confidential source.</p>
+--<p>A person familiar with the matter disclosed the information <a href="http://www.cnet.com/news/nike-fires-fuelband-engineers-will-stop-making-wearable-hardware/" target="_blank" rel="nofollow">to CNET</a>, saying Nike plans on exiting the wearable-hardware market altogether. Apparently, with increasing competition expected from Google and Apple, the shoe company instead plans on focusing on athletic tracking software.</p>',
+--'1',
+--'4'),
+--
+--('Minecraft to Aid Redesign Efforts Around the World',
+--'Plaza Tlaxcoaque in Mexico City is being eyed for a makeover, and the people responsible for a possible new design will present their ideas using models created in the popular PC game, Minecraft.',
+--'<p>Plaza Tlaxcoaque in Mexico City is being eyed for a makeover, and the people responsible for a possible new design will present their ideas using models created in the popular PC game, <a class="autolink" title="Minecraft" href="http://www.ign.com/games/minecraft/pc-92086">Minecraft</a>.</p>
+--<p>As <a href="http://mashable.com/2014/04/21/minecraft-united-nations/" target="_blank" rel="nofollow">Mashable</a> notes, the redesign effort is part of an initiative called <a href="http://blockbyblock.org/" target="_blank" rel="nofollow">Block by Block</a>. Community input is made possible by a partnership between the United Nations Human Settlements Programme (UN-Habitat) and Mojang, developers of the <a class="autolink" title="Minecraft" href="http://www.ign.com/games/minecraft/ps3-20005055">Minecraft</a> video game. The aim of the four-year program is to allow young people to design and upgrade a total of 300 public spaces by 2016.</p>
+--<p>The possible Plaza Tlaxcoaque makeover is one of the early projects. Three winners will present their designs, chosen from between 500 and 1000 estimated entries, on April 27, 2014. From there, the models will be turned over to architects to be turned into a real architectural design that can be presented to city officials.</p>
+--<p>Work on the pilot project in Nairobi is already underway, and similar efforts have begun in countries such as Haiti, India, and Nepal.</p>',
+--'2',
+--'1'),
+--
+--('Danny Boyle Eyed to Direct Steve Jobs Biopic, Possibly Starring Leonardo DiCaprio',
+--'Sony Pictures is reportedly eying Oscar-winning director Danny Boyle (28 Days Later) to helm their Steve Jobs biopic, with Leonardo DiCaprio approached to star.',
+--'<p>Sony Pictures is reportedly eying Oscar-winning director <a class="autolink" title="Danny Boyle" href="http://www.ign.com/stars/danny-boyle">Danny Boyle</a> (28 Days Later) to helm their <a class="autolink" title="Steve Jobs" href="http://www.ign.com/stars/steve-jobs">Steve Jobs</a> biopic, with <a class="autolink" title="Leonardo DiCaprio" href="http://www.ign.com/stars/leonardo-dicaprio">Leonardo DiCaprio</a> approached to star.</p>
+--<p>According to <a href="http://www.hollywoodreporter.com/news/danny-boyle-talks-direct-steve-697992"target="_blank"  rel="nofollow">The Hollywood Reporter</a>, Boyle and DiCaprio are re-teaming for the film, based on the best-selling Jobs biography by Walter Isaacson. The duo previously worked together on 2000’s The Beach.</p>
+--<p>The film comes from a screenplay written by <a class="autolink" title="Aaron Sorkin" href="http://www.ign.com/stars/aaron-sorkin">Aaron Sorkin</a> (The Social Network). Past Sorkin collaborator <a class="autolink" title="David Fincher" href="http://www.ign.com/stars/david-fincher">David Fincher</a> was originally approached to direct, before backing out “due to his aggressive demands for compensation and control,” says THR. Fincher had reportedly wanted Christian Bale for the starring role.</p>
+--<p>Surrounding the life of the late Apple co-founder, the film marks the first time Sorkin has penned a script for Boyle and DiCaprio.</p>
+--<p>The Jobs film doesn’t yet have a release.</p>',
+--'2',
+--'2'),
+--
+--('Space Case: Galactic Civilizations III is a 4X Work in Progress',
+--'When you launch into the Galactic Civilizations III alpha, you get a disclaimer imploring you to “please be aware that the game isnt actually, well, fun yet.”',
+--'<p>When you launch into the <a class="autolink" title="Galactic Civilizations III" href="http://www.ign.com/games/galactic-civilizations-iii/pc-14277477">Galactic Civilizations III</a> alpha, you get a disclaimer imploring you to “please be aware that the game isnt actually, well, fun yet.” Stardock isnt kidding with this statement: GalCiv III is truly in alpha state right now, and its more a preview of coming attractions than any kind of functional strategy game. Anyone considering paying for Early Access to this alpha should set aside any illusions that they will actually be playing the game. GalCiv III will eventually be a 4X space strategy game. Its alpha is a 3X, at best.</p>
+--<p>The current build of the game lacks three huge features that haven`t been implemented yet, and without them, it`s hard to say just how well GalCiv III will end up coming together. First, the AI is non-responsive, and there is no diplomacy system to foster interaction anyway. They will occasionally build ships (more by happenstance than design) and they`re quite eager to colonize every planet under every sun. But there`s nothing you can do with them except conquer them, and that will prove very, very easy.</p>',
+--'1',
+--'1'),
+--
+--('The Elder Scrolls Online: Review in Progress',
+--'Reviewing an MMORPG is a big job that can take weeks to complete. Our final score will be awarded at that time, once we`ve put in enough time to get a sense of The Elder Scrolls Online`s true strengths and weaknesses.',
+--'<p><strong>April 9: End-Game Bugs, Veteran Content, and the Economy</strong></p>
+--<p dir="ltr">I hit the level cap of 50 <a href="https://twitter.com/LeifJohnson/status/453410927430234112" rel="nofollow">early yesterday morning</a>, and I`d intended to spend today talking about the "Veteran" content in Elder Scrolls Online – i.e., what currently passes for the end game. (The <a href="http://www.ign.com/articles/2014/04/07/the-elder-scrolls-online-first-content-patch-revealed">recent news about Craglorn</a> hints at better things to come.) Alas, for two day entire days now, the "Groundskeeper" NPC that unlocks so much of the content in the final zone of <a href="http://www.ign.com/wikis/elder-scrolls-online/Coldharbour"title="Coldharbour" >Coldharbour</a> has been bugged for the <a href="http://www.ign.com/wikis/elder-scrolls-online/Ebonheart_Pact"title="Ebonheart Pact" >Ebonheart Pact</a>, restricting me and seemingly hundreds of other players from experiencing Veteran content outside of Cyrodiil PvP and Veteran dungeons. So much for that.</p>
+--<p>It`s even worse for lower-level characters, as the same NPC is bugged for them as well. At the heart of Coldharbour stands a town known as the Hollow City, and you fill it with NPCs much as you fill Mass Effect`s Normandy by completing quests. Since the Groundskeeper is bugged, thus keeping all the content she unlocks inaccessible, an unfortunate number of players have been led to believe that the final zone consists of nothing but grinding through <a href="http://www.ign.com/wikis/elder-scrolls-online/Enemies"title="enemies" >enemies</a>. I fortunately managed to complete the bulk of the Coldharbour quests before I ran into this problem, but for  now the final chapter in the main story isn`t available.</p>
+--<p>I`m especially amused that it`s a quintessential <a href="http://www.ign.com/wikis/elder-scrolls-online/Bugs_and_Glitches"title="Elder Scrolls bug" >Elder Scrolls bug</a>. Much like Karliah in unpatched versions of the end of Skyrim`s Thieves Guild quest, the Groundskeeper just sits there, a quest marker over her head, but she never responds no matter how often you log in or out or wait. Considering how key the NPC is, it`s inexcusable that she hasn`t been fixed yet. Much as I said in my first review in progress, these bugs aren`t terribly common (or they`re usually repairable by logging out and logging back in), but the whoppers always seem to affect the most essential NPCs.</p>
+--<p>But anyway. Veteran levels are somewhat like Paragon levels in Diablo III, as you earn them after you`ve completed the main leveling content. The difference is that <a href="http://www.ign.com/wikis/elder-scrolls-online/Armor"title="Veteran gear" >Veteran gear</a> also has Veteran level requirements much as the standard gear. Allegedly – remember, I haven`t seen it – Veteran zones let you access the content of the two other factions, complete with high-level profession materials and additional skill points, thus verifying ZeniMax`s earlier claims that reaching the level cap consists of a mere one-third of the PvE content.</p>',
+--'2',
+--'1'),
+--
+--('Microsoft Files `Eden Falls` Trademark',
+--'With less than two months until E3, the trademark applications continue piling up for Microsoft, which filed a listing for "Eden Falls" with the U.S. Patent and Trademark Office on April 16.',
+--'<p>With less than two months until E3, the trademark applications continue piling up for <a class="autolink" title="Microsoft" href="http://www.ign.com/companies/microsoft">Microsoft</a>, which filed a listing for "Eden Falls" with the U.S. Patent and Trademark Office on April 16.</p>
+--<p>Spotted <a href="http://www.neogaf.com/forum/showthread.php?t=805299" target="_blank" rel="nofollow">on NeoGAF</a>, Microsoft`s <a href="http://tsdr.uspto.gov/#caseNumber=86253360&amp;caseType=SERIAL_NO&amp;searchType=statusSearch" target="_blank" rel="nofollow">application for</a> "Eden Falls" doesn`t reveal too much information, other than the fact that the trademark is for "entertainment services, namely, providing an online computer game." But there <a href="http://www.edenfallsgame.com/blog/" target="_blank" rel="nofollow">is a blog </a>for an Eden Falls game, purportedly a sci-fi RPG made by Brimstone Interactive. Contradicting that information, though, is an Eden Falls <a href="https://twitter.com/edenfallsgame" target="_blank" rel="nofollow">Twitter account</a> that lists <a href="http://www.liftlondon.com" target="_blank" rel="nofollow">Lift London</a> as the developer, a Microsoft studio known for making games on tablets and smartphones.</p>
+--<p>IGN has reached out to Microsoft for a comment regarding the "Eden Falls" trademark filing.</p>',
+--'2',
+--'3');
+--
+---- -----------------------------------------------------
+---- DUMP TAGS
+---- -----------------------------------------------------
+--
+--INSERT INTO tag (`name`) VALUES
+--('Terminator'), ('Schwarzenegger'),
+--('Nike'), ('FuelBand'),
+--('Minecraft'), ('PC'),
+--('Danny Boyle'), ('DiCaprio'), ('Steve Jobs'),
+--('GalCiv'),
+--('MMORPG'), ('TES'), ('Online'),
+--('Microsoft'), ('E3'),
+--('Game');
+--
+--INSERT INTO article_tag (`article_id`, `tag_id`) VALUES
+--('1', '1'), ('1', '2'),
+--('2', '3'), ('2', '4'),
+--('3', '5'), ('3', '6'), ('3', '16'),
+--('4', '7'), ('4', '8'), ('4', '9'),
+--('5', '10'), ('5', '6'), ('5', '16'),
+--('6', '11'), ('5', '12'), ('6', '13'), ('6', '6'), ('6', '16'),
+--('7', '14'), ('7', '15');

@@ -24,6 +24,11 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * Stores information about user
+ * 
+ * @author Oleg Filippov
+ */
 @Entity
 @Table(name = "user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -39,51 +44,87 @@ public class User extends BaseEntity {
 
 	private static final long serialVersionUID = 286409866205173021L;
 	
+	/**
+	 * User login
+	 */
 	@Size(min = 4, max = 30, message = "{validation.user.loginSize}")
 	@Column(name = "login", nullable = false, unique = true)
 	private String login;
 
+	/**
+	 * User password
+	 */
 	@Size(min = 7, max = 60, message = "{validation.user.passwordSize}")
 	@Column(name = "password", nullable = false)
 	private String password;
 
+	/**
+	 * User fullname
+	 */
 	@Size(min = 1, max = 50, message = "{validation.user.nameNotBlank}")
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	/**
+	 * User e-mail
+	 */
 	@NotBlank(message = "{validation.user.emailNotBlank}")
 	@Email(message = "{validation.user.emailValid}")
 	@Column(name = "email", nullable = false, unique = true, length = 50)
 	private String email;
 
+	/**
+	 * Registration date
+	 */
 	@Column(name = "registered", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private final Date registered;
 
+	/**
+	 * State of user (locked or not)
+	 */
 	@Column(name = "locked", insertable = false,
 			columnDefinition = "BOOLEAN DEFAULT FALSE")
 	private boolean locked;
 	
+	/**
+	 * State of user (enabled or not)
+	 */
 	@Column(name = "enabled", insertable = false,
 			columnDefinition = "BOOLEAN DEFAULT TRUE")
 	private boolean enabled;
 	
+	/**
+	 * Article count of this user
+	 */
 	@Formula("select count(a.id) from Article a where a.user_id = id")
 	private int articleCount;
 	
+	/**
+	 * Comment count of this user
+	 */
 	@Formula("select count(c.id) from Comment c where c.user_id = id")
 	private int commentCount;
 
+	/**
+	 * User roles
+	 */
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "user_role",
 			joinColumns = {@JoinColumn(name = "user_id") },
 			inverseJoinColumns = {@JoinColumn(name = "role_id") })
 	private Set<UserRole> roles;
 	
+	/**
+	 * User articles
+	 */
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private Set<Article> articles;
 
+	/**
+	 * User comments
+	 */
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private Set<Comment> comments;
 	

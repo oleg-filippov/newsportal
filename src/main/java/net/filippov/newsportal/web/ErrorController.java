@@ -11,14 +11,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Controller for errors
+ * 
+ * @author Oleg Filippov
+ */
 @Controller
 public class ErrorController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ErrorController.class);
 
-	public ErrorController() {}
-
-	// Error-page
+	/**
+	 * Method gets status-code, request_uri and exception from {@link HttpServletRequest}
+	 * and sets them as model-attributes
+	 * 
+	 * @return error-page
+	 */
 	@RequestMapping(value = URL.ERROR)
 	public String errorPage(Model model, HttpServletRequest request) {
 

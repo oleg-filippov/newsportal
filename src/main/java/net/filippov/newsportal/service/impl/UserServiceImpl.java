@@ -20,23 +20,36 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of {@link UserService}
+ * 
+ * @author Oleg Filippov
+ */
 @Service("UserService")
 public class UserServiceImpl extends AbstractServiceImpl<User> implements UserService {
 
 	private GenericRepository<UserRole, Long> roleRepository;
-	
-	@Autowired
 	private PasswordEncoder bCryptPasswordEncoder;
 	
+	/**
+	 * Constructor autowiring needed repositories and
+	 * {@link org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder}
+	 */
 	@Autowired
 	public UserServiceImpl(GenericRepository<User, Long> repository,
-			GenericRepository<UserRole, Long> roleRepository) {
-		
+			GenericRepository<UserRole, Long> roleRepository,
+			PasswordEncoder bCryptPasswordEncoder) {
 		super(repository);
 		this.roleRepository = roleRepository;
 		this.roleRepository.setType(UserRole.class);
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
+	/**
+	 * Add user into repository with default role ("ROLE_USER") and encoded password
+	 * 
+	 * @see net.filippov.newsportal.service.impl.AbstractServiceImpl#add(java.io.Serializable)
+	 */
 	@Override
 	@Transactional
 	public void add(User user) {
@@ -66,6 +79,9 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.UserService#getByLogin(java.lang.String)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public User getByLogin(String login) {
@@ -83,6 +99,9 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 		}
 	}
 
+	/**
+	 * @see net.filippov.newsportal.service.UserService#getByEmail(java.lang.String)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public User getByEmail(String email) {
