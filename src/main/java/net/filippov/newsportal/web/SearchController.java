@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.filippov.newsportal.domain.Article;
+import net.filippov.newsportal.exception.NotFoundException;
 import net.filippov.newsportal.service.ArticleService;
 import net.filippov.newsportal.web.constants.URL;
 import net.filippov.newsportal.web.constants.View;
@@ -59,6 +60,7 @@ public class SearchController {
 	public ModelAndView viewArticlesByCategory(@PathVariable("name") String categoryName,
 			@PathVariable("number") Integer pageNumber) {
 
+		validatePageNumber(pageNumber);
 		if (pageNumber == 1) {
 			return new ModelAndView("redirect:" + URL.SEARCH_BY_CATEGORY);
 		}
@@ -95,6 +97,7 @@ public class SearchController {
 	public ModelAndView viewArticlesByTag(@PathVariable("name") String tagName,
 			@PathVariable("number") Integer pageNumber) {
 
+		validatePageNumber(pageNumber);
 		if (pageNumber == 1) {
 			return new ModelAndView("redirect:" + URL.SEARCH_BY_TAG);
 		}
@@ -131,6 +134,7 @@ public class SearchController {
 	public ModelAndView viewArticlesByUser(@PathVariable("id") Long userId,
 			@PathVariable("number") Integer pageNumber) {
 
+		validatePageNumber(pageNumber);
 		if (pageNumber == 1) {
 			return new ModelAndView("redirect:" + URL.SEARCH_BY_USER);
 		}
@@ -177,6 +181,7 @@ public class SearchController {
 	public ModelAndView viewArticlesByFragment(@PathVariable("fragment") String fragment,
 			@PathVariable("number") Integer pageNumber) {
 
+		validatePageNumber(pageNumber);
 		if (pageNumber == 1) {
 			return new ModelAndView("redirect:" + URL.SEARCH_BY_FRAGMENT);
 		}
@@ -226,5 +231,11 @@ public class SearchController {
 
 		return mav.addObject("pageCount", pageCount)
 				.addObject("articlesByPage", articlesByPage);
+	}
+	
+	private void validatePageNumber(int pageNumber) {
+		if (pageNumber < 1) {
+			throw new NotFoundException("Page < 1");
+		}
 	}
 }

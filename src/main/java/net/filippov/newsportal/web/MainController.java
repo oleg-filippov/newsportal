@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import net.filippov.newsportal.domain.Article;
+import net.filippov.newsportal.exception.NotFoundException;
 import net.filippov.newsportal.service.CategoryService;
 import net.filippov.newsportal.service.ArticleService;
 import net.filippov.newsportal.service.TagService;
@@ -72,12 +73,12 @@ public class MainController {
 	 */
 	private ModelAndView homeModelAndView(Integer pageNumber, HttpSession session) {
 		
+		if (pageNumber < 1) {
+			throw new NotFoundException("Page < 1");
+		}
+		
 		Map<String, Object> articlesData = articleService.getByPage(pageNumber, Web.ARTICLES_PER_PAGE);
 		Integer pageCount = (Integer) articlesData.get("pageCount");
-
-		// pageNumber > pageCount
-		if (pageCount == -1)
-			return new ModelAndView(View.ERROR);
 		
 		@SuppressWarnings("unchecked")
 		List<Article> articlesByPage = (List<Article>) articlesData.get("articlesByPage");

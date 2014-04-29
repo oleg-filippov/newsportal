@@ -11,8 +11,8 @@
 <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css"/>" />
 <link rel="stylesheet" href="<c:url value="/resources/css/font-awesome.min.css"/>" />
 <link rel="stylesheet" href="<c:url value="/resources/css/summernote.css"/>" />
-<link rel="stylesheet" href="<c:url value="/resources/css/tokenfield-typeahead.css"/>" />
-<link rel="stylesheet" href="<c:url value="/resources/css/bootstrap-tokenfield.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/tokenfield-typeahead.min.css"/>" />
+<link rel="stylesheet" href="<c:url value="/resources/css/bootstrap-tokenfield.min.css"/>" />
 <!-- Application styles -->
 <link rel="stylesheet" href="<c:url value="/resources/css/app/header.css"/>" />
 <link rel="stylesheet" href="<c:url value="/resources/css/app/signin-signup.css"/>" />

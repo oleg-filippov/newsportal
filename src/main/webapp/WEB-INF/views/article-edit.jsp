@@ -57,10 +57,7 @@
 				<h4><span id="resp" class="label label-danger"></span></h4>
 				<div class="help-block with-errors"></div>
 				<spring:bind path="content">
-					<textarea id="summernote" name="content" required
-						data-error="<spring:message code="validation.article.content" />">
-							${article.content}
-					</textarea>
+					<textarea id="summernote" name="content">${article.content}</textarea>
 				</spring:bind>
 			</div>
 			
