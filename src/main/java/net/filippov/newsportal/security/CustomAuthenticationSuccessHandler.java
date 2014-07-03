@@ -25,6 +25,9 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 	@Autowired
 	private UserService service;
 	
+	/**
+	 * @see org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler#onAuthenticationSuccess(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.security.core.Authentication)
+	 */
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request,
 			HttpServletResponse response, Authentication auth)

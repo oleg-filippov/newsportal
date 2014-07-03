@@ -15,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 
 /**
- * Category of article
+ * Represents category of article
  * 
  * @author Oleg Filippov
  */
@@ -32,7 +32,7 @@ import org.hibernate.annotations.Formula;
 })
 public class Category extends BaseEntity {
 
-	private static final long serialVersionUID = 7371123602615782324L;
+	private static final long serialVersionUID = 7369591777044660460L;
 
 	/**
 	 * Category name
@@ -52,28 +52,49 @@ public class Category extends BaseEntity {
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	private Set<Article> articles;
 	
+	/**
+	 * Default constructor
+	 */
 	public Category() {}
 
+	/**
+	 * @return name of this category
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name category name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return article count having this category
+	 */
 	public int getArticleCount() {
 		return articleCount;
 	}
 
+	/**
+	 * @return articles having this category
+	 */
 	public Set<Article> getArticles() {
 		return articles;
 	}
 
+	/**
+	 * @param articles articles having this category
+	 */
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -82,6 +103,9 @@ public class Category extends BaseEntity {
 		return result;
 	}
 
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -101,6 +125,9 @@ public class Category extends BaseEntity {
 		return true;
 	}
 	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("Category[id=%d, name=%s]", getId(), getName());

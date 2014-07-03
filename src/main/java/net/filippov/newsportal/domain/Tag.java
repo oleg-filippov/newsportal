@@ -15,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 
 /**
- * Tag of article
+ * Represents tag of article
  * 
  * @author Oleg Filippov
  */
@@ -35,7 +35,7 @@ import org.hibernate.annotations.Formula;
 })
 public class Tag extends BaseEntity {
 
-	private static final long serialVersionUID = 1282054549729552169L;
+	private static final long serialVersionUID = 984410247121721301L;
 
 	/**
 	 * Tag name
@@ -57,32 +57,57 @@ public class Tag extends BaseEntity {
 	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
 	private Set<Article> articles;
 	
+	/**
+	 * Default constructor
+	 */
 	public Tag() {}
 	
+	/**
+	 * @return tag name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name tag name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * @return article count tagged with this tag
+	 */
 	public int getArticleCount() {
 		return articleCount;
 	}
 	
+	/**
+	 * @return scale of this tag
+	 */
 	public int getScale() {
+		// need to change
 		return articleCount > 9 ? 9 : articleCount;
 	}
 
+	/**
+	 * @return articles tagged with this tag
+	 */
 	public Set<Article> getArticles() {
 		return articles;
 	}
 
+	/**
+	 * @param articles articles tagged with this tag
+	 */
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -92,6 +117,9 @@ public class Tag extends BaseEntity {
 		return result;
 	}
 	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -111,6 +139,9 @@ public class Tag extends BaseEntity {
 		return true;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("Tag[id=%d, name=%s]", getId(), getName());

@@ -27,10 +27,10 @@ public class CustomExceptionHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(CustomExceptionHandler.class);
 	
 	@Autowired
-	ApplicationContext context;
+	private ApplicationContext context;
 
 	/**
-	 * Handle {@link MaxUploadSizeExceededException}
+	 * Handles {@link MaxUploadSizeExceededException}
 	 * Image size is more than allowed
 	 * 
 	 * @param e exception to catch
@@ -47,7 +47,7 @@ public class CustomExceptionHandler {
 	}
 
 	/**
-	 * Handle {@link UnacceptableFileFormatException}
+	 * Handles {@link UnacceptableFileFormatException}
 	 * An attempt to upload the image with not allowed format
 	 * 
 	 * @param e exception to catch
@@ -64,7 +64,7 @@ public class CustomExceptionHandler {
 	}
 
 	/**
-	 * Handle {@link IOException}, {@link MultipartException}
+	 * Handles {@link IOException}, {@link MultipartException}
 	 * File-system exceptions during image-upload process
 	 * 
 	 * @param e exception to catch

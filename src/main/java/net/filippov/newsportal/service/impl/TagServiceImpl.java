@@ -10,7 +10,7 @@ import net.filippov.newsportal.domain.Tag;
 import net.filippov.newsportal.exception.ServiceException;
 import net.filippov.newsportal.repository.GenericRepository;
 import net.filippov.newsportal.service.TagService;
-import net.filippov.newsportal.web.constants.Web;
+import net.filippov.newsportal.web.constants.Common;
 import static net.filippov.newsportal.service.util.QueryParameters.setParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class TagServiceImpl extends AbstractServiceImpl<Tag> implements TagServi
 	public List<Tag> getAllTransactionally() {
 		try {
 			return repository.getAllByNamedQuery(
-					"Tag.GET_ALL", 0, Web.TAG_MAX_COUNT);
+					"Tag.GET_ALL", 0, Common.TAG_MAX_COUNT);
 		} catch (PersistenceException e) {
 			throw new ServiceException("Unable to get all tags", e);
 		}

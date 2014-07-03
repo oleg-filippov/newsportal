@@ -50,50 +50,83 @@ import org.hibernate.validator.constraints.NotBlank;
 			query = "from Article a where a.content like :fragment order by a.created desc"),
 	@NamedQuery(
 			name = "Article.GET_COUNT_BY_FRAGMENT",
-			query = "select count(a.id) from Article a where a.content like :fragment order by a.created desc")
+			query = "select count(a.id) from Article a where a.content like :fragment")
 })
 public class Article extends BaseEntity {
 
-	private static final long serialVersionUID = 3513552163842451989L;
+	private static final long serialVersionUID = 38150497082508411L;
 
+	/**
+	 * Article title
+	 */
 	@NotBlank(message = "{validation.article.title}")
 	@Column(name = "title", nullable = false, length = 100)
 	private String title;
 
+	/**
+	 * Article preview
+	 */
 	@NotBlank(message = "{validation.article.preview}")
 	@Column(name = "preview", nullable = false)
 	private String preview;
 
+	/**
+	 * Article content
+	 */
 	@NotBlank(message = "{validation.article.content}")
 	@Column(name = "content", nullable = false, length = 65535)
 	private String content;
 
+	/**
+	 * Article creation date and time
+	 */
 	@Column(name = "created", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private final Date created;
 
+	/**
+	 * Article modification date and time
+	 */
 	@Column(name = "last_modified")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastModified;
 
+	/**
+	 * Article view count
+	 */
 	@Column(name = "view_count", insertable = false, columnDefinition = "INT DEFAULT 0")
 	private int viewCount;
 
+	/**
+	 * Article comment count
+	 */
 	@Formula("select count(id) from Comment c where c.article_id = id")
 	private int commentCount;
 	
+	/**
+	 * Author of this article
+	 */
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "user_id", nullable = false, updatable = false)
 	private User author;
 
+	/**
+	 * Category of this article
+	 */
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
 	
+	/**
+	 * Comments to this article
+	 */
 	@OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<Comment> comments;
 	
+	/**
+	 * Tags of this article
+	 */
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "article_tag",
 			joinColumns = {@JoinColumn(name = "article_id") },
@@ -101,91 +134,157 @@ public class Article extends BaseEntity {
 	@OrderBy("name")
 	private Set<Tag> tags;
 
+	/**
+	 * Default constructor initializing needed fields
+	 */
 	public Article() {
 		created = new Date();
 		viewCount = 0;
 	}
 
+	/**
+	 * @return article title
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * @param title article title to set
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * @return article preview
+	 */
 	public String getPreview() {
 		return preview;
 	}
 
+	/**
+	 * @param preview article preview to set
+	 */
 	public void setPreview(String preview) {
 		this.preview = preview;
 	}
 
+	/**
+	 * @return article content
+	 */
 	public String getContent() {
 		return content;
 	}
 
+	/**
+	 * @param content article content to set
+	 */
 	public void setContent(String content) {
 		this.content = content;
 	}
 
+	/**
+	 * @return article date and time of creation
+	 */
 	public Date getCreated() {
 		return created;
 	}
 
+	/**
+	 * @return article modification date and time
+	 */
 	public Date getLastModified() {
 		return lastModified;
 	}
 
+	/**
+	 * @param lastModified date and time when article was last modified
+	 */
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
 	}
 
+	/**
+	 * @return article view count
+	 */
 	public int getViewCount() {
 		return viewCount;
 	}
 	
+	/**
+	 * @param viewCount article view count to set
+	 */
 	public void setViewCount(int viewCount) {
 		this.viewCount = viewCount;
 	}
 	
+	/**
+	 * @return article comment count
+	 */
 	public int getCommentCount() {
 		return commentCount;
 	}
 
+	/**
+	 * @return author of this article
+	 */
 	public User getAuthor() {
 		return author;
 	}
 
+	/**
+	 * @param author author of this article to set
+	 */
 	public void setAuthor(User author) {
 		this.author = author;
 	}
 	
+	/**
+	 * @return category of this article
+	 */
 	public Category getCategory() {
 		return category;
 	}
 
+	/**
+	 * @param category category of this article to set
+	 */
 	public void setCategory(Category category) {
 		this.category = category;
 	}
 
+	/**
+	 * @return comments to this article
+	 */
 	public Set<Comment> getComments() {
 		return comments;
 	}
 
+	/**
+	 * @param comments comments to this article to set
+	 */
 	public void setComments(Set<Comment> comments) {
 		this.comments = comments;
 	}
 	
+	/**
+	 * @return tags of this article
+	 */
 	public Set<Tag> getTags() {
 		return tags;
 	}
 
+	/**
+	 * @param tags tags of this article to set
+	 */
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -197,6 +296,9 @@ public class Article extends BaseEntity {
 		return result;
 	}
 
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -221,6 +323,9 @@ public class Article extends BaseEntity {
 		return true;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("Article[id=%d, author=%s]",

@@ -8,7 +8,7 @@ import net.filippov.newsportal.exception.NotFoundException;
 import net.filippov.newsportal.service.ArticleService;
 import net.filippov.newsportal.web.constants.URL;
 import net.filippov.newsportal.web.constants.View;
-import net.filippov.newsportal.web.constants.Web;
+import net.filippov.newsportal.web.constants.Common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -73,7 +73,7 @@ public class SearchController {
 	private ModelAndView categoryModelAndView(Integer pageNumber, String categoryName) {
 		
 		Map<String, Object> articlesData = articleService.getByPageByCategoryName(
-				pageNumber, Web.ARTICLES_PER_PAGE, categoryName);
+				pageNumber, Common.ARTICLES_PER_PAGE, categoryName);
 		String requestUrl = String.format("/category/%s/", categoryName);
 		String message = String.format(context.getMessage("search.result.byCategory", null,
 				LocaleContextHolder.getLocale()), categoryName);
@@ -110,7 +110,7 @@ public class SearchController {
 	private ModelAndView tagModelAndView(Integer pageNumber, String tagName) {
 
 		Map<String, Object> articlesData = articleService.getByPageByTagName(
-				pageNumber, Web.ARTICLES_PER_PAGE, tagName);
+				pageNumber, Common.ARTICLES_PER_PAGE, tagName);
 		String requestUrl = String.format("/tags/%s/", tagName);
 		String message = String.format(context.getMessage("search.result.byTag", null,
 				LocaleContextHolder.getLocale()), tagName);
@@ -147,7 +147,7 @@ public class SearchController {
 	private ModelAndView userModelAndView(Integer pageNumber, Long userId) {
 		
 		Map<String, Object> articlesData = articleService.getByPageByUserId(
-				pageNumber, Web.ARTICLES_PER_PAGE, userId);
+				pageNumber, Common.ARTICLES_PER_PAGE, userId);
 		String userLogin = (String) articlesData.get("userLogin");
 		String requestUrl = String.format("/user/%d/articles/", userId);
 		String message = String.format(context.getMessage("search.result.byUser", null,
@@ -194,7 +194,7 @@ public class SearchController {
 	private ModelAndView fragmentModelAndView(Integer pageNumber, String fragment) {
 
 		Map<String, Object> articlesData = articleService.getByPageByFragment(
-				pageNumber, Web.ARTICLES_PER_PAGE, fragment);
+				pageNumber, Common.ARTICLES_PER_PAGE, fragment);
 		String requestUrl = String.format("/search/%s/", fragment);
 		String message = String.format(context.getMessage("search.result.byFragment", null,
 				LocaleContextHolder.getLocale()), fragment);

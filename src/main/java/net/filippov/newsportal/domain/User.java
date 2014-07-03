@@ -41,9 +41,9 @@ import org.hibernate.validator.constraints.NotBlank;
 			query = "from User u where u.email = :email")
 })
 public class User extends BaseEntity {
-
-	private static final long serialVersionUID = 286409866205173021L;
 	
+	private static final long serialVersionUID = 8091488929047153516L;
+
 	/**
 	 * User login
 	 */
@@ -74,7 +74,7 @@ public class User extends BaseEntity {
 	private String email;
 
 	/**
-	 * Registration date
+	 * Registration date and time
 	 */
 	@Column(name = "registered", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -128,107 +128,177 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private Set<Comment> comments;
 	
+	/**
+	 * Default constructor initializing needed fields
+	 */
 	public User() {
 		registered = new Date();
 		locked = false;
 		enabled = true;
 	}
 
+	/**
+	 * @return user login
+	 */
 	public String getLogin() {
 		return login;
 	}
 
+	/**
+	 * @param login user login to set
+	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
 
+	/**
+	 * @return user password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * @param password user password to set
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * @return user full name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name user full name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return user e-mail
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * @param email user e-mail to set
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	/**
+	 * @return registration date and time
+	 */
 	public Date getRegistered() {
 		return registered;
 	}
 
+	/**
+	 * @return true if user is locked
+	 */
 	public boolean isLocked() {
 		return locked;
 	}
 
+	/**
+	 * @param locked
+	 */
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
 
+	/**
+	 * @return true if user is enabled
+	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 	
+	/**
+	 * @return this user article count
+	 */
 	public int getArticleCount() {
 		return articleCount;
 	}
 
+	/**
+	 * @return this user comment count
+	 */
 	public int getCommentCount() {
 		return commentCount;
 	}
 
+	/**
+	 * @return user roles
+	 */
 	public Set<UserRole> getRoles() {
 		return roles;
 	}
 
+	/**
+	 * @param roles user roles to set
+	 */
 	public void setRoles(Set<UserRole> roles) {
 		this.roles = roles;
 	}
 
+	/**
+	 * @return this user comments
+	 */
 	public Set<Comment> getComments() {
 		return comments;
 	}
 
+	/**
+	 * @param comments this user comments to set
+	 */
 	public void setComments(Set<Comment> comments) {
 		this.comments = comments;
 	}
 
+	/**
+	 * @return this user articles
+	 */
 	public Set<Article> getArticles() {
 		return articles;
 	}
 
+	/**
+	 * @param articles this user articles to set
+	 */
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 17;
 		result = prime * result
-				+ ((getEmail() == null) ? 0 : getEmail().hashCode());
-		result = prime * result
 				+ ((getLogin() == null) ? 0 : getLogin().hashCode());
 		return result;
 	}
 	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -245,14 +315,12 @@ public class User extends BaseEntity {
 				: other.getLogin() != null) {
 			return false;
 		}
-		if (getEmail() != null
-				? !getEmail().equals(other.getEmail())
-				: other.getEmail() != null) {
-			return false;
-		}
 		return true;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("User[id=%d, login=%s]", getId(), getLogin());

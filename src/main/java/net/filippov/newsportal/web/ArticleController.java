@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.filippov.newsportal.domain.Article;
-import net.filippov.newsportal.domain.Comment;
 import net.filippov.newsportal.domain.Tag;
 import net.filippov.newsportal.service.ArticleService;
 import net.filippov.newsportal.service.CategoryService;
@@ -16,9 +15,9 @@ import net.filippov.newsportal.service.TagService;
 import net.filippov.newsportal.web.constants.URL;
 import net.filippov.newsportal.web.constants.View;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller for article-related actions
@@ -44,8 +42,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @SessionAttributes("article")
 public class ArticleController {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ArticleController.class);
-	
+	private ApplicationContext context;
 	private ArticleService articleService;
 	private CategoryService categoryService;
 	private TagService tagService;
@@ -61,7 +58,9 @@ public class ArticleController {
 	@Autowired
 	public ArticleController(ArticleService articleService,
 			CategoryService categoryService,
-			TagService tagService) {
+			TagService tagService,
+			ApplicationContext context) {
+		this.context = context;
 		this.articleService = articleService;
 		this.categoryService = categoryService;
 		this.tagService = tagService;
@@ -87,7 +86,7 @@ public class ArticleController {
 			HttpSession session, HttpServletRequest request, HttpServletResponse resp) {
 		
 		boolean needIncreaseViewCount = request.getHeader("Referer") != null
-				&& !request.getRequestURL().toString().equals(request.getHeader("Referer"));
+				&& !request.getHeader("Referer").equals(request.getRequestURL().toString());
 		Long loggedUserId  = (Long) session.getAttribute("loggedUserId"); // null for unauthorized
 		
 		Article currentArticle = articleService.get(
@@ -98,30 +97,25 @@ public class ArticleController {
 		return View.VIEW_ARTICLE;
 	}
 	
-	
 	/**
 	 * Add comment submit
 	 */
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(method = RequestMethod.POST, value = URL.ADD_COMMENT)
-	public String addCommentSubmit(Model model, @ModelAttribute("article") Article article,
-			@Valid @ModelAttribute("comment") Comment comment, BindingResult result,
-			RedirectAttributes attr, HttpSession session) {
-
-		if (result.hasErrors()) {
-			attr.addFlashAttribute(
-					"org.springframework.validation.BindingResult.comment", result);
-			attr.addFlashAttribute("comment", comment);
-			return "redirect:/article/" + article.getId();
+	@ResponseBody
+	public String addCommentSubmit(HttpSession session,
+			@RequestParam(value = "articleId") Long articleId,
+			@RequestParam(value = "content", defaultValue = "") String content) {
+		
+		if (content.isEmpty()) {
+			return context.getMessage("validation.comment.content", null,
+					LocaleContextHolder.getLocale());
 		}
-		
 		Long authorId  = (Long) session.getAttribute("loggedUserId");
-		articleService.addComment(comment, authorId, article);
-		LOG.info("ADDED: " + comment);
+		articleService.addComment(content, authorId, articleId);
 		
-		return "redirect:/article/" + article.getId();
+		return "ok";
 	}
-	
 	
 	/**
 	 * Page of article to be added
@@ -135,7 +129,6 @@ public class ArticleController {
 		
 		return View.EDIT_ARTICLE;
 	}
-
 	
 	/**
 	 * Add article submit
@@ -156,11 +149,9 @@ public class ArticleController {
 		articleService.add(article, authorId, categoryName, tagString);
 		status.setComplete();
 		updateSessionAttributes(session);
-		LOG.info("ADDED: " + article);
 		
 		return "redirect:/article/" + article.getId();
 	}
-	
 	
 	/**
 	 * Page of article to be edited
@@ -188,7 +179,6 @@ public class ArticleController {
 		return View.EDIT_ARTICLE;
 	}
 	
-	
 	/**
 	 * Edit article submit
 	 */
@@ -207,11 +197,9 @@ public class ArticleController {
 		articleService.update(article, categoryName, tagString);
 		status.setComplete();
 		updateSessionAttributes(session);
-		LOG.info("UPDATED: " + article);
 
 		return "redirect:/article/" + article.getId();
 	}
-	
 	
 	/**
 	 * Delete article
@@ -224,13 +212,11 @@ public class ArticleController {
 		articleService.deleteByIdTransactionally(id);
 		status.setComplete();
 		updateSessionAttributes(session);
-		LOG.info(String.format("DELETED: Article[id=%d]", id));
 
 		return new ModelAndView(View.SUCCESS)
 				.addObject("messageProperty", "success.article.deleted")
 				.addObject("url", request.getServletContext().getContextPath());
 	}
-	
 	
     /**
      * Cancel article edit
@@ -254,16 +240,6 @@ public class ArticleController {
     @ModelAttribute("article")
 	public Article populateArticle() {
 		return new Article();
-	}
-    
-    /**
-     * Fill model attribute
-     * 
-     * @return new instance of {@link Comment}
-     */
-	@ModelAttribute("comment")
-	public Comment populateComment() {
-		return new Comment();
 	}
 	
 	/**

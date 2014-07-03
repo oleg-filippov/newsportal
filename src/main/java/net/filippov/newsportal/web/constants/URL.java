@@ -7,14 +7,18 @@ package net.filippov.newsportal.web.constants;
  */
 public class URL {
 
-	// Main URL's
+	/**
+	 * Main URL's
+	 */
 	public static final String HOME = "/";
 	public static final String HOME_CUSTOM_PAGE = "/page/{number}";
 	public static final String ABOUT = "/about";
 	public static final String CONTACTS = "/contacts";
 	public static final String ERROR = "/error";
 	
-	// User related URL's
+	/**
+	 * User-related URL's
+	 */
 	public static final String SIGN_IN = "/signin";
 	public static final String SIGN_IN_FAILURE = "/signinfailure";
 	public static final String SIGN_UP = "/signup";
@@ -22,11 +26,15 @@ public class URL {
 	public static final String CHECK_EMAIL = "/check-email";
 	public static final String USER_PROFILE = "/user/{id}";
 	
-	// Upload URL's
+	/**
+	 * Upload URL's
+	 */
 	public static final String UPLOAD_IMAGE = "**/uploadimage";
 	public static final String SHOW_IMAGE = "**/images/{name}.{type}";
 	
-	// Article related URL's
+	/**
+	 * Article-related URL's
+	 */
 	public static final String SHOW_ARTICLE = "/{id}";
 	public static final String ADD_COMMENT = "/{id}/addcomment";
 	public static final String ADD_ARTICLE = "/add";
@@ -35,7 +43,9 @@ public class URL {
 	public static final String CANCEL = "/{id}/cancel";
 	public static final String TAGS_AUTOCOMPLETE = "**/tags/autocomplete";
 	
-	// Search URL's
+	/**
+	 * Search URL's
+	 */
 	public static final String SEARCH_BY_CATEGORY = "/category/{name}";
 	public static final String SEARCH_BY_CATEGORY_CUSTOM_PAGE = "/category/{name}/page/{number}";
 	public static final String SEARCH_BY_FRAGMENT = "/search/{fragment}";

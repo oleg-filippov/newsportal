@@ -18,9 +18,11 @@ import net.filippov.newsportal.exception.NotFoundException;
 import net.filippov.newsportal.exception.ServiceException;
 import net.filippov.newsportal.repository.GenericRepository;
 import net.filippov.newsportal.service.ArticleService;
+import net.filippov.newsportal.service.CategoryService;
+import net.filippov.newsportal.service.CommentService;
 import net.filippov.newsportal.service.TagService;
 import net.filippov.newsportal.service.UserService;
-import net.filippov.newsportal.web.constants.Web;
+import net.filippov.newsportal.web.constants.Common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,9 +40,9 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	 * Default error-message template for "getByPage" methods
 	 */
 	private static final String ERROR_BY_PAGE = "Unable to get all articles by page=";
-
-	private GenericRepository<Comment, Long> commentRepository;
-	private GenericRepository<Category, Long> categoryRepository;
+	
+	private CategoryService categoryService;
+	private CommentService commentService;
 	private TagService tagService;
 	private UserService userService;
 	
@@ -49,17 +51,13 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	 */
 	@Autowired
 	public ArticleServiceImpl(GenericRepository<Article, Long> repository,
-			GenericRepository<Comment, Long> commentRepository,
-			GenericRepository<Category, Long> categoryRepository,
+			CategoryService categoryService,
+			CommentService commentService,
 			TagService tagService,
 			UserService userService) {
 		super(repository);
-		this.commentRepository = commentRepository;
-		this.commentRepository.setType(Comment.class);
-		
-		this.categoryRepository = categoryRepository;
-		this.categoryRepository.setType(Category.class);
-		
+		this.categoryService = categoryService;
+		this.commentService = commentService;
 		this.tagService = tagService;
 		this.userService = userService;
 	}
@@ -104,7 +102,7 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	 * @param authorId
 	 * @param categoryName
 	 * @param tagString
-	 * @return populated object
+	 * @return populated {@link Article}
 	 * @throws PersistenceException
 	 */
 	private Article populateArticle(Article article, Long authorId, String categoryName, String tagString)
@@ -116,11 +114,9 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		}
 
 		if (categoryName.isEmpty()) {
-			categoryName = Web.DEFAULT_CATEGORY_NAME;
+			categoryName = Common.DEFAULT_CATEGORY_NAME;
 		}
-		Category category = categoryRepository.getByNamedQuery(
-				"Category.GET_BY_NAME",
-				setParam("name", categoryName).buildMap());
+		Category category = categoryService.getByName(categoryName);
 		article.setCategory(category);
 			
 		if (!tagString.isEmpty()) {
@@ -176,9 +172,7 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	public Map<String, Object> getByPageByCategoryName(int page,
 			int articlesPerPage, String name) {
 		try {
-			Category category = categoryRepository.getByNamedQuery(
-					"Category.GET_BY_NAME",
-					setParam("name", name).buildMap());
+			Category category = categoryService.getByName(name);
 			if (category == null) {
 				throw new NotFoundException("Category not found");
 			}
@@ -265,25 +259,7 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	}
 
 	/**
-	 * @see net.filippov.newsportal.service.ArticleService#addComment(
-	 * net.filippov.newsportal.domain.Comment, java.lang.Long, net.filippov.newsportal.domain.Article)
-	 */
-	@Override
-	@Transactional
-	public void addComment(Comment comment, Long authorId, Article article) {
-		try {
-			User author = userService.get(authorId);
-			comment.setAuthor(author);
-			comment.setArticle(article);
-			commentRepository.add(comment);
-		} catch (PersistenceException e) {
-			String message = String.format("Unable to add %s", comment);
-			throw new ServiceException(message, e);
-		}
-	}
-	
-	/**
-	 * Get map of articles data by named query without query parameters
+	 * Gets map of articles data by named query without query parameters
 	 */
 	private Map<String, Object> getArticlesData(int page, int articlesPerPage,
 			String namedQuery, int articleCount) {
@@ -291,7 +267,7 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	}
 	
 	/**
-	 * Get map of articles data by named query
+	 * Gets map of articles data by named query
 	 * 
 	 * @param page
 	 * @param articlesPerPage number of articles per page
@@ -323,5 +299,24 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 		articlesData.put("articlesByPage", repository.getAllByNamedQuery(
 				namedQuery, params, firstResult, articlesPerPage));
 		return articlesData;
+	}
+	
+	/**
+	 * @see net.filippov.newsportal.service.ArticleService#addComment(
+	 * net.filippov.newsportal.domain.Comment, java.lang.Long, net.filippov.newsportal.domain.Article)
+	 */
+	@Override
+	@Transactional
+	public void addComment(String content, Long authorId, Long articleId) {
+		Comment comment = null;
+		try {
+			User author = userService.get(authorId);
+			Article article = repository.get(articleId);
+			comment = new Comment(author, article, content);
+			commentService.add(comment);
+		} catch (PersistenceException e) {
+			String message = String.format("Unable to add %s", comment);
+			throw new ServiceException(message, e);
+		}
 	}
 }

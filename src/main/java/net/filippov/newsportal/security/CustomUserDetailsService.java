@@ -1,7 +1,7 @@
 package net.filippov.newsportal.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import net.filippov.newsportal.domain.UserRole;
 import net.filippov.newsportal.service.UserService;
@@ -25,6 +25,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UserService service;
 
+	/**
+	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
@@ -52,10 +55,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 				getAuthorities(user.getRoles()));
 	}
 	
+	/**
+	 * Get set of roles. Roles must be {@link GrantedAuthority} implementation
+	 * 
+	 * @param roles
+	 * @return
+	 */
 	public Collection<? extends GrantedAuthority> getAuthorities(
 			Collection<UserRole> roles) {
 
-		Collection<GrantedAuthority> resultRoles = new ArrayList<GrantedAuthority>();
+		Collection<GrantedAuthority> resultRoles = new HashSet<GrantedAuthority>();
 		for (UserRole role : roles) {
 			resultRoles.add(role);
 		}

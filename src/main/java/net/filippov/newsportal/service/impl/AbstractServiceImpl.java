@@ -11,6 +11,8 @@ import net.filippov.newsportal.exception.ServiceException;
 import net.filippov.newsportal.repository.GenericRepository;
 import net.filippov.newsportal.service.AbstractService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -22,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public abstract class AbstractServiceImpl<T extends Serializable>
 		implements AbstractService<T> {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractService.class);
 	
 	/**
 	 * Generic repository
@@ -54,6 +58,7 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 	public void add(T obj) {
 		try {
 			repository.add(obj);
+			LOG.info("ADDED: " + obj);
 		} catch (PersistenceException e) {
 			String message = String.format("Unable to add %s", obj);
 			throw new ServiceException(message, e);
@@ -98,6 +103,7 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 	public void update(T obj) {
 		try {
 			repository.update(obj);
+			LOG.info("UPDATED: " + obj);
 		} catch (PersistenceException e) {
 			String message = String.format("Unable to update %s", obj);
 			throw new ServiceException(message, e);
@@ -121,6 +127,7 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 	public void deleteTransactionally(T obj) {
 		try {
 			repository.delete(obj);
+			LOG.info("DELETED: " + obj);
 		} catch (PersistenceException e) {
 			String message = String.format("Unable to delete %s", obj);
 			throw new ServiceException(message, e);
@@ -135,6 +142,7 @@ public abstract class AbstractServiceImpl<T extends Serializable>
 	public void deleteByIdTransactionally(Long id) {
 		try {
 			repository.deleteById(id);
+			LOG.info("DELETED: {}[id={}]", className, id);
 		} catch (PersistenceException e) {
 			String message = String.format("Unable to delete %s by id=", className, id);
 			throw new ServiceException(message, e);

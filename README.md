@@ -12,7 +12,7 @@ Simple project using Spring MVC, Spring Security, Hibernate, Twitter Bootstrap, 
 2. mvn tomcat7:run
 3. http://localhost:8080/newsportal/
 
-Available users: admin (admin), author (author), user (user)
+Available users <username> (<password>): admin (admin), author (author), user (user)
 
 ### Features
 - Localization (en, ru)
@@ -23,5 +23,5 @@ Available users: admin (admin), author (author), user (user)
 
 ### Libraries used
 - Spring MVC 3.2, Spring Security 3.1, Hibernate 4.2
-- Twitter Bootstrap 3, [Summernote WYSIWYG editor](http://hackerwins.github.io/summernote/)
+- [Twitter Bootstrap 3](http://getbootstrap.com/), [Summernote WYSIWYG editor](http://hackerwins.github.io/summernote/)
 - H2 db

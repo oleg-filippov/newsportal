@@ -22,7 +22,7 @@ public class ErrorController {
 	private static final Logger LOG = LoggerFactory.getLogger(ErrorController.class);
 
 	/**
-	 * Method gets status-code, request_uri and exception from {@link HttpServletRequest}
+	 * Gets status-code, request_uri and exception from {@link HttpServletRequest}
 	 * and sets them as model-attributes
 	 * 
 	 * @return error-page

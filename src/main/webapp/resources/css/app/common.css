@@ -34,7 +34,7 @@ a.sidebar-categories {
 	margin-bottom: 10px;
 }
 
-.comments {
+.comment {
 	background-color: #ebf8fe;
 	border: 2px solid #666;
 	margin: 8px;
@@ -43,9 +43,9 @@ a.sidebar-categories {
 	box-shadow: 2px 2px 2px #999;
 }
 
-.comments-message {
+.comment-message {
 	color: #FFFFFF;
-	background-color: #CD5C5C
+	background-color: #CD5C5C;
 }
 
 table.profile th {

@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Comment on article
+ * Represents comment on article
  * 
  * @author Oleg Filippov
  */
@@ -31,7 +31,7 @@ import org.hibernate.validator.constraints.NotBlank;
 })
 public class Comment extends BaseEntity {
 
-	private static final long serialVersionUID = 8668190795666429761L;
+	private static final long serialVersionUID = -4252140027137381170L;
 
 	/**
 	 * Comment content
@@ -41,7 +41,7 @@ public class Comment extends BaseEntity {
 	private String content;
 	
 	/**
-	 * Creation time
+	 * Creation date and time
 	 */
 	@Column(name = "created", insertable = false, updatable = false,
 			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -62,38 +62,79 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "article_id")
 	private Article article;
 	
-	public Comment() {
+	/**
+	 * Default constructor. For Hibernate use only
+	 */
+	protected Comment() {
 		created = new Date();
 	}
 
+	/**
+	 * Constructor initializing required fields
+	 * 
+	 * @param author
+	 * @param article
+	 * @param content
+	 */
+	public Comment(User author, Article article, String content) {
+		created = new Date();
+		this.author = author;
+		this.article = article;
+		this.content = content;
+	}
+
+	/**
+	 * @return comment content
+	 */
 	public String getContent() {
 		return content;
 	}
 
+	/**
+	 * @param content comment content to set
+	 */
 	public void setContent(String content) {
 		this.content = content;
 	}
 
+	/**
+	 * @return comment creation date and time
+	 */
 	public Date getCreated() {
 		return created;
 	}
 
+	/**
+	 * @return author of this comment
+	 */
 	public User getAuthor() {
 		return author;
 	}
 
+	/**
+	 * @param author author of this comment to set
+	 */
 	public void setAuthor(User author) {
 		this.author = author;
 	}
 
+	/**
+	 * @return article which owns this comment
+	 */
 	public Article getArticle() {
 		return article;
 	}
 
+	/**
+	 * @param article article which owns this comment
+	 */
 	public void setArticle(Article article) {
 		this.article = article;
 	}
 	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -105,6 +146,9 @@ public class Comment extends BaseEntity {
 		return result;
 	}
 
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -129,6 +173,9 @@ public class Comment extends BaseEntity {
 		return true;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("Comment[id=%d, author=%s, article_id=%s]",

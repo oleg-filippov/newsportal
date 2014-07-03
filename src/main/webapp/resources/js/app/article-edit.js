@@ -1,10 +1,7 @@
 $(document).ready(function() {	
 	// Ajax request for tags json
-	$.ajax({
-		url: 'tags/autocomplete',
-		success: function (data) {
-			tagsAutocomplete(JSON.parse(data));
-		}
+	$.get('tags/autocomplete', function (data) {
+		tagsAutocomplete(JSON.parse(data));
 	});
 });
 
@@ -21,7 +18,7 @@ function tagsAutocomplete(tags) {
 
 	$('#tags').tokenfield({
 		limit: 5,
-		minLength: 3,
+		minLength: 2,
 		typeahead: {
 			source: engine.ttAdapter()
 		}
@@ -35,7 +32,7 @@ function sendFile(file, editor, welEditable) {
 	$.ajax({
 		data: data,
 		type: "POST",
-		url: "uploadimage",
+		url: 'uploadimage',
 		cache: false,
 		contentType: false,
 		processData: false,

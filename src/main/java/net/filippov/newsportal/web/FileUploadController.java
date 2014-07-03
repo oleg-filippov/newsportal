@@ -22,14 +22,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Controller for file upload
+ * Controller for file uploading operations
  * 
  * @author Oleg Filippov
  */
 @Controller
 public class FileUploadController {
 
-	// Constants operating with images
+	/**
+	 * Constants operating with images
+	 */
 	private static final String ARTICLE_IMAGES_PATH = "c:/Newsportal/article_images/";
 	private static final String JPG_CONTENT_TYPE = "image/jpeg";
 	private static final String PNG_CONTENT_TYPE = "image/png";
@@ -62,7 +64,6 @@ public class FileUploadController {
 		return "images/" + imageName;
 	}
 
-	
 	/**
 	 * Get image from file-system
 	 * 

@@ -31,9 +31,9 @@ import org.springframework.security.core.GrantedAuthority;
 			query = "from UserRole ur where ur.authority = :authority")
 })
 public class UserRole extends BaseEntity implements GrantedAuthority {
-
-	private static final long serialVersionUID = -3981661393211469078L;
 	
+	private static final long serialVersionUID = 3571970651167544190L;
+
 	/**
 	 * Name of role
 	 */
@@ -46,25 +46,43 @@ public class UserRole extends BaseEntity implements GrantedAuthority {
 	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
 	private Set<User> users;
 
+	/**
+	 * Default constructor
+	 */
 	public UserRole() {}
 
+	/**
+	 * @return users granted with this role
+	 */
 	public Set<User> getUsers() {
 		return users;
 	}
 
+	/**
+	 * @param users users granted with this role
+	 */
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 	
+	/**
+	 * @see org.springframework.security.core.GrantedAuthority#getAuthority()
+	 */
 	@Override
 	public String getAuthority() {
 		return authority;
 	}
 
+	/**
+	 * @param authority
+	 */
 	public void setAuthority(String authority) {
 		this.authority = authority;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -74,6 +92,9 @@ public class UserRole extends BaseEntity implements GrantedAuthority {
 		return result;
 	}
 	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -93,6 +114,9 @@ public class UserRole extends BaseEntity implements GrantedAuthority {
 		return true;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("UserRole[id=%d, authority=%s]",

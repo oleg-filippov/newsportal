@@ -2,7 +2,6 @@ package net.filippov.newsportal.service;
 
 import java.util.Map;
 
-import net.filippov.newsportal.domain.Comment;
 import net.filippov.newsportal.domain.Article;
 import net.filippov.newsportal.exception.NotFoundException;
 
@@ -103,11 +102,11 @@ public interface ArticleService extends AbstractService<Article> {
 			throws NotFoundException;
 	
 	/**
-	 * Save comment
+	 * Save a comment by it's content
 	 * 
-	 * @param comment to save
-	 * @param authorId author id of this comment
-	 * @param article who owns this comment
+	 * @param content comment content
+	 * @param authorId author primary key
+	 * @param articleId article primary key
 	 */
-	void addComment(Comment comment, Long authorId, Article article);
+	void addComment(String content, Long authorId, Long articleId);
 }

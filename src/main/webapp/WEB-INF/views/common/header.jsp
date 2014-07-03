@@ -40,16 +40,18 @@
 			</ul>
 			
 			<!-- Search form -->
-			<form class="navbar-form navbar-left" action="${searchUrl}" method="post"
-					data-toggle="validator">
-				<div class="input-group input-group-sm">
-					<input type="text" name="fragment" class="form-control" required
-						placeholder="<spring:message code="header.search" />">
-					<span class="input-group-btn">
-						<button class="btn btn-default" type="submit">Go!</button>
-					</span>
-				</div>
-			</form>
+			<div class="col-xs-3">
+				<form class="navbar-form navbar-left" action="${searchUrl}" method="post"
+						data-toggle="validator">
+					<div class="input-group input-group-sm">
+						<input type="text" name="fragment" class="form-control" required
+							placeholder="<spring:message code="header.search" />">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">Go!</button>
+						</span>
+					</div>
+				</form>
+			</div>
 			
 			<!-- SignIn, SignUp, Profile, Logout -->
 			<ul class="nav navbar-nav navbar-right">

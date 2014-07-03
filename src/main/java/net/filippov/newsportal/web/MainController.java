@@ -12,7 +12,7 @@ import net.filippov.newsportal.service.ArticleService;
 import net.filippov.newsportal.service.TagService;
 import net.filippov.newsportal.web.constants.URL;
 import net.filippov.newsportal.web.constants.View;
-import net.filippov.newsportal.web.constants.Web;
+import net.filippov.newsportal.web.constants.Common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,7 +69,7 @@ public class MainController {
 	}
 	
 	/**
-	 * Fill ModelAndView with news data
+	 * Fills ModelAndView with news data
 	 */
 	private ModelAndView homeModelAndView(Integer pageNumber, HttpSession session) {
 		
@@ -77,7 +77,7 @@ public class MainController {
 			throw new NotFoundException("Page < 1");
 		}
 		
-		Map<String, Object> articlesData = articleService.getByPage(pageNumber, Web.ARTICLES_PER_PAGE);
+		Map<String, Object> articlesData = articleService.getByPage(pageNumber, Common.ARTICLES_PER_PAGE);
 		Integer pageCount = (Integer) articlesData.get("pageCount");
 		
 		@SuppressWarnings("unchecked")

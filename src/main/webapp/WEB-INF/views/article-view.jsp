@@ -75,19 +75,17 @@
 		<hr>
 		
 		<!-- Comments-message -->
-		<c:choose>
-			<c:when test="${article.commentCount > 0}">
-				<h3 class="comments-message">
-					<spring:message code="article-view.commentsToArticle"
-						arguments="${article.commentCount}" />
-				</h3>
+		<h3 id="comments" class="comment-message">
+			<c:choose>
+				<c:when test="${article.commentCount > 0}">
+					<spring:message code="article-view.commentsToArticle" />
+					<span id="comment-count">${article.commentCount}</span>
 				</c:when>
-			<c:otherwise>
-				<h3 class="comments-message">
+				<c:otherwise>
 					<spring:message code="article-view.noComments" />
-				</h3>
-			</c:otherwise>
-		</c:choose>
+				</c:otherwise>
+			</c:choose>
+		</h3>
 		
 		<!-- Message for not registered users -->
 		<sec:authorize access="isAnonymous()">
@@ -106,27 +104,25 @@
 		
 		<!-- Add comment form -->
 		<sec:authorize access="hasRole('ROLE_USER')">
-			<form:form action="${addCommentUrl}" method="post" modelAttribute="comment"
-					data-toggle="validator">
-				<h4><form:errors path="content" class="label label-danger" /></h4>
-				<spring:bind path="content">
-					<textarea id="add-comment" class="form-control" name="content"
-						maxlength="500" rows="2" required
-						placeholder="<spring:message code="article-view.leaveComment" />"></textarea>
-				</spring:bind>
+			<form onsubmit="return false">
+				<h4><span id="comment-validation" class="label label-danger"></span></h4>
+				<textarea id="comment-content" class="form-control" name="content"
+					maxlength="500" rows="2" required
+					placeholder="<spring:message code="article-view.leaveComment" />"></textarea>
 
 				<button id="commentSubmit" class="btn btn-default" type="submit">
 					<spring:message code="article-view.addCommentButton" />
 				</button>
-		  		<button class="btn btn-default" type="reset">
+		  		<button id="reset" class="btn btn-default" type="reset">
 					<spring:message code="article-view.resetCommentButton" />
 				</button>
-			</form:form>
+			</form>
 		</sec:authorize>
 		
 		<!-- List of comments -->
+		<div id="comment-list">
 		<c:forEach var="comment" items="${article.comments}">
-			<div class="comments">
+			<div class="comment">
 				<a href="${profileUrl}/${comment.author.id}">
 					<strong>${comment.author.login}</strong>
 				</a>
@@ -139,9 +135,38 @@
 				<c:out value="${comment.content}" escapeXml="false" />
 			</div>
 		</c:forEach>
+		</div>
 		
 		<script type="text/javascript" src="<c:url value="/resources/js/app/inputs.js"/>"></script>
 		<script>
+			// add comment ajax-request
+			$("#commentSubmit").click(function() {
+				var content = $("#comment-content").val();
+				$.post('${pageContext.request.contextPath}/article/${article.id}/addcomment',
+						{"articleId": "${article.id}", "content": content}, function(response) {
+					if (response === "ok") {
+						$("#comment-content").val("");
+						$("#comment-list")
+							.prepend("<div class='comment'><a href='${profileUrl}/${loggedUserId}'>"
+								+ "<strong>${pageContext.request.userPrincipal.name}</strong></a>"
+								+ "&nbsp;&nbsp;-&nbsp;&nbsp;<small><i class='glyphicon glyphicon-time'></i>"
+								+ "&nbsp;<fmt:formatDate value='<%=new java.util.Date()%>' type='both'/>"
+								+ "</small><br>" + content + "</div>")
+							.children(':first').hide().fadeIn(1500);
+						var count = $("#comment-count").text();
+						if (count === "") {
+							$("h3#comments").html("<spring:message code='article-view.commentsToArticle' />"
+								+ "<span id='comment-count'>1</span>");
+						} else {
+							$("#comment-count").text(++count);
+						}
+					} else {
+						$("#comment-validation").text(response).show().delay(1500).fadeOut(1500);
+					}
+				});
+				return false;
+			});
+		
 			$("#delete-article").click(function() {
 				var message = "${pageContext.response.locale.language}" === "ru"
 					? "Вы уверены?"

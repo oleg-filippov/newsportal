@@ -35,19 +35,22 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	private Class<T> type;
 	
+	/**
+	 * @see net.filippov.newsportal.repository.GenericRepository#setType(java.lang.Class)
+	 */
 	public void setType(Class<T> type) {
 		this.type = type;
 	}
 
 	@PersistenceContext
-	protected EntityManager em;
+	protected EntityManager manager;
 
 	/**
 	 * @see net.filippov.newsportal.repository.GenericRepository#add(java.lang.Object)
 	 */
 	@Override
 	public void add(T obj) {
-		em.persist(obj);
+		manager.persist(obj);
 	}
 
 	/**
@@ -55,7 +58,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public T get(PK id) {
-		return em.find(type, id);
+		return manager.find(type, id);
 	}
 
 	/**
@@ -63,7 +66,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public T update(T obj) {
-		return em.merge(obj);
+		return manager.merge(obj);
 	}
 
 	/**
@@ -71,7 +74,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public void delete(T obj) {
-		em.remove(obj);
+		manager.remove(obj);
 	}
 	
 	/**
@@ -90,7 +93,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	@Override
 	public T getByNamedQuery(String namedQuery, Map<String, Object> parameters) {
 		try {
-			TypedQuery<T> query = em.createNamedQuery(namedQuery, type);
+			TypedQuery<T> query = manager.createNamedQuery(namedQuery, type);
 			return setParameters(query, parameters).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
@@ -103,7 +106,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	@Override
 	public List<T> getAll() {
 		
-		return em.createQuery("from " + type.getSimpleName(), type).getResultList();
+		return manager.createQuery("from " + type.getSimpleName(), type).getResultList();
 	}
 	
 	/**
@@ -148,7 +151,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	public List<T> getAllByNamedQuery(String namedQuery,
 			Map<String, Object> parameters, int firstResult, int resultLimit) {
 
-		TypedQuery<T> query = em.createNamedQuery(namedQuery, type)
+		TypedQuery<T> query = manager.createNamedQuery(namedQuery, type)
 				.setFirstResult(firstResult);
 		if (resultLimit > 0) {
 			query.setMaxResults(resultLimit);
@@ -166,7 +169,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	@Override
 	public List<String> getAllNamesByNamedQuery(String namedQuery, int resultLimit) {
 		
-		TypedQuery<String> query = em.createNamedQuery(namedQuery, String.class);
+		TypedQuery<String> query = manager.createNamedQuery(namedQuery, String.class);
 		if (resultLimit > 0) {
 			query.setMaxResults(resultLimit);
 		}
@@ -178,11 +181,11 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	 */
 	@Override
 	public int getCount() {
-		CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+		CriteriaBuilder cBuilder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> cQuery = cBuilder.createQuery(Long.class);
 		cQuery.select(cBuilder.count(cQuery.from(type)));
 
-		return em.createQuery(cQuery).getSingleResult().intValue();
+		return manager.createQuery(cQuery).getSingleResult().intValue();
 	}
 
 	/**
@@ -192,7 +195,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	public int getCountByNamedQuery(String namedQuery,
 			Map<String, Object> parameters) {
 		
-		TypedQuery<Long> query = em.createNamedQuery(namedQuery, Long.class);
+		TypedQuery<Long> query = manager.createNamedQuery(namedQuery, Long.class);
 		return setParameters(query, parameters).getSingleResult().intValue();
 	}
 	
