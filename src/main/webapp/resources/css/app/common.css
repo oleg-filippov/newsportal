@@ -3,6 +3,7 @@ a, a#author {
 }
 	
 a:hover, a:focus {
+	color: #3659BC;
 	text-decoration: underline;
 }
 

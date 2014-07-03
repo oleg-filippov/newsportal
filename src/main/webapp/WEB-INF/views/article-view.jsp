@@ -104,7 +104,7 @@
 		
 		<!-- Add comment form -->
 		<sec:authorize access="hasRole('ROLE_USER')">
-			<form onsubmit="return false">
+			<form data-toggle="validator" onsubmit="return false">
 				<h4><span id="comment-validation" class="label label-danger"></span></h4>
 				<textarea id="comment-content" class="form-control" name="content"
 					maxlength="500" rows="2" required

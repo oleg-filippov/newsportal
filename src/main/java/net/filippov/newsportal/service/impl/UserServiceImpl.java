@@ -15,6 +15,8 @@ import net.filippov.newsportal.repository.GenericRepository;
 import net.filippov.newsportal.service.UserService;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("UserService")
 public class UserServiceImpl extends AbstractServiceImpl<User> implements UserService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
 	private GenericRepository<UserRole, Long> roleRepository;
 	private PasswordEncoder bCryptPasswordEncoder;
@@ -65,6 +69,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 			user.setPassword(encodedPassword);
 			
 			repository.add(user);
+			LOG.info("ADDED: " + user);
 		} catch (PersistenceException e) {
 			if (e.getCause().getClass() == ConstraintViolationException.class) {
 				ConstraintViolationException ce = (ConstraintViolationException) e.getCause();
