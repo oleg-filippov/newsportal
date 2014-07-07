@@ -21,7 +21,7 @@
 		<dbcp.version>1.4</dbcp.version>
 		<h2database.version>1.3.174</h2database.version>
 		<slf4j.version>1.7.2</slf4j.version>
-		<log4j.version>1.2.15</log4j.version>
+		<log4j.version>1.2.17</log4j.version>
 	</properties>
 
 	<dependencies>
@@ -138,11 +138,6 @@
 			<artifactId>ehcache-core</artifactId>
 			<version>${ehcache.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.4</version>
-		</dependency>
 
 		<!-- AspectJ -->
 		<dependency>
@@ -171,7 +166,7 @@
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<artifactId>apache-log4j-extras</artifactId>
 			<version>${log4j.version}</version>
 			<exclusions>
 				<exclusion>

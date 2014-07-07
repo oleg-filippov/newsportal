@@ -5,28 +5,39 @@
 	<!-- Appenders -->
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
-		<layout class="org.apache.log4j.PatternLayout">
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>
 	</appender>
+	
+	<appender name="bulk" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="C:/Newsportal/logs/bulk.log"/>
+        <param name="Threshold" value="WARN" />
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.20t][%30c] - %m%n"/>
+        </layout>
+    </appender>
 
 	<appender name="application" class="org.apache.log4j.RollingFileAppender">
-		<param name="file" value="C:/Newsportal/logs/application.log" />
+		<param name="File" value="C:/Newsportal/logs/application.log" />
 		<param name="MaxFileSize" value="10MB" />
 		<param name="MaxBackupIndex" value="10" />
 		<param name="Encoding" value="UTF-8" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%30c] - %m%n" />
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.20t][%30.30c{-3}] - %m%n" />
 		</layout>
 	</appender>
 
 	<appender name="orm" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="File" value="C:/Newsportal/logs/orm.log" />
+		<param name="Append" value="true" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<param name="Encoding" value="UTF-8" />
-		<layout class="org.apache.log4j.TTCCLayout">
-			<param name="DateFormat" value="ABSOLUTE" />
-			<param name="ContextPrinting" value="false" />
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} [%-5p][%-16.20t][%30c] - %m%n" />
 		</layout>
 	</appender>
 
@@ -62,6 +73,7 @@
 	<root>
 		<priority value="info" />
 		<appender-ref ref="console" />
+		<appender-ref ref="bulk" />
 	</root>
 
 </log4j:configuration>

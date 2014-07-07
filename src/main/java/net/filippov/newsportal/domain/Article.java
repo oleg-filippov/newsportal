@@ -122,6 +122,7 @@ public class Article extends BaseEntity {
 	 * Comments to this article
 	 */
 	@OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@OrderBy("created desc")
 	private Set<Comment> comments;
 	
 	/**
