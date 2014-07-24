@@ -35,10 +35,10 @@ import org.hibernate.validator.constraints.NotBlank;
 @NamedQueries({
 	@NamedQuery(
 			name = "User.GET_BY_LOGIN",
-			query = "from User u where u.login = :login"),
+			query = "FROM User u WHERE u.login = :login"),
 	@NamedQuery(
 			name = "User.GET_BY_EMAIL",
-			query = "from User u where u.email = :email")
+			query = "FROM User u WHERE u.email = :email")
 })
 public class User extends BaseEntity {
 	
@@ -98,13 +98,13 @@ public class User extends BaseEntity {
 	/**
 	 * Article count of this user
 	 */
-	@Formula("select count(a.id) from Article a where a.user_id = id")
+	@Formula("SELECT COUNT(a.id) FROM Article a WHERE a.user_id = id")
 	private int articleCount;
 	
 	/**
 	 * Comment count of this user
 	 */
-	@Formula("select count(c.id) from Comment c where c.user_id = id")
+	@Formula("SELECT COUNT(c.id) FROM Comment c WHERE c.user_id = id")
 	private int commentCount;
 
 	/**

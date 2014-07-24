@@ -27,7 +27,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @NamedQueries({
 	@NamedQuery(
 			name = "Comment.GET_ALL_BY_ARTICLE_ID",
-			query = "from Comment c where c.article.id = :id order by c.created desc")
+			query = "FROM Comment c WHERE c.article.id = :id ORDER BY c.created DESC")
 })
 public class Comment extends BaseEntity {
 

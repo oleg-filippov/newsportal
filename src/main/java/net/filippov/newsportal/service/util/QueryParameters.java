@@ -25,6 +25,7 @@ public class QueryParameters {
 	
 	/**
 	 * Set parameter
+	 * 
 	 * @param name of parameter
 	 * @param value of parameter
 	 * @return new QueryParameters object
@@ -35,6 +36,7 @@ public class QueryParameters {
 	
 	/**
 	 * Add one more parameter
+	 * 
 	 * @param name of parameter
 	 * @param value of parameter
 	 * @return this object
@@ -46,6 +48,7 @@ public class QueryParameters {
 	
 	/**
 	 * Build Map with parameters. Must be envoked at the end
+	 * 
 	 * @return result Map
 	 */
 	public Map<String, Object> buildMap() {

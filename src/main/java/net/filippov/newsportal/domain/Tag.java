@@ -25,13 +25,13 @@ import org.hibernate.annotations.Formula;
 @NamedQueries({
 	@NamedQuery(
 			name = "Tag.GET_ALL",
-			query = "from Tag t order by t.name"),
+			query = "FROM Tag t ORDER BY t.name"),
 	@NamedQuery(
 			name = "Tag.GET_ALL_NAMES",
-			query = "select t.name from Tag t order by t.name"),
+			query = "SELECT t.name FROM Tag t ORDER BY t.name"),
 	@NamedQuery(
 			name = "Tag.GET_BY_NAME",
-			query = "from Tag t where t.name = :name")
+			query = "FROM Tag t WHERE t.name = :name")
 })
 public class Tag extends BaseEntity {
 
@@ -46,9 +46,9 @@ public class Tag extends BaseEntity {
 	/**
 	 * Article count tagged with this tag
 	 */
-	@Formula("select count(a.id) from article_tag at "
-			+ "join Article a on at.article_id = a.id "
-			+ "join Tag t on at.tag_id = t.id where t.id = id")
+	@Formula("SELECT COUNT(a.id) FROM article_tag at "
+			+ "JOIN Article a ON at.article_id = a.id "
+			+ "JOIN Tag t ON at.tag_id = t.id WHERE t.id = id")
 	private int articleCount;
 	
 	/**

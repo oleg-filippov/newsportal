@@ -35,22 +35,22 @@ import org.hibernate.validator.constraints.NotBlank;
 @NamedQueries({
 	@NamedQuery(
 			name = "Article.GET_ALL",
-			query = "from Article a order by a.created desc"),
+			query = "FROM Article a ORDER BY a.created DESC"),
 	@NamedQuery(
 			name = "Article.GET_ALL_BY_USER_ID",
-			query = "from Article a where a.author.id = :id order by a.created desc"),
+			query = "FROM Article a WHERE a.author.id = :id ORDER BY a.created DESC"),
 	@NamedQuery(
 			name = "Article.GET_ALL_BY_CATEGORY_NAME",
-			query = "from Article a where a.category.name = :name order by a.created desc"),
+			query = "FROM Article a WHERE a.category.name = :name ORDER BY a.created DESC"),
 	@NamedQuery(
 			name = "Article.GET_ALL_BY_TAG_NAME",
-			query = "select a from Tag t join t.articles a where t.name = :name order by a.created desc"),
+			query = "SELECT a FROM Tag t JOIN t.articles a WHERE t.name = :name ORDER BY a.created DESC"),
 	@NamedQuery(
 			name = "Article.GET_ALL_BY_FRAGMENT",
-			query = "from Article a where a.content like :fragment order by a.created desc"),
+			query = "FROM Article a WHERE a.content LIKE :fragment ORDER BY a.created DESC"),
 	@NamedQuery(
 			name = "Article.GET_COUNT_BY_FRAGMENT",
-			query = "select count(a.id) from Article a where a.content like :fragment")
+			query = "SELECT COUNT(a.id) FROM Article a WHERE a.content LIKE :fragment")
 })
 public class Article extends BaseEntity {
 
@@ -101,13 +101,13 @@ public class Article extends BaseEntity {
 	/**
 	 * Article comment count
 	 */
-	@Formula("select count(id) from Comment c where c.article_id = id")
+	@Formula("SELECT COUNT(id) FROM Comment c WHERE c.article_id = id")
 	private int commentCount;
 	
 	/**
 	 * Author of this article
 	 */
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false, updatable = false)
 	private User author;
 

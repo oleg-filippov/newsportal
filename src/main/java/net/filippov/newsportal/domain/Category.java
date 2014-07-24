@@ -25,10 +25,10 @@ import org.hibernate.annotations.Formula;
 @NamedQueries({
 	@NamedQuery(
 			name = "Category.GET_ALL",
-			query = "from Category c order by c.name"),
+			query = "FROM Category c ORDER BY c.name"),
 	@NamedQuery(
 			name = "Category.GET_BY_NAME",
-			query = "from Category c where c.name = :name")
+			query = "FROM Category c WHERE c.name = :name")
 })
 public class Category extends BaseEntity {
 
@@ -43,7 +43,7 @@ public class Category extends BaseEntity {
 	/**
 	 * Article count having this category
 	 */
-	@Formula("select count(id) from Article a where a.category_id = id")
+	@Formula("SELECT COUNT(id) FROM Article a WHERE a.category_id = id")
 	private int articleCount;
 	
 	/**

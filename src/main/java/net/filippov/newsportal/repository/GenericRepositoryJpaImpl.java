@@ -106,7 +106,7 @@ public class GenericRepositoryJpaImpl<T extends Serializable, PK extends Seriali
 	@Override
 	public List<T> getAll() {
 		
-		return manager.createQuery("from " + type.getSimpleName(), type).getResultList();
+		return manager.createQuery("FROM " + type.getSimpleName(), type).getResultList();
 	}
 	
 	/**

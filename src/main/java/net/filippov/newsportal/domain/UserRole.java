@@ -28,7 +28,7 @@ import org.springframework.security.core.GrantedAuthority;
 @NamedQueries({
 	@NamedQuery(
 			name = "UserRole.GET_BY_AUTHORITY",
-			query = "from UserRole ur where ur.authority = :authority")
+			query = "FROM UserRole ur WHERE ur.authority = :authority")
 })
 public class UserRole extends BaseEntity implements GrantedAuthority {
 	

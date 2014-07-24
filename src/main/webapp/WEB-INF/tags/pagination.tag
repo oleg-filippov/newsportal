@@ -29,7 +29,6 @@
 			<!-- Numbers of pages to show -->
 			<c:forEach var="pageNum" begin="${currentPage-1}" end="${currentPage+3}">
 				<c:choose>
-	
 					<c:when test="${pageNum-1 eq currentPage}">
 						<li class="active"><span>${pageNum-1}</span></li>
 					</c:when>
