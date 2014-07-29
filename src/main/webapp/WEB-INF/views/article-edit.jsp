@@ -25,7 +25,7 @@
 			</div>
 			
 			<!-- Article category -->
-			<select class="form-control" name="categoryName">
+			<select id="category" class="form-control" name="categoryName">
 				<option disabled="disabled" selected="selected">
 					<spring:message code="article-edit.category" />
 				</option>
@@ -87,6 +87,11 @@
 					sendFile(files[0], editor, welEditable);
 				}
 			});
+			
+			// Set article category selected for article-edit
+			if ("${category}" !== "") {
+				$("select#category").val("${category}");
+			}
 		</script>
 	</jsp:body>
 </t:template>

@@ -174,6 +174,7 @@ public class ArticleController {
 			String tagString = tagService.getTagString(tags);
 			model.addAttribute("tagString", tagString);
 		}
+		model.addAttribute("category", articleToEdit.getCategory().getName());
 		model.addAttribute("article", articleToEdit);
 
 		return View.EDIT_ARTICLE;
