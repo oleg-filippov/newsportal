@@ -159,7 +159,7 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 			return getArticlesData(page, articlesPerPage, "Article.GET_ALL", repository.getCount());
 		} catch (PersistenceException e) {
 			String message = String.format("%s%d", ERROR_BY_PAGE, page);
-			throw new ServiceException(message, e);
+ 			throw new ServiceException(message, e);
 		}
 	}
 	
